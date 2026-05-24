@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>E-Mail Templates ‚Äì WPP Media Affiliate Team</title>
+<title>E-Mail Templates – WPP Media Affiliate Team</title>
 <style>
   :root {
     --bg: #f5f6f8;
@@ -109,7 +109,7 @@
   <header>
     <div>
       <h1>E-Mail Templates</h1>
-      <div class="sub" id="header-sub">WPP Media ¬∑ Affiliate Team</div>
+      <div class="sub" id="header-sub">WPP Media · Affiliate Team</div>
     </div>
     <div class="pill-toggle" role="tablist" aria-label="Sprache">
       <button id="btn-de" class="active" onclick="setLang('de')">DE</button>
@@ -119,7 +119,7 @@
 
   <div class="grid">
     <div class="card">
-      <h2 id="lbl-controls">Vorlage w√§hlen</h2>
+      <h2 id="lbl-controls">Vorlage wählen</h2>
 
       <label id="lbl-template">Template</label>
       <select id="template-select" onchange="onTemplateChange()"></select>
@@ -135,7 +135,7 @@
           <button id="btn-du" class="active" onclick="setAddress('du')">Du / Dich</button>
           <button id="btn-ihr" onclick="setAddress('ihr')">Ihr / Euch</button>
         </div>
-        <div class="hint" id="anrede-hint">‚ÄûDu" f√ºr Einzelpersonen, ‚ÄûIhr" f√ºr Teams / Firmen</div>
+        <div class="hint" id="anrede-hint">„Du" für Einzelpersonen, „Ihr" für Teams / Firmen</div>
       </div>
 
       <div id="dynamic-fields"></div>
@@ -158,36 +158,36 @@
           </div>
           <div class="content" id="preview-body"></div>
         </div>
-        <button class="copy-all" onclick="copyAll(this)" id="btn-copy-all">üìã Komplette E-Mail kopieren</button>
-        <div class="hint" id="copy-hint">Formatierung (z.B. <em>Mein Schiff</em> kursiv) wird beim Einf√ºgen in Outlook √ºbernommen.</div>
+        <button class="copy-all" onclick="copyAll(this)" id="btn-copy-all">📋 Komplette E-Mail kopieren</button>
+        <div class="hint" id="copy-hint">Formatierung (z.B. <em>Mein Schiff</em> kursiv) wird beim Einfügen in Outlook übernommen.</div>
       </div>
     </div>
   </div>
 
-  <footer>Interne Vorlage ¬∑ Nicht f√ºr externen Versand ohne Review ¬∑ Stand: Mai 2026</footer>
+  <footer>Interne Vorlage · Nicht für externen Versand ohne Review · Stand: Mai 2026</footer>
 </div>
 
 <script>
 const ui = {
   de: {
-    headerSub: "WPP Media ¬∑ Affiliate Team",
-    controls: "Vorlage w√§hlen", template: "Template", program: "Programm",
-    anrede: "Anrede", anredeHint: "‚ÄûDu\" f√ºr Einzelpersonen, ‚ÄûIhr\" f√ºr Teams / Firmen",
+    headerSub: "WPP Media · Affiliate Team",
+    controls: "Vorlage wählen", template: "Template", program: "Programm",
+    anrede: "Anrede", anredeHint: "„Du\" für Einzelpersonen, „Ihr\" für Teams / Firmen",
     preview: "Vorschau", subject: "Betreff", body: "E-Mail",
     copy: "Kopieren", copied: "Kopiert!",
-    copyAll: "üìã Komplette E-Mail kopieren", copiedAll: "‚úì Alles kopiert!",
-    copyHint: "Formatierung (z.B. <em>Mein Schiff</em> kursiv) wird beim Einf√ºgen in Outlook √ºbernommen.",
-    reset: "‚Üª Standard-Text wiederherstellen",
+    copyAll: "📋 Komplette E-Mail kopieren", copiedAll: "✓ Alles kopiert!",
+    copyHint: "Formatierung (z.B. <em>Mein Schiff</em> kursiv) wird beim Einfügen in Outlook übernommen.",
+    reset: "↻ Standard-Text wiederherstellen",
   },
   en: {
-    headerSub: "WPP Media ¬∑ Affiliate Team",
+    headerSub: "WPP Media · Affiliate Team",
     controls: "Choose template", template: "Template", program: "Program",
     anrede: "Address form", anredeHint: "(only relevant in German)",
     preview: "Preview", subject: "Subject", body: "Email",
     copy: "Copy", copied: "Copied!",
-    copyAll: "üìã Copy full email", copiedAll: "‚úì All copied!",
+    copyAll: "📋 Copy full email", copiedAll: "✓ All copied!",
     copyHint: "Formatting (e.g. <em>Mein Schiff</em> in italics) is preserved when pasting into Outlook.",
-    reset: "‚Üª Reset to default",
+    reset: "↻ Reset to default",
   },
 };
 
@@ -195,75 +195,75 @@ const programs = [
   { name: "Mein Schiff", italic: true },
   { name: "Mein Schiff International", italic: true },
   { name: "Hapag-Lloyd Cruises", italic: false },
-  { name: "Me√ümer", italic: false },
+  { name: "Meßmer", italic: false },
   { name: "Tempur", italic: false },
 ];
 
 const templates = [
   {
     id: "annahme",
-    label: { de: "Affiliate-Bewerbung ‚Äì Annahme", en: "Affiliate application ‚Äì accepted" },
+    label: { de: "Affiliate-Bewerbung – Annahme", en: "Affiliate application – accepted" },
     fields: ["name", "website"],
     subject: {
       de: {
-        du: "Willkommen im {{program}}-Partnerprogramm üö¢",
-        ihr: "Willkommen im {{program}}-Partnerprogramm üö¢",
+        du: "Willkommen im {{program}}-Partnerprogramm 🚢",
+        ihr: "Willkommen im {{program}}-Partnerprogramm 🚢",
       },
-      en: "Welcome to the {{program}} affiliate program üö¢",
+      en: "Welcome to the {{program}} affiliate program 🚢",
     },
     body: {
       de: {
         du:
 `Liebe/r {{name}},
 
-vielen Dank f√ºr Deine Bewerbung f√ºr unser {{program}}-Partnerprogramm ‚Äì wir freuen uns sehr, Dich an Bord begr√º√üen zu d√ºrfen!
+vielen Dank für Deine Bewerbung für unser {{program}}-Partnerprogramm – wir freuen uns sehr, Dich an Bord begrüßen zu dürfen!
 
-Deine Anmeldung haben wir soeben in AWIN best√§tigt. Du findest ab sofort alle Werbemittel, den Deeplink-Generator und aktuelle Aktionen direkt in Deinem AWIN-Account unter unserem Programm.
+Deine Anmeldung haben wir soeben in AWIN bestätigt. Du findest ab sofort alle Werbemittel, den Deeplink-Generator und aktuelle Aktionen direkt in Deinem AWIN-Account unter unserem Programm.
 
-Solltest Du Fragen haben ‚Äì zu Wunsch-Werbemitteln, individuellen Aktionen oder Tracking ‚Äì melde Dich gerne jederzeit bei mir. Ich unterst√ºtze Dich gerne.
+Solltest Du Fragen haben – zu Wunsch-Werbemitteln, individuellen Aktionen oder Tracking – melde Dich gerne jederzeit bei mir. Ich unterstütze Dich gerne.
 
 Viel Erfolg und gutes Gelingen mit {{website}}!
 
-Liebe Gr√º√üe
-Nicole üòä`,
+Liebe Grüße
+Nicole 😊`,
         ihr:
 `Hallo {{name}},
 
-vielen Dank f√ºr Eure Bewerbung f√ºr unser {{program}}-Partnerprogramm ‚Äì wir freuen uns sehr, Euch an Bord begr√º√üen zu d√ºrfen!
+vielen Dank für Eure Bewerbung für unser {{program}}-Partnerprogramm – wir freuen uns sehr, Euch an Bord begrüßen zu dürfen!
 
-Eure Anmeldung haben wir soeben in AWIN best√§tigt. Ihr findet ab sofort alle Werbemittel, den Deeplink-Generator und aktuelle Aktionen direkt in Eurem AWIN-Account unter unserem Programm.
+Eure Anmeldung haben wir soeben in AWIN bestätigt. Ihr findet ab sofort alle Werbemittel, den Deeplink-Generator und aktuelle Aktionen direkt in Eurem AWIN-Account unter unserem Programm.
 
-Solltet Ihr Fragen haben ‚Äì zu Wunsch-Werbemitteln, individuellen Aktionen oder Tracking ‚Äì meldet Euch gerne jederzeit bei mir. Ich unterst√ºtze Euch gerne.
+Solltet Ihr Fragen haben – zu Wunsch-Werbemitteln, individuellen Aktionen oder Tracking – meldet Euch gerne jederzeit bei mir. Ich unterstütze Euch gerne.
 
 Viel Erfolg und gutes Gelingen mit {{website}}!
 
-Liebe Gr√º√üe
-Nicole üòä`,
+Liebe Grüße
+Nicole 😊`,
       },
       en:
 `Hi {{name}},
 
-thanks for applying to our {{program}} affiliate program ‚Äì we're really glad to have you on board!
+thanks for applying to our {{program}} affiliate program – we're really glad to have you on board!
 
 I've just approved your application in AWIN. You'll now find all creatives, the deep link generator and current promotions directly in your AWIN account under our program.
 
-If you have any questions ‚Äì about specific creatives, custom promotions or tracking ‚Äì just reach out anytime. Happy to support.
+If you have any questions – about specific creatives, custom promotions or tracking – just reach out anytime. Happy to support.
 
 Wishing you great success with {{website}}!
 
 Best regards
-Nicole üòä`,
+Nicole 😊`,
     },
   },
 
   {
     id: "ablehnung",
-    label: { de: "Affiliate-Bewerbung ‚Äì Ablehnung", en: "Affiliate application ‚Äì declined" },
+    label: { de: "Affiliate-Bewerbung – Ablehnung", en: "Affiliate application – declined" },
     fields: ["name", "reason"],
     subject: {
       de: {
-        du: "Deine Bewerbung f√ºr unser {{program}}-Partnerprogramm",
-        ihr: "Eure Bewerbung f√ºr unser {{program}}-Partnerprogramm",
+        du: "Deine Bewerbung für unser {{program}}-Partnerprogramm",
+        ihr: "Eure Bewerbung für unser {{program}}-Partnerprogramm",
       },
       en: "Your application for our {{program}} affiliate program",
     },
@@ -272,29 +272,29 @@ Nicole üòä`,
         du:
 `Liebe/r {{name}},
 
-vielen Dank f√ºr Dein Interesse an unserem {{program}}-Partnerprogramm und die Zeit, die Du Dir f√ºr die Bewerbung genommen hast.
+vielen Dank für Dein Interesse an unserem {{program}}-Partnerprogramm und die Zeit, die Du Dir für die Bewerbung genommen hast.
 
-Wir haben Deine Webseite sorgf√§ltig gepr√ºft und uns entschieden, die Partnerschaft aktuell nicht einzugehen. Hintergrund: {{reason}}
+Wir haben Deine Webseite sorgfältig geprüft und uns entschieden, die Partnerschaft aktuell nicht einzugehen. Hintergrund: {{reason}}
 
-Das ist keine endg√ºltige Absage ‚Äì sobald sich auf Deiner Seite Relevantes √§ndert, freuen wir uns √ºber eine erneute Bewerbung.
+Das ist keine endgültige Absage – sobald sich auf Deiner Seite Relevantes ändert, freuen wir uns über eine erneute Bewerbung.
 
-Vielen Dank f√ºr Dein Verst√§ndnis und weiterhin viel Erfolg!
+Vielen Dank für Dein Verständnis und weiterhin viel Erfolg!
 
-Liebe Gr√º√üe
-Nicole üòä`,
+Liebe Grüße
+Nicole 😊`,
         ihr:
 `Hallo {{name}},
 
-vielen Dank f√ºr Euer Interesse an unserem {{program}}-Partnerprogramm und die Zeit, die Ihr Euch f√ºr die Bewerbung genommen habt.
+vielen Dank für Euer Interesse an unserem {{program}}-Partnerprogramm und die Zeit, die Ihr Euch für die Bewerbung genommen habt.
 
-Wir haben Eure Webseite sorgf√§ltig gepr√ºft und uns entschieden, die Partnerschaft aktuell nicht einzugehen. Hintergrund: {{reason}}
+Wir haben Eure Webseite sorgfältig geprüft und uns entschieden, die Partnerschaft aktuell nicht einzugehen. Hintergrund: {{reason}}
 
-Das ist keine endg√ºltige Absage ‚Äì sobald sich auf Eurer Seite Relevantes √§ndert, freuen wir uns √ºber eine erneute Bewerbung.
+Das ist keine endgültige Absage – sobald sich auf Eurer Seite Relevantes ändert, freuen wir uns über eine erneute Bewerbung.
 
-Vielen Dank f√ºr Euer Verst√§ndnis und weiterhin viel Erfolg!
+Vielen Dank für Euer Verständnis und weiterhin viel Erfolg!
 
-Liebe Gr√º√üe
-Nicole üòä`,
+Liebe Grüße
+Nicole 😊`,
       },
       en:
 `Hi {{name}},
@@ -303,58 +303,58 @@ thanks for your interest in our {{program}} affiliate program and for taking the
 
 We've carefully reviewed your site and have decided not to move forward with a partnership at this point. Reason: {{reason}}
 
-This isn't a final no ‚Äì once things on your side evolve, we'd be happy to reconsider a fresh application.
+This isn't a final no – once things on your side evolve, we'd be happy to reconsider a fresh application.
 
 Thanks for understanding and continued success!
 
 Best regards
-Nicole üòä`,
+Nicole 😊`,
     },
   },
 
   {
     id: "rueckfrage",
-    label: { de: "Affiliate-Bewerbung ‚Äì R√ºckfrage", en: "Affiliate application ‚Äì follow-up question" },
+    label: { de: "Affiliate-Bewerbung – Rückfrage", en: "Affiliate application – follow-up question" },
     fields: ["name", "question"],
     subject: {
       de: {
-        du: "Kurze R√ºckfrage zu Deiner Bewerbung ‚Äì {{program}}",
-        ihr: "Kurze R√ºckfrage zu Eurer Bewerbung ‚Äì {{program}}",
+        du: "Kurze Rückfrage zu Deiner Bewerbung – {{program}}",
+        ihr: "Kurze Rückfrage zu Eurer Bewerbung – {{program}}",
       },
-      en: "Quick follow-up on your application ‚Äì {{program}}",
+      en: "Quick follow-up on your application – {{program}}",
     },
     body: {
       de: {
         du:
 `Liebe/r {{name}},
 
-vielen Dank f√ºr Deine Bewerbung f√ºr unser {{program}}-Partnerprogramm!
+vielen Dank für Deine Bewerbung für unser {{program}}-Partnerprogramm!
 
-Bevor wir final entscheiden k√∂nnen, h√§tte ich noch eine kurze R√ºckfrage an Dich:
+Bevor wir final entscheiden können, hätte ich noch eine kurze Rückfrage an Dich:
 
 {{question}}
 
-Sobald ich Deine Antwort habe, pr√ºfe ich Deine Bewerbung umgehend und melde mich mit einer Entscheidung zur√ºck.
+Sobald ich Deine Antwort habe, prüfe ich Deine Bewerbung umgehend und melde mich mit einer Entscheidung zurück.
 
 Vielen Dank vorab!
 
-Liebe Gr√º√üe
-Nicole üòä`,
+Liebe Grüße
+Nicole 😊`,
         ihr:
 `Hallo {{name}},
 
-vielen Dank f√ºr Eure Bewerbung f√ºr unser {{program}}-Partnerprogramm!
+vielen Dank für Eure Bewerbung für unser {{program}}-Partnerprogramm!
 
-Bevor wir final entscheiden k√∂nnen, h√§tte ich noch eine kurze R√ºckfrage an Euch:
+Bevor wir final entscheiden können, hätte ich noch eine kurze Rückfrage an Euch:
 
 {{question}}
 
-Sobald ich Eure Antwort habe, pr√ºfe ich Eure Bewerbung umgehend und melde mich mit einer Entscheidung zur√ºck.
+Sobald ich Eure Antwort habe, prüfe ich Eure Bewerbung umgehend und melde mich mit einer Entscheidung zurück.
 
 Vielen Dank vorab!
 
-Liebe Gr√º√üe
-Nicole üòä`,
+Liebe Grüße
+Nicole 😊`,
       },
       en:
 `Hi {{name}},
@@ -370,7 +370,7 @@ As soon as I have your reply, I'll review your application and come back to you 
 Thanks in advance!
 
 Best regards
-Nicole üòä`,
+Nicole 😊`,
     },
   },
 
@@ -380,35 +380,35 @@ Nicole üòä`,
     fields: ["name", "status"],
     subject: {
       de: {
-        du: "Status Deiner Bewerbung ‚Äì {{program}}",
-        ihr: "Status Eurer Bewerbung ‚Äì {{program}}",
+        du: "Status Deiner Bewerbung – {{program}}",
+        ihr: "Status Eurer Bewerbung – {{program}}",
       },
-      en: "Status of your application ‚Äì {{program}}",
+      en: "Status of your application – {{program}}",
     },
     body: {
       de: {
         du:
 `Liebe/r {{name}},
 
-danke f√ºr Deine erneute Nachricht! Ich habe in unserem System nachgeschaut: Du hast Dich bereits f√ºr unser {{program}}-Partnerprogramm beworben.
+danke für Deine erneute Nachricht! Ich habe in unserem System nachgeschaut: Du hast Dich bereits für unser {{program}}-Partnerprogramm beworben.
 
 {{status}}
 
-Falls sich auf Deiner Seite zwischenzeitlich etwas ge√§ndert hat, freue ich mich √ºber ein kurzes Update ‚Äì dann schaue ich mir die Bewerbung gerne noch einmal an.
+Falls sich auf Deiner Seite zwischenzeitlich etwas geändert hat, freue ich mich über ein kurzes Update – dann schaue ich mir die Bewerbung gerne noch einmal an.
 
-Liebe Gr√º√üe
-Nicole üòä`,
+Liebe Grüße
+Nicole 😊`,
         ihr:
 `Hallo {{name}},
 
-danke f√ºr Eure erneute Nachricht! Ich habe in unserem System nachgeschaut: Ihr habt Euch bereits f√ºr unser {{program}}-Partnerprogramm beworben.
+danke für Eure erneute Nachricht! Ich habe in unserem System nachgeschaut: Ihr habt Euch bereits für unser {{program}}-Partnerprogramm beworben.
 
 {{status}}
 
-Falls sich auf Eurer Seite zwischenzeitlich etwas ge√§ndert hat, freue ich mich √ºber ein kurzes Update ‚Äì dann schaue ich mir die Bewerbung gerne noch einmal an.
+Falls sich auf Eurer Seite zwischenzeitlich etwas geändert hat, freue ich mich über ein kurzes Update – dann schaue ich mir die Bewerbung gerne noch einmal an.
 
-Liebe Gr√º√üe
-Nicole üòä`,
+Liebe Grüße
+Nicole 😊`,
       },
       en:
 `Hi {{name}},
@@ -417,10 +417,10 @@ thanks for getting back in touch! I just checked our system: you've already appl
 
 {{status}}
 
-If something has changed on your side in the meantime, I'd love a quick update ‚Äì I'm happy to review the application again.
+If something has changed on your side in the meantime, I'd love a quick update – I'm happy to review the application again.
 
 Best regards
-Nicole üòä`,
+Nicole 😊`,
     },
   },
 
@@ -440,97 +440,97 @@ Nicole üòä`,
         du:
 `Liebe/r {{name}},
 
-danke f√ºr Deine Anfrage ‚Äì gerne teile ich Dir die Zahlen zu Deiner Performance im {{program}}-Partnerprogramm mit.
+danke für Deine Anfrage – gerne teile ich Dir die Zahlen zu Deiner Performance im {{program}}-Partnerprogramm mit.
 
 Zeitraum: {{period}}
 
 {{numbers}}
 
-Falls Du Ideen hast, die Performance gemeinsam weiter zu pushen (z.B. spezielle Aktionen, individuelle Werbemittel oder Sub-IDs f√ºr besseres Tracking), lass es mich gerne wissen ‚Äì ich unterst√ºtze Dich gerne.
+Falls Du Ideen hast, die Performance gemeinsam weiter zu pushen (z.B. spezielle Aktionen, individuelle Werbemittel oder Sub-IDs für besseres Tracking), lass es mich gerne wissen – ich unterstütze Dich gerne.
 
-Liebe Gr√º√üe
-Nicole üòä`,
+Liebe Grüße
+Nicole 😊`,
         ihr:
 `Hallo {{name}},
 
-danke f√ºr Eure Anfrage ‚Äì gerne teile ich Euch die Zahlen zu Eurer Performance im {{program}}-Partnerprogramm mit.
+danke für Eure Anfrage – gerne teile ich Euch die Zahlen zu Eurer Performance im {{program}}-Partnerprogramm mit.
 
 Zeitraum: {{period}}
 
 {{numbers}}
 
-Falls Ihr Ideen habt, die Performance gemeinsam weiter zu pushen (z.B. spezielle Aktionen, individuelle Werbemittel oder Sub-IDs f√ºr besseres Tracking), lasst es mich gerne wissen ‚Äì ich unterst√ºtze Euch gerne.
+Falls Ihr Ideen habt, die Performance gemeinsam weiter zu pushen (z.B. spezielle Aktionen, individuelle Werbemittel oder Sub-IDs für besseres Tracking), lasst es mich gerne wissen – ich unterstütze Euch gerne.
 
-Liebe Gr√º√üe
-Nicole üòä`,
+Liebe Grüße
+Nicole 😊`,
       },
       en:
 `Hi {{name}},
 
-thanks for reaching out ‚Äì happy to share the numbers on your performance in the {{program}} affiliate program.
+thanks for reaching out – happy to share the numbers on your performance in the {{program}} affiliate program.
 
 Period: {{period}}
 
 {{numbers}}
 
-If you have ideas to push performance further together (e.g. dedicated promotions, custom creatives or sub-IDs for better tracking), just let me know ‚Äì happy to support.
+If you have ideas to push performance further together (e.g. dedicated promotions, custom creatives or sub-IDs for better tracking), just let me know – happy to support.
 
 Best regards
-Nicole üòä`,
+Nicole 😊`,
     },
   },
 
   {
     id: "tui-outreach",
-    label: { de: "Cold Outreach ‚Äì TUI Cruises Mein Schiff", en: "Cold outreach ‚Äì TUI Cruises Mein Schiff" },
+    label: { de: "Cold Outreach – TUI Cruises Mein Schiff", en: "Cold outreach – TUI Cruises Mein Schiff" },
     usesProgram: false,
     fields: ["name", "channelName", "signature"],
     subject: {
       de: {
-        du: "Affiliate-Partnerschaft mit TUI Cruises <em>Mein Schiff</em> ‚Äì passt das zu Dir?",
-        ihr: "Affiliate-Partnerschaft mit TUI Cruises <em>Mein Schiff</em> ‚Äì passt das zu Euch?",
+        du: "Affiliate-Partnerschaft mit TUI Cruises <em>Mein Schiff</em> – passt das zu Dir?",
+        ihr: "Affiliate-Partnerschaft mit TUI Cruises <em>Mein Schiff</em> – passt das zu Euch?",
       },
-      en: "Affiliate partnership with TUI Cruises <em>Mein Schiff</em> ‚Äì a fit for you?",
+      en: "Affiliate partnership with TUI Cruises <em>Mein Schiff</em> – a fit for you?",
     },
     body: {
       de: {
         du:
 `Hallo {{name}},
 
-wir als WPP Media betreuen das Affiliate-Programm von TUI Cruises <em>Mein Schiff</em> und sind √ºber Deinen Blog/Kanal ‚Äû{{channelName}}" auf Dich aufmerksam geworden.
+wir als WPP Media betreuen das Affiliate-Programm von TUI Cruises <em>Mein Schiff</em> und sind über Deinen Blog/Kanal „{{channelName}}" auf Dich aufmerksam geworden.
 
 Sowohl die thematische Ausrichtung als auch die Art, wie Du Deinen Content aufbereitest, passen aus unserer Sicht sehr gut zu unserer Zielgruppe rund um Reisen und hochwertige Urlaubserlebnisse.
 
-Im Auftrag von TUI Cruises suchen wir gezielt nach Content-Creator:innen und Redaktionen, die eine Leidenschaft f√ºr Kreuzfahrten teilen und ihre Community f√ºr die <em>Mein Schiff</em> Flotte begeistern m√∂chten.
+Im Auftrag von TUI Cruises suchen wir gezielt nach Content-Creator:innen und Redaktionen, die eine Leidenschaft für Kreuzfahrten teilen und ihre Community für die <em>Mein Schiff</em> Flotte begeistern möchten.
 
-Zu den Konditionen: Wir starten gemeinsam auf reiner CPO-Basis √ºber AWIN. Ein WKZ ist im ersten Schritt nicht vorgesehen, perspektivisch bei entsprechender Performance und zu Kampagnenzeitr√§umen aber durchaus realisierbar. Was die Sache wirtschaftlich attraktiv macht: TUI Cruises bewegt sich bei einem durchschnittlichen Warenkorbwert von √ºber 5.000 ‚Ç¨. Bei einer Provision von 5 bis 6 % je nach Tarif kommt damit bereits bei einer einzigen vermittelten Reise eine sehr ansprechende Verg√ºtung zustande.
+Zu den Konditionen: Wir starten gemeinsam auf reiner CPO-Basis über AWIN. Ein WKZ ist im ersten Schritt nicht vorgesehen, perspektivisch bei entsprechender Performance und zu Kampagnenzeiträumen aber durchaus realisierbar. Was die Sache wirtschaftlich attraktiv macht: TUI Cruises bewegt sich bei einem durchschnittlichen Warenkorbwert von über 5.000 €. Bei einer Provision von 5 bis 6 % je nach Tarif kommt damit bereits bei einer einzigen vermittelten Reise eine sehr ansprechende Vergütung zustande.
 
-Der n√§chste Schritt: Wenn eine Affiliate-Partnerschaft im Kreuzfahrtbereich f√ºr Dich grunds√§tzlich interessant klingt, gib uns gerne kurz Bescheid. Wir w√ºrden Dich dann in unserem n√§chsten Monatstermin mit TUI Cruises als potenzielle:n Publisher:in vorstellen.
+Der nächste Schritt: Wenn eine Affiliate-Partnerschaft im Kreuzfahrtbereich für Dich grundsätzlich interessant klingt, gib uns gerne kurz Bescheid. Wir würden Dich dann in unserem nächsten Monatstermin mit TUI Cruises als potenzielle:n Publisher:in vorstellen.
 
-Bei einer Zusammenarbeit w√ºrden wir Dich anschlie√üend bitten, Dich bei AWIN zu registrieren, damit wir Dich unserem Programm zuordnen k√∂nnen und die Partnerschaft starten kann.
+Bei einer Zusammenarbeit würden wir Dich anschließend bitten, Dich bei AWIN zu registrieren, damit wir Dich unserem Programm zuordnen können und die Partnerschaft starten kann.
 
-Wir freuen uns auf Deine R√ºckmeldung.
+Wir freuen uns auf Deine Rückmeldung.
 
-Viele Gr√º√üe
+Viele Grüße
 {{signature}}`,
         ihr:
 `Hallo {{name}},
 
-wir als WPP Media betreuen das Affiliate-Programm von TUI Cruises <em>Mein Schiff</em> und sind √ºber Euren Blog/Kanal ‚Äû{{channelName}}" auf Euch aufmerksam geworden.
+wir als WPP Media betreuen das Affiliate-Programm von TUI Cruises <em>Mein Schiff</em> und sind über Euren Blog/Kanal „{{channelName}}" auf Euch aufmerksam geworden.
 
 Sowohl die thematische Ausrichtung als auch die Art, wie Ihr Euren Content aufbereitet, passen aus unserer Sicht sehr gut zu unserer Zielgruppe rund um Reisen und hochwertige Urlaubserlebnisse.
 
-Im Auftrag von TUI Cruises suchen wir gezielt nach Content-Creator:innen und Redaktionen, die eine Leidenschaft f√ºr Kreuzfahrten teilen und ihre Community f√ºr die <em>Mein Schiff</em> Flotte begeistern m√∂chten.
+Im Auftrag von TUI Cruises suchen wir gezielt nach Content-Creator:innen und Redaktionen, die eine Leidenschaft für Kreuzfahrten teilen und ihre Community für die <em>Mein Schiff</em> Flotte begeistern möchten.
 
-Zu den Konditionen: Wir starten gemeinsam auf reiner CPO-Basis √ºber AWIN. Ein WKZ ist im ersten Schritt nicht vorgesehen, perspektivisch bei entsprechender Performance und zu Kampagnenzeitr√§umen aber durchaus realisierbar. Was die Sache wirtschaftlich attraktiv macht: TUI Cruises bewegt sich bei einem durchschnittlichen Warenkorbwert von √ºber 5.000 ‚Ç¨. Bei einer Provision von 5 bis 6 % je nach Tarif kommt damit bereits bei einer einzigen vermittelten Reise eine sehr ansprechende Verg√ºtung zustande.
+Zu den Konditionen: Wir starten gemeinsam auf reiner CPO-Basis über AWIN. Ein WKZ ist im ersten Schritt nicht vorgesehen, perspektivisch bei entsprechender Performance und zu Kampagnenzeiträumen aber durchaus realisierbar. Was die Sache wirtschaftlich attraktiv macht: TUI Cruises bewegt sich bei einem durchschnittlichen Warenkorbwert von über 5.000 €. Bei einer Provision von 5 bis 6 % je nach Tarif kommt damit bereits bei einer einzigen vermittelten Reise eine sehr ansprechende Vergütung zustande.
 
-Der n√§chste Schritt: Wenn eine Affiliate-Partnerschaft im Kreuzfahrtbereich f√ºr Euch grunds√§tzlich interessant klingt, gebt uns gerne kurz Bescheid. Wir w√ºrden Euch dann in unserem n√§chsten Monatstermin mit TUI Cruises als potenzielle:n Publisher:in vorstellen.
+Der nächste Schritt: Wenn eine Affiliate-Partnerschaft im Kreuzfahrtbereich für Euch grundsätzlich interessant klingt, gebt uns gerne kurz Bescheid. Wir würden Euch dann in unserem nächsten Monatstermin mit TUI Cruises als potenzielle:n Publisher:in vorstellen.
 
-Bei einer Zusammenarbeit w√ºrden wir Euch anschlie√üend bitten, Euch bei AWIN zu registrieren, damit wir Euch unserem Programm zuordnen k√∂nnen und die Partnerschaft starten kann.
+Bei einer Zusammenarbeit würden wir Euch anschließend bitten, Euch bei AWIN zu registrieren, damit wir Euch unserem Programm zuordnen können und die Partnerschaft starten kann.
 
-Wir freuen uns auf Eure R√ºckmeldung.
+Wir freuen uns auf Eure Rückmeldung.
 
-Viele Gr√º√üe
+Viele Grüße
 {{signature}}`,
       },
       en:
@@ -542,7 +542,7 @@ Both the thematic focus and the way you craft your content fit very well with ou
 
 On behalf of TUI Cruises, we're specifically looking for content creators and editorial teams who share a passion for cruises and want to inspire their community for the <em>Mein Schiff</em> fleet.
 
-About the terms: We'd start together on a pure CPO basis via AWIN. A retainer (WKZ) isn't planned in the first step, but is definitely possible later with corresponding performance and during campaign periods. What makes this commercially attractive: TUI Cruises operates with an average basket value of over ‚Ç¨5,000. With a commission of 5 to 6 % depending on the tariff, a single booking already generates very attractive compensation.
+About the terms: We'd start together on a pure CPO basis via AWIN. A retainer (WKZ) isn't planned in the first step, but is definitely possible later with corresponding performance and during campaign periods. What makes this commercially attractive: TUI Cruises operates with an average basket value of over €5,000. With a commission of 5 to 6 % depending on the tariff, a single booking already generates very attractive compensation.
 
 The next step: If an affiliate partnership in the cruise sector sounds generally interesting to you, just let us know. We'd then introduce you as a potential publisher in our next monthly meeting with TUI Cruises.
 
@@ -557,13 +557,13 @@ Best regards
 
   {
     id: "guidelines-overview",
-    label: { de: "Affiliate Guidelines ‚Äì √úbersicht (TUI Cruises)", en: "Affiliate Guidelines ‚Äì Overview (TUI Cruises)" },
+    label: { de: "Affiliate Guidelines – Übersicht (TUI Cruises)", en: "Affiliate Guidelines – Overview (TUI Cruises)" },
     usesProgram: false,
     fields: ["name"],
     subject: {
       de: {
-        du: "Affiliate Guidelines f√ºr unser TUI Cruises <em>Mein Schiff</em> Partnerprogramm",
-        ihr: "Affiliate Guidelines f√ºr unser TUI Cruises <em>Mein Schiff</em> Partnerprogramm",
+        du: "Affiliate Guidelines für unser TUI Cruises <em>Mein Schiff</em> Partnerprogramm",
+        ihr: "Affiliate Guidelines für unser TUI Cruises <em>Mein Schiff</em> Partnerprogramm",
       },
       en: "Affiliate Guidelines for our TUI Cruises <em>Mein Schiff</em> partner program",
     },
@@ -572,65 +572,65 @@ Best regards
         du:
 `Hallo {{name}},
 
-damit unsere Zusammenarbeit reibungslos l√§uft, hier nochmal die wichtigsten Affiliate Guidelines f√ºr unser TUI Cruises <em>Mein Schiff</em> Partnerprogramm im √úberblick:
+damit unsere Zusammenarbeit reibungslos läuft, hier nochmal die wichtigsten Affiliate Guidelines für unser TUI Cruises <em>Mein Schiff</em> Partnerprogramm im Überblick:
 
 1. Markenrechte & Branding
-- Logos, Bilder und sonstige Werbemittel ausschlie√ülich aus dem AWIN-Account oder nach individueller Freigabe verwenden
-- Keine Verwendung der Markennamen ‚ÄûTUI Cruises" oder ‚ÄûMein Schiff" in Domains, Subdomains oder als Display-URL
-- Inhalte (Preise, Aktionen, Routen) m√ºssen stets dem aktuellen Stand entsprechen
+- Logos, Bilder und sonstige Werbemittel ausschließlich aus dem AWIN-Account oder nach individueller Freigabe verwenden
+- Keine Verwendung der Markennamen „TUI Cruises" oder „Mein Schiff" in Domains, Subdomains oder als Display-URL
+- Inhalte (Preise, Aktionen, Routen) müssen stets dem aktuellen Stand entsprechen
 
 2. SEA & Brand Bidding
-- Kein Bidding auf Marken- und Brandbegriffe wie ‚ÄûTUI Cruises", ‚ÄûMein Schiff", ‚ÄûMein Schiff 1/2/3..." oder Misspellings davon
-- Keine Schaltung von Anzeigen, die den Markennamen im Titel, Text oder als Display-URL f√ºhren
+- Kein Bidding auf Marken- und Brandbegriffe wie „TUI Cruises", „Mein Schiff", „Mein Schiff 1/2/3..." oder Misspellings davon
+- Keine Schaltung von Anzeigen, die den Markennamen im Titel, Text oder als Display-URL führen
 
 3. Werbeumfeld & Tracking
 - Klare Trennung von redaktionellem Content und Werbung
-- Keine Bewerbung in irref√ºhrenden, jugendgef√§hrdenden oder rechtswidrigen Umfeldern
-- Cookie-Drop ausschlie√ülich nach aktivem Klick durch den Nutzer (kein iFrame-/Auto-Cookie-Setting)
+- Keine Bewerbung in irreführenden, jugendgefährdenden oder rechtswidrigen Umfeldern
+- Cookie-Drop ausschließlich nach aktivem Klick durch den Nutzer (kein iFrame-/Auto-Cookie-Setting)
 
 4. Cashback, Couponing & Retargeting
 - Cashback-, Coupon- und Retargeting-Modelle sind im TUI Cruises Programm nicht zugelassen
-- Details zur Begr√ºndung gerne auf Anfrage
+- Details zur Begründung gerne auf Anfrage
 
 5. Kennzeichnung & Transparenz
-- Affiliate-Links m√ºssen gem√§√ü den geltenden gesetzlichen Vorgaben (insb. TMG, UWG) klar als Werbung gekennzeichnet werden
-- Hinweise wie ‚ÄûWerbung", ‚ÄûAnzeige" oder ‚ÄûAffiliate-Link" m√ºssen f√ºr den Nutzer sofort erkennbar sein
+- Affiliate-Links müssen gemäß den geltenden gesetzlichen Vorgaben (insb. TMG, UWG) klar als Werbung gekennzeichnet werden
+- Hinweise wie „Werbung", „Anzeige" oder „Affiliate-Link" müssen für den Nutzer sofort erkennbar sein
 
-Bei Unsicherheit oder Fragen zu einer geplanten Aktion: Sprich mich vorab gerne kurz an ‚Äì dann kl√§ren wir gemeinsam, ob alles passt.
+Bei Unsicherheit oder Fragen zu einer geplanten Aktion: Sprich mich vorab gerne kurz an – dann klären wir gemeinsam, ob alles passt.
 
-Liebe Gr√º√üe
-Nicole üòä`,
+Liebe Grüße
+Nicole 😊`,
         ihr:
 `Hallo {{name}},
 
-damit unsere Zusammenarbeit reibungslos l√§uft, hier nochmal die wichtigsten Affiliate Guidelines f√ºr unser TUI Cruises <em>Mein Schiff</em> Partnerprogramm im √úberblick:
+damit unsere Zusammenarbeit reibungslos läuft, hier nochmal die wichtigsten Affiliate Guidelines für unser TUI Cruises <em>Mein Schiff</em> Partnerprogramm im Überblick:
 
 1. Markenrechte & Branding
-- Logos, Bilder und sonstige Werbemittel ausschlie√ülich aus dem AWIN-Account oder nach individueller Freigabe verwenden
-- Keine Verwendung der Markennamen ‚ÄûTUI Cruises" oder ‚ÄûMein Schiff" in Domains, Subdomains oder als Display-URL
-- Inhalte (Preise, Aktionen, Routen) m√ºssen stets dem aktuellen Stand entsprechen
+- Logos, Bilder und sonstige Werbemittel ausschließlich aus dem AWIN-Account oder nach individueller Freigabe verwenden
+- Keine Verwendung der Markennamen „TUI Cruises" oder „Mein Schiff" in Domains, Subdomains oder als Display-URL
+- Inhalte (Preise, Aktionen, Routen) müssen stets dem aktuellen Stand entsprechen
 
 2. SEA & Brand Bidding
-- Kein Bidding auf Marken- und Brandbegriffe wie ‚ÄûTUI Cruises", ‚ÄûMein Schiff", ‚ÄûMein Schiff 1/2/3..." oder Misspellings davon
-- Keine Schaltung von Anzeigen, die den Markennamen im Titel, Text oder als Display-URL f√ºhren
+- Kein Bidding auf Marken- und Brandbegriffe wie „TUI Cruises", „Mein Schiff", „Mein Schiff 1/2/3..." oder Misspellings davon
+- Keine Schaltung von Anzeigen, die den Markennamen im Titel, Text oder als Display-URL führen
 
 3. Werbeumfeld & Tracking
 - Klare Trennung von redaktionellem Content und Werbung
-- Keine Bewerbung in irref√ºhrenden, jugendgef√§hrdenden oder rechtswidrigen Umfeldern
-- Cookie-Drop ausschlie√ülich nach aktivem Klick durch den Nutzer (kein iFrame-/Auto-Cookie-Setting)
+- Keine Bewerbung in irreführenden, jugendgefährdenden oder rechtswidrigen Umfeldern
+- Cookie-Drop ausschließlich nach aktivem Klick durch den Nutzer (kein iFrame-/Auto-Cookie-Setting)
 
 4. Cashback, Couponing & Retargeting
 - Cashback-, Coupon- und Retargeting-Modelle sind im TUI Cruises Programm nicht zugelassen
-- Details zur Begr√ºndung gerne auf Anfrage
+- Details zur Begründung gerne auf Anfrage
 
 5. Kennzeichnung & Transparenz
-- Affiliate-Links m√ºssen gem√§√ü den geltenden gesetzlichen Vorgaben (insb. TMG, UWG) klar als Werbung gekennzeichnet werden
-- Hinweise wie ‚ÄûWerbung", ‚ÄûAnzeige" oder ‚ÄûAffiliate-Link" m√ºssen f√ºr den Nutzer sofort erkennbar sein
+- Affiliate-Links müssen gemäß den geltenden gesetzlichen Vorgaben (insb. TMG, UWG) klar als Werbung gekennzeichnet werden
+- Hinweise wie „Werbung", „Anzeige" oder „Affiliate-Link" müssen für den Nutzer sofort erkennbar sein
 
-Bei Unsicherheit oder Fragen zu einer geplanten Aktion: Sprecht mich vorab gerne kurz an ‚Äì dann kl√§ren wir gemeinsam, ob alles passt.
+Bei Unsicherheit oder Fragen zu einer geplanten Aktion: Sprecht mich vorab gerne kurz an – dann klären wir gemeinsam, ob alles passt.
 
-Liebe Gr√º√üe
-Nicole üòä`,
+Liebe Grüße
+Nicole 😊`,
       },
       en:
 `Hi {{name}},
@@ -659,16 +659,16 @@ to make sure our collaboration runs smoothly, here's an overview of the most imp
 - Affiliate links must be clearly marked as advertising in line with applicable regulations
 - Labels like "advertising", "sponsored", or "affiliate link" must be immediately recognizable for the user
 
-If anything is unclear or you're planning a specific activation: just check in with me beforehand ‚Äì we'll figure out together if it fits.
+If anything is unclear or you're planning a specific activation: just check in with me beforehand – we'll figure out together if it fits.
 
 Best regards
-Nicole üòä`,
+Nicole 😊`,
     },
   },
 
   {
     id: "guidelines-violation",
-    label: { de: "Guidelines-Versto√ü ‚Äì freundlicher Hinweis", en: "Guidelines violation ‚Äì friendly notice" },
+    label: { de: "Guidelines-Verstoß – freundlicher Hinweis", en: "Guidelines violation – friendly notice" },
     usesProgram: false,
     fields: ["name", "verstoss", "frist"],
     subject: {
@@ -683,33 +683,33 @@ Nicole üòä`,
         du:
 `Hallo {{name}},
 
-ich melde mich kurz mit einem freundlichen Hinweis. Im Rahmen unseres regelm√§√üigen Monitorings ist uns folgendes aufgefallen:
+ich melde mich kurz mit einem freundlichen Hinweis. Im Rahmen unseres regelmäßigen Monitorings ist uns folgendes aufgefallen:
 
 {{verstoss}}
 
-Das entspricht leider nicht unseren Affiliate Guidelines f√ºr das TUI Cruises <em>Mein Schiff</em> Partnerprogramm. Ich m√∂chte Dich daher freundlich bitten, die entsprechende Ma√ünahme bis sp√§testens {{frist}} anzupassen bzw. zu entfernen.
+Das entspricht leider nicht unseren Affiliate Guidelines für das TUI Cruises <em>Mein Schiff</em> Partnerprogramm. Ich möchte Dich daher freundlich bitten, die entsprechende Maßnahme bis spätestens {{frist}} anzupassen bzw. zu entfernen.
 
-Hintergrund: TUI Cruises legt gro√üen Wert auf den Schutz der Marke und ein konsistentes Erscheinungsbild. Verst√∂√üe gegen die Guidelines k√∂nnen im Wiederholungsfall zur Sperrung der Partnerschaft f√ºhren ‚Äì soweit muss es aber nat√ºrlich nicht kommen.
+Hintergrund: TUI Cruises legt großen Wert auf den Schutz der Marke und ein konsistentes Erscheinungsbild. Verstöße gegen die Guidelines können im Wiederholungsfall zur Sperrung der Partnerschaft führen – soweit muss es aber natürlich nicht kommen.
 
-Sollten Fragen offen sein oder ein Missverst√§ndnis vorliegen, melde Dich sehr gerne direkt bei mir. Wir finden gemeinsam eine L√∂sung.
+Sollten Fragen offen sein oder ein Missverständnis vorliegen, melde Dich sehr gerne direkt bei mir. Wir finden gemeinsam eine Lösung.
 
-Liebe Gr√º√üe
-Nicole üòä`,
+Liebe Grüße
+Nicole 😊`,
         ihr:
 `Hallo {{name}},
 
-ich melde mich kurz mit einem freundlichen Hinweis. Im Rahmen unseres regelm√§√üigen Monitorings ist uns folgendes aufgefallen:
+ich melde mich kurz mit einem freundlichen Hinweis. Im Rahmen unseres regelmäßigen Monitorings ist uns folgendes aufgefallen:
 
 {{verstoss}}
 
-Das entspricht leider nicht unseren Affiliate Guidelines f√ºr das TUI Cruises <em>Mein Schiff</em> Partnerprogramm. Ich m√∂chte Euch daher freundlich bitten, die entsprechende Ma√ünahme bis sp√§testens {{frist}} anzupassen bzw. zu entfernen.
+Das entspricht leider nicht unseren Affiliate Guidelines für das TUI Cruises <em>Mein Schiff</em> Partnerprogramm. Ich möchte Euch daher freundlich bitten, die entsprechende Maßnahme bis spätestens {{frist}} anzupassen bzw. zu entfernen.
 
-Hintergrund: TUI Cruises legt gro√üen Wert auf den Schutz der Marke und ein konsistentes Erscheinungsbild. Verst√∂√üe gegen die Guidelines k√∂nnen im Wiederholungsfall zur Sperrung der Partnerschaft f√ºhren ‚Äì soweit muss es aber nat√ºrlich nicht kommen.
+Hintergrund: TUI Cruises legt großen Wert auf den Schutz der Marke und ein konsistentes Erscheinungsbild. Verstöße gegen die Guidelines können im Wiederholungsfall zur Sperrung der Partnerschaft führen – soweit muss es aber natürlich nicht kommen.
 
-Sollten Fragen offen sein oder ein Missverst√§ndnis vorliegen, meldet Euch sehr gerne direkt bei mir. Wir finden gemeinsam eine L√∂sung.
+Sollten Fragen offen sein oder ein Missverständnis vorliegen, meldet Euch sehr gerne direkt bei mir. Wir finden gemeinsam eine Lösung.
 
-Liebe Gr√º√üe
-Nicole üòä`,
+Liebe Grüße
+Nicole 😊`,
       },
       en:
 `Hi {{name}},
@@ -720,12 +720,12 @@ quick friendly heads-up. During our regular monitoring we noticed the following:
 
 Unfortunately this doesn't align with our affiliate guidelines for the TUI Cruises <em>Mein Schiff</em> partner program. I'd like to kindly ask you to adjust or remove the activity in question by {{frist}} at the latest.
 
-Background: TUI Cruises places great importance on brand protection and a consistent brand presence. Repeated guideline violations can lead to suspension of the partnership ‚Äì we obviously want to avoid that.
+Background: TUI Cruises places great importance on brand protection and a consistent brand presence. Repeated guideline violations can lead to suspension of the partnership – we obviously want to avoid that.
 
 If anything is unclear or there's been a misunderstanding, just reach out directly. Happy to find a solution together.
 
 Best regards
-Nicole üòä`,
+Nicole 😊`,
     },
   },
 
@@ -746,45 +746,45 @@ Nicole üòä`,
         du:
 `Hallo {{name}},
 
-vielen Dank f√ºr Dein Interesse an unserem TUI Cruises <em>Mein Schiff</em> Partnerprogramm und f√ºr die ausf√ºhrlichen Informationen zu Deinem {{model}}-Modell.
+vielen Dank für Dein Interesse an unserem TUI Cruises <em>Mein Schiff</em> Partnerprogramm und für die ausführlichen Informationen zu Deinem {{model}}-Modell.
 
-Wir k√∂nnen in unserem Programm leider keine Cashback-, Couponing- oder Retargeting-Publisher zulassen. Das hat mehrere Gr√ºnde, die alle auf die Premium-Positionierung von TUI Cruises einzahlen:
+Wir können in unserem Programm leider keine Cashback-, Couponing- oder Retargeting-Publisher zulassen. Das hat mehrere Gründe, die alle auf die Premium-Positionierung von TUI Cruises einzahlen:
 
-- TUI Cruises positioniert sich bewusst nicht √ºber rabatt- oder gutschein-getriebene Vermarktung. Eigene Aktionen werden √ºber kuratierte Kan√§le und nur in definierten Kampagnenzeitr√§umen ausgespielt.
+- TUI Cruises positioniert sich bewusst nicht über rabatt- oder gutschein-getriebene Vermarktung. Eigene Aktionen werden über kuratierte Kanäle und nur in definierten Kampagnenzeiträumen ausgespielt.
 
-- Cashback- und Coupon-Modelle w√ºrden die Inkrementalit√§t unserer Content-, Inspirations- und Beratungs-Publisher gef√§hrden, da sie typischerweise erst am Ende der Customer Journey greifen und so anderen Affiliates die Conversion abnehmen w√ºrden.
+- Cashback- und Coupon-Modelle würden die Inkrementalität unserer Content-, Inspirations- und Beratungs-Publisher gefährden, da sie typischerweise erst am Ende der Customer Journey greifen und so anderen Affiliates die Conversion abnehmen würden.
 
-- Retargeting wird bei TUI Cruises zentral in-house und √ºber Programmatic abgebildet. Affiliate-seitiges Retargeting w√ºrde Inkrementalit√§t und Attribution verzerren und doppelte Werbe-Aufw√§nde ausl√∂sen.
+- Retargeting wird bei TUI Cruises zentral in-house und über Programmatic abgebildet. Affiliate-seitiges Retargeting würde Inkrementalität und Attribution verzerren und doppelte Werbe-Aufwände auslösen.
 
-Wir setzen daher bewusst auf langfristige Partnerschaften mit redaktionellen Publishern, Content-Creator:innen und Inspirations-Plattformen, die unsere Zielgruppe in der fr√ºhen und mittleren Phase der Reise-Entscheidung abholen.
+Wir setzen daher bewusst auf langfristige Partnerschaften mit redaktionellen Publishern, Content-Creator:innen und Inspirations-Plattformen, die unsere Zielgruppe in der frühen und mittleren Phase der Reise-Entscheidung abholen.
 
-Sollte sich Dein Modell perspektivisch √§ndern oder erweitern, freuen wir uns sehr √ºber eine erneute Anfrage.
+Sollte sich Dein Modell perspektivisch ändern oder erweitern, freuen wir uns sehr über eine erneute Anfrage.
 
-Vielen Dank f√ºr Dein Verst√§ndnis und alles Gute weiterhin.
+Vielen Dank für Dein Verständnis und alles Gute weiterhin.
 
-Liebe Gr√º√üe
-Nicole üòä`,
+Liebe Grüße
+Nicole 😊`,
         ihr:
 `Hallo {{name}},
 
-vielen Dank f√ºr Euer Interesse an unserem TUI Cruises <em>Mein Schiff</em> Partnerprogramm und f√ºr die ausf√ºhrlichen Informationen zu Eurem {{model}}-Modell.
+vielen Dank für Euer Interesse an unserem TUI Cruises <em>Mein Schiff</em> Partnerprogramm und für die ausführlichen Informationen zu Eurem {{model}}-Modell.
 
-Wir k√∂nnen in unserem Programm leider keine Cashback-, Couponing- oder Retargeting-Publisher zulassen. Das hat mehrere Gr√ºnde, die alle auf die Premium-Positionierung von TUI Cruises einzahlen:
+Wir können in unserem Programm leider keine Cashback-, Couponing- oder Retargeting-Publisher zulassen. Das hat mehrere Gründe, die alle auf die Premium-Positionierung von TUI Cruises einzahlen:
 
-- TUI Cruises positioniert sich bewusst nicht √ºber rabatt- oder gutschein-getriebene Vermarktung. Eigene Aktionen werden √ºber kuratierte Kan√§le und nur in definierten Kampagnenzeitr√§umen ausgespielt.
+- TUI Cruises positioniert sich bewusst nicht über rabatt- oder gutschein-getriebene Vermarktung. Eigene Aktionen werden über kuratierte Kanäle und nur in definierten Kampagnenzeiträumen ausgespielt.
 
-- Cashback- und Coupon-Modelle w√ºrden die Inkrementalit√§t unserer Content-, Inspirations- und Beratungs-Publisher gef√§hrden, da sie typischerweise erst am Ende der Customer Journey greifen und so anderen Affiliates die Conversion abnehmen w√ºrden.
+- Cashback- und Coupon-Modelle würden die Inkrementalität unserer Content-, Inspirations- und Beratungs-Publisher gefährden, da sie typischerweise erst am Ende der Customer Journey greifen und so anderen Affiliates die Conversion abnehmen würden.
 
-- Retargeting wird bei TUI Cruises zentral in-house und √ºber Programmatic abgebildet. Affiliate-seitiges Retargeting w√ºrde Inkrementalit√§t und Attribution verzerren und doppelte Werbe-Aufw√§nde ausl√∂sen.
+- Retargeting wird bei TUI Cruises zentral in-house und über Programmatic abgebildet. Affiliate-seitiges Retargeting würde Inkrementalität und Attribution verzerren und doppelte Werbe-Aufwände auslösen.
 
-Wir setzen daher bewusst auf langfristige Partnerschaften mit redaktionellen Publishern, Content-Creator:innen und Inspirations-Plattformen, die unsere Zielgruppe in der fr√ºhen und mittleren Phase der Reise-Entscheidung abholen.
+Wir setzen daher bewusst auf langfristige Partnerschaften mit redaktionellen Publishern, Content-Creator:innen und Inspirations-Plattformen, die unsere Zielgruppe in der frühen und mittleren Phase der Reise-Entscheidung abholen.
 
-Sollte sich Euer Modell perspektivisch √§ndern oder erweitern, freuen wir uns sehr √ºber eine erneute Anfrage.
+Sollte sich Euer Modell perspektivisch ändern oder erweitern, freuen wir uns sehr über eine erneute Anfrage.
 
-Vielen Dank f√ºr Euer Verst√§ndnis und alles Gute weiterhin.
+Vielen Dank für Euer Verständnis und alles Gute weiterhin.
 
-Liebe Gr√º√üe
-Nicole üòä`,
+Liebe Grüße
+Nicole 😊`,
       },
       en:
 `Hi {{name}},
@@ -806,7 +806,7 @@ If your model evolves or expands in the future, we'd be very happy to reconsider
 Thanks for understanding and best of luck going forward.
 
 Best regards
-Nicole üòä`,
+Nicole 😊`,
     },
   },
 
@@ -817,41 +817,41 @@ Nicole üòä`,
     fields: ["name", "monat", "frist"],
     subject: {
       de: {
-        du: "TUI Cruises ‚Äì Salesvalidierungsliste DACH {{monat}}",
-        ihr: "TUI Cruises ‚Äì Salesvalidierungsliste DACH {{monat}}",
+        du: "TUI Cruises – Salesvalidierungsliste DACH {{monat}}",
+        ihr: "TUI Cruises – Salesvalidierungsliste DACH {{monat}}",
       },
-      en: "TUI Cruises ‚Äì Sales validation list DACH {{monat}}",
+      en: "TUI Cruises – Sales validation list DACH {{monat}}",
     },
     body: {
       de: {
         du:
 `Hallo {{name}},
 
-anbei findest Du die Salesvalidierungsliste f√ºr {{monat}}. Bitte bearbeite diese bis sp√§testens {{frist}} (EOB).
+anbei findest Du die Salesvalidierungsliste für {{monat}}. Bitte bearbeite diese bis spätestens {{frist}} (EOB).
 
 Hinweise zur Bearbeitung:
-- Bitte alle Spalten ausf√ºllen, insbesondere den Sale-Status (akzeptiert / abgelehnt / storniert) und im Falle einer Ablehnung den jeweiligen Grund
-- Sales, die bis zur Frist nicht zur√ºckgemeldet werden, werden automatisch akzeptiert
-- Bei R√ºckfragen zu einzelnen Transaktionen oder zur Logik der Validierung, melde Dich gerne jederzeit bei mir
+- Bitte alle Spalten ausfüllen, insbesondere den Sale-Status (akzeptiert / abgelehnt / storniert) und im Falle einer Ablehnung den jeweiligen Grund
+- Sales, die bis zur Frist nicht zurückgemeldet werden, werden automatisch akzeptiert
+- Bei Rückfragen zu einzelnen Transaktionen oder zur Logik der Validierung, melde Dich gerne jederzeit bei mir
 
-Vielen Dank vorab f√ºr Deine Unterst√ºtzung!
+Vielen Dank vorab für Deine Unterstützung!
 
-Liebe Gr√º√üe
-Nicole üòä`,
+Liebe Grüße
+Nicole 😊`,
         ihr:
 `Hallo {{name}},
 
-anbei findet Ihr die Salesvalidierungsliste f√ºr {{monat}}. Bitte bearbeitet diese bis sp√§testens {{frist}} (EOB).
+anbei findet Ihr die Salesvalidierungsliste für {{monat}}. Bitte bearbeitet diese bis spätestens {{frist}} (EOB).
 
 Hinweise zur Bearbeitung:
-- Bitte alle Spalten ausf√ºllen, insbesondere den Sale-Status (akzeptiert / abgelehnt / storniert) und im Falle einer Ablehnung den jeweiligen Grund
-- Sales, die bis zur Frist nicht zur√ºckgemeldet werden, werden automatisch akzeptiert
-- Bei R√ºckfragen zu einzelnen Transaktionen oder zur Logik der Validierung, meldet Euch gerne jederzeit bei mir
+- Bitte alle Spalten ausfüllen, insbesondere den Sale-Status (akzeptiert / abgelehnt / storniert) und im Falle einer Ablehnung den jeweiligen Grund
+- Sales, die bis zur Frist nicht zurückgemeldet werden, werden automatisch akzeptiert
+- Bei Rückfragen zu einzelnen Transaktionen oder zur Logik der Validierung, meldet Euch gerne jederzeit bei mir
 
-Vielen Dank vorab f√ºr Eure Unterst√ºtzung!
+Vielen Dank vorab für Eure Unterstützung!
 
-Liebe Gr√º√üe
-Nicole üòä`,
+Liebe Grüße
+Nicole 😊`,
       },
       en:
 `Hi {{name}},
@@ -866,30 +866,30 @@ Notes:
 Thanks in advance for your support!
 
 Best regards
-Nicole üòä`,
+Nicole 😊`,
     },
   },
 
   {
     id: "tracking-ausfall",
-    label: { de: "Tracking-Ausfall ‚Äì Ausgleichs-Methodik", en: "Tracking outage ‚Äì compensation method" },
+    label: { de: "Tracking-Ausfall – Ausgleichs-Methodik", en: "Tracking outage – compensation method" },
     usesProgram: false,
     fields: ["name", "ausfallzeitraum", "methodik", "ausgleichsbetrag", "auszahlungsdatum"],
     subject: {
       de: {
-        du: "Trackingausfall ‚Äì Ausgleichs-Methodik f√ºr unsere Zusammenarbeit",
-        ihr: "Trackingausfall ‚Äì Ausgleichs-Methodik f√ºr unsere Zusammenarbeit",
+        du: "Trackingausfall – Ausgleichs-Methodik für unsere Zusammenarbeit",
+        ihr: "Trackingausfall – Ausgleichs-Methodik für unsere Zusammenarbeit",
       },
-      en: "Tracking outage ‚Äì compensation method for our partnership",
+      en: "Tracking outage – compensation method for our partnership",
     },
     body: {
       de: {
         du:
 `Hallo {{name}},
 
-danke nochmal f√ºr Deine Geduld in Sachen Tracking-Ausfall.
+danke nochmal für Deine Geduld in Sachen Tracking-Ausfall.
 
-Anbei findest Du die √úbersicht, wie wir Dich im Zuge des Tracking-Einbruchs zus√§tzlich verg√ºten m√∂chten:
+Anbei findest Du die Übersicht, wie wir Dich im Zuge des Tracking-Einbruchs zusätzlich vergüten möchten:
 
 Ausfall-Zeitraum: {{ausfallzeitraum}}
 
@@ -898,18 +898,18 @@ Berechnungs-Methodik:
 
 Daraus ergibt sich ein Ausgleichs-Betrag von {{ausgleichsbetrag}}.
 
-Die Provision werde ich als Bonus in AWIN einstellen ‚Äì die Auszahlung l√§uft dann automatisch durch zum {{auszahlungsdatum}}.
+Die Provision werde ich als Bonus in AWIN einstellen – die Auszahlung läuft dann automatisch durch zum {{auszahlungsdatum}}.
 
 Sollten zur Berechnung noch Fragen offen sein, melde Dich gerne kurz bei mir.
 
-Liebe Gr√º√üe
-Nicole üòä`,
+Liebe Grüße
+Nicole 😊`,
         ihr:
 `Hallo {{name}},
 
-danke nochmal f√ºr Eure Geduld in Sachen Tracking-Ausfall.
+danke nochmal für Eure Geduld in Sachen Tracking-Ausfall.
 
-Anbei findet Ihr die √úbersicht, wie wir Euch im Zuge des Tracking-Einbruchs zus√§tzlich verg√ºten m√∂chten:
+Anbei findet Ihr die Übersicht, wie wir Euch im Zuge des Tracking-Einbruchs zusätzlich vergüten möchten:
 
 Ausfall-Zeitraum: {{ausfallzeitraum}}
 
@@ -918,12 +918,12 @@ Berechnungs-Methodik:
 
 Daraus ergibt sich ein Ausgleichs-Betrag von {{ausgleichsbetrag}}.
 
-Die Provision werde ich als Bonus in AWIN einstellen ‚Äì die Auszahlung l√§uft dann automatisch durch zum {{auszahlungsdatum}}.
+Die Provision werde ich als Bonus in AWIN einstellen – die Auszahlung läuft dann automatisch durch zum {{auszahlungsdatum}}.
 
 Sollten zur Berechnung noch Fragen offen sein, meldet Euch gerne kurz bei mir.
 
-Liebe Gr√º√üe
-Nicole üòä`,
+Liebe Grüße
+Nicole 😊`,
       },
       en:
 `Hi {{name}},
@@ -939,51 +939,51 @@ Calculation method:
 
 This results in a compensation amount of {{ausgleichsbetrag}}.
 
-I'll set the commission as a bonus in AWIN ‚Äì payout will then run automatically by {{auszahlungsdatum}}.
+I'll set the commission as a bonus in AWIN – payout will then run automatically by {{auszahlungsdatum}}.
 
 If anything about the calculation is unclear, just let me know.
 
 Best regards
-Nicole üòä`,
+Nicole 😊`,
     },
   },
 
   {
     id: "reisebuero-storno",
-    label: { de: "Reiseb√ºro ‚Äì Erkl√§rung abgelehnte Buchungen", en: "Travel agency ‚Äì explanation for rejected bookings" },
+    label: { de: "Reisebüro – Erklärung abgelehnte Buchungen", en: "Travel agency – explanation for rejected bookings" },
     usesProgram: false,
     fields: ["name", "ablehnungsgrund"],
     subject: {
       de: {
-        du: "<em>Mein Schiff</em> Partnerprogramm ‚Äì abgelehnte Buchungen",
-        ihr: "<em>Mein Schiff</em> Partnerprogramm ‚Äì abgelehnte Buchungen",
+        du: "<em>Mein Schiff</em> Partnerprogramm – abgelehnte Buchungen",
+        ihr: "<em>Mein Schiff</em> Partnerprogramm – abgelehnte Buchungen",
       },
-      en: "<em>Mein Schiff</em> partner program ‚Äì rejected bookings",
+      en: "<em>Mein Schiff</em> partner program – rejected bookings",
     },
     body: {
       de: {
         du:
 `Hallo {{name}},
 
-danke f√ºr Deine R√ºckfrage zu den abgelehnten Buchungen.
+danke für Deine Rückfrage zu den abgelehnten Buchungen.
 
 {{ablehnungsgrund}}
 
-Zur Erl√§uterung: Die im AWIN-System hinterlegten Standard-Gr√ºnde wie ‚ÄûUng√ºltige Buchung" sind generisch und lassen sich daher nicht als individueller Grund pro Buchung herauslesen. Den konkreten Hintergrund kann ich nur in R√ºcksprache mit TUI Cruises kl√§ren ‚Äì das mache ich gerne, sobald Du mir die betreffenden Sale-IDs nennst.
+Zur Erläuterung: Die im AWIN-System hinterlegten Standard-Gründe wie „Ungültige Buchung" sind generisch und lassen sich daher nicht als individueller Grund pro Buchung herauslesen. Den konkreten Hintergrund kann ich nur in Rücksprache mit TUI Cruises klären – das mache ich gerne, sobald Du mir die betreffenden Sale-IDs nennst.
 
-Liebe Gr√º√üe
-Nicole üòä`,
+Liebe Grüße
+Nicole 😊`,
         ihr:
 `Hallo {{name}},
 
-danke f√ºr Eure R√ºckfrage zu den abgelehnten Buchungen.
+danke für Eure Rückfrage zu den abgelehnten Buchungen.
 
 {{ablehnungsgrund}}
 
-Zur Erl√§uterung: Die im AWIN-System hinterlegten Standard-Gr√ºnde wie ‚ÄûUng√ºltige Buchung" sind generisch und lassen sich daher nicht als individueller Grund pro Buchung herauslesen. Den konkreten Hintergrund kann ich nur in R√ºcksprache mit TUI Cruises kl√§ren ‚Äì das mache ich gerne, sobald Ihr mir die betreffenden Sale-IDs nennt.
+Zur Erläuterung: Die im AWIN-System hinterlegten Standard-Gründe wie „Ungültige Buchung" sind generisch und lassen sich daher nicht als individueller Grund pro Buchung herauslesen. Den konkreten Hintergrund kann ich nur in Rücksprache mit TUI Cruises klären – das mache ich gerne, sobald Ihr mir die betreffenden Sale-IDs nennt.
 
-Liebe Gr√º√üe
-Nicole üòä`,
+Liebe Grüße
+Nicole 😊`,
       },
       en:
 `Hi {{name}},
@@ -992,10 +992,10 @@ thanks for your follow-up on the rejected bookings.
 
 {{ablehnungsgrund}}
 
-For context: The standard reasons in the AWIN system (e.g. "Invalid booking") are generic and can't be read as an individual reason per booking. I can only clarify the specific background after checking with TUI Cruises ‚Äì happy to do that as soon as you share the relevant sale IDs.
+For context: The standard reasons in the AWIN system (e.g. "Invalid booking") are generic and can't be read as an individual reason per booking. I can only clarify the specific background after checking with TUI Cruises – happy to do that as soon as you share the relevant sale IDs.
 
 Best regards
-Nicole üòä`,
+Nicole 😊`,
     },
   },
 
@@ -1005,41 +1005,41 @@ Nicole üòä`,
     fields: ["name", "anlass", "materialien", "gueltigkeitszeitraum"],
     subject: {
       de: {
-        du: "Neue Werbemittel: {{anlass}} ‚Äì {{program}}",
-        ihr: "Neue Werbemittel: {{anlass}} ‚Äì {{program}}",
+        du: "Neue Werbemittel: {{anlass}} – {{program}}",
+        ihr: "Neue Werbemittel: {{anlass}} – {{program}}",
       },
-      en: "New creatives: {{anlass}} ‚Äì {{program}}",
+      en: "New creatives: {{anlass}} – {{program}}",
     },
     body: {
       de: {
         du:
 `Hallo {{name}},
 
-anbei findest Du den Werbemittel-Ordner f√ºr {{anlass}}, den ich soeben vom Kunden ({{program}}) erhalten habe. Die Werbemittel sind zus√§tzlich in AWIN hochgeladen, sodass Du direkt darauf zugreifen kannst.
+anbei findest Du den Werbemittel-Ordner für {{anlass}}, den ich soeben vom Kunden ({{program}}) erhalten habe. Die Werbemittel sind zusätzlich in AWIN hochgeladen, sodass Du direkt darauf zugreifen kannst.
 
 Inhalt / Formate:
 {{materialien}}
 
-G√ºltigkeits-Zeitraum: {{gueltigkeitszeitraum}}
+Gültigkeits-Zeitraum: {{gueltigkeitszeitraum}}
 
-Bei W√ºnschen zu speziellen Formaten oder individuellen Anpassungen, gib mir gerne kurz Bescheid ‚Äì ich frage das beim Kunden direkt nach.
+Bei Wünschen zu speziellen Formaten oder individuellen Anpassungen, gib mir gerne kurz Bescheid – ich frage das beim Kunden direkt nach.
 
-Liebe Gr√º√üe
-Nicole üòä`,
+Liebe Grüße
+Nicole 😊`,
         ihr:
 `Hallo {{name}},
 
-anbei findet Ihr den Werbemittel-Ordner f√ºr {{anlass}}, den ich soeben vom Kunden ({{program}}) erhalten habe. Die Werbemittel sind zus√§tzlich in AWIN hochgeladen, sodass Ihr direkt darauf zugreifen k√∂nnt.
+anbei findet Ihr den Werbemittel-Ordner für {{anlass}}, den ich soeben vom Kunden ({{program}}) erhalten habe. Die Werbemittel sind zusätzlich in AWIN hochgeladen, sodass Ihr direkt darauf zugreifen könnt.
 
 Inhalt / Formate:
 {{materialien}}
 
-G√ºltigkeits-Zeitraum: {{gueltigkeitszeitraum}}
+Gültigkeits-Zeitraum: {{gueltigkeitszeitraum}}
 
-Bei W√ºnschen zu speziellen Formaten oder individuellen Anpassungen, gebt mir gerne kurz Bescheid ‚Äì ich frage das beim Kunden direkt nach.
+Bei Wünschen zu speziellen Formaten oder individuellen Anpassungen, gebt mir gerne kurz Bescheid – ich frage das beim Kunden direkt nach.
 
-Liebe Gr√º√üe
-Nicole üòä`,
+Liebe Grüße
+Nicole 😊`,
       },
       en:
 `Hi {{name}},
@@ -1051,10 +1051,10 @@ Contents / formats:
 
 Validity period: {{gueltigkeitszeitraum}}
 
-If you have requests for specific formats or custom adjustments, just let me know ‚Äì I'll follow up with the client directly.
+If you have requests for specific formats or custom adjustments, just let me know – I'll follow up with the client directly.
 
 Best regards
-Nicole üòä`,
+Nicole 😊`,
     },
   },
 ];
@@ -1062,7 +1062,7 @@ Nicole üòä`,
 const fieldConfig = {
   name: {
     type: "input",
-    label: { de: "Empf√§ngername", en: "Recipient name" },
+    label: { de: "Empfängername", en: "Recipient name" },
     placeholder: { de: { du: "z.B. Max Mustermann", ihr: "z.B. Team von reise-blog.de" }, en: "e.g. Max Mustermann" },
   },
   website: {
@@ -1077,8 +1077,8 @@ const fieldConfig = {
   },
   question: {
     type: "textarea",
-    label: { de: "R√ºckfrage", en: "Question" },
-    placeholder: { de: "z.B. Auf welchen Kan√§len plant Ihr, das Programm zu bewerben?", en: "e.g. On which channels are you planning to promote the program?" },
+    label: { de: "Rückfrage", en: "Question" },
+    placeholder: { de: "z.B. Auf welchen Kanälen plant Ihr, das Programm zu bewerben?", en: "e.g. On which channels are you planning to promote the program?" },
   },
   status: {
     type: "textarea",
@@ -1087,21 +1087,21 @@ const fieldConfig = {
     hasDefault: true,
     defaults: {
       de: {
-        du: "Deine Bewerbung ist aktuell noch offen und wird gerade in unserem Bewerbungsprozess gescreent. Sp√§testens in 1‚Äì2 Wochen bekommst Du eine direkte R√ºckmeldung √ºber AWIN zur Annahme oder Ablehnung.",
-        ihr: "Eure Bewerbung ist aktuell noch offen und wird gerade in unserem Bewerbungsprozess gescreent. Sp√§testens in 1‚Äì2 Wochen bekommt Ihr eine direkte R√ºckmeldung √ºber AWIN zur Annahme oder Ablehnung.",
+        du: "Deine Bewerbung ist aktuell noch offen und wird gerade in unserem Bewerbungsprozess gescreent. Spätestens in 1–2 Wochen bekommst Du eine direkte Rückmeldung über AWIN zur Annahme oder Ablehnung.",
+        ihr: "Eure Bewerbung ist aktuell noch offen und wird gerade in unserem Bewerbungsprozess gescreent. Spätestens in 1–2 Wochen bekommt Ihr eine direkte Rückmeldung über AWIN zur Annahme oder Ablehnung.",
       },
-      en: "Your application is currently still open and is being screened in our application process. You'll receive a direct response via AWIN regarding acceptance or decline within 1‚Äì2 weeks at the latest.",
+      en: "Your application is currently still open and is being screened in our application process. You'll receive a direct response via AWIN regarding acceptance or decline within 1–2 weeks at the latest.",
     },
   },
   period: {
     type: "input",
     label: { de: "Zeitraum", en: "Period" },
-    placeholder: { de: "z.B. 01.04. ‚Äì 30.04.2026", en: "e.g. Apr 1 ‚Äì Apr 30, 2026" },
+    placeholder: { de: "z.B. 01.04. – 30.04.2026", en: "e.g. Apr 1 – Apr 30, 2026" },
   },
   numbers: {
     type: "textarea",
     label: { de: "Kennzahlen", en: "Key numbers" },
-    placeholder: { de: "z.B.\n- Klicks: 1.245\n- Sales: 12\n- Umsatz: 8.450 ‚Ç¨\n- Provision: 423 ‚Ç¨", en: "e.g.\n- Clicks: 1,245\n- Sales: 12\n- Revenue: ‚Ç¨8,450\n- Commission: ‚Ç¨423" },
+    placeholder: { de: "z.B.\n- Klicks: 1.245\n- Sales: 12\n- Umsatz: 8.450 €\n- Provision: 423 €", en: "e.g.\n- Clicks: 1,245\n- Sales: 12\n- Revenue: €8,450\n- Commission: €423" },
   },
   channelName: {
     type: "input",
@@ -1117,8 +1117,8 @@ const fieldConfig = {
   },
   verstoss: {
     type: "textarea",
-    label: { de: "Konkreter Versto√ü / Beobachtung", en: "Specific violation / observation" },
-    placeholder: { de: "z.B. Bidding auf den Markenbegriff ‚ÄûMein Schiff\" in Google Ads (siehe Screenshot im Anhang).", en: "e.g. Bidding on the brand term \"Mein Schiff\" in Google Ads (see screenshot attached)." },
+    label: { de: "Konkreter Verstoß / Beobachtung", en: "Specific violation / observation" },
+    placeholder: { de: "z.B. Bidding auf den Markenbegriff „Mein Schiff\" in Google Ads (siehe Screenshot im Anhang).", en: "e.g. Bidding on the brand term \"Mein Schiff\" in Google Ads (see screenshot attached)." },
   },
   frist: {
     type: "input",
@@ -1138,32 +1138,32 @@ const fieldConfig = {
   ausfallzeitraum: {
     type: "input",
     label: { de: "Ausfall-Zeitraum", en: "Outage period" },
-    placeholder: { de: "z.B. 12.04. ‚Äì 19.04.2026", en: "e.g. Apr 12 ‚Äì Apr 19, 2026" },
+    placeholder: { de: "z.B. 12.04. – 19.04.2026", en: "e.g. Apr 12 – Apr 19, 2026" },
   },
   methodik: {
     type: "textarea",
     label: { de: "Berechnungs-Methodik", en: "Calculation method" },
-    placeholder: { de: "z.B.\n- Vorjahres-CVR: 2,5 %\n- Klicks im Ausfall-Zeitraum: 4.500\n- Errechnete Sales: 113\n- Durchschnittliche Provision: 4,20 ‚Ç¨", en: "e.g.\n- Previous-year CVR: 2.5%\n- Clicks during outage: 4,500\n- Estimated sales: 113\n- Avg. commission: ‚Ç¨4.20" },
+    placeholder: { de: "z.B.\n- Vorjahres-CVR: 2,5 %\n- Klicks im Ausfall-Zeitraum: 4.500\n- Errechnete Sales: 113\n- Durchschnittliche Provision: 4,20 €", en: "e.g.\n- Previous-year CVR: 2.5%\n- Clicks during outage: 4,500\n- Estimated sales: 113\n- Avg. commission: €4.20" },
   },
   ausgleichsbetrag: {
     type: "input",
     label: { de: "Ausgleichs-Betrag", en: "Compensation amount" },
-    placeholder: { de: "z.B. 474,60 ‚Ç¨", en: "e.g. ‚Ç¨474.60" },
+    placeholder: { de: "z.B. 474,60 €", en: "e.g. €474.60" },
   },
   auszahlungsdatum: {
     type: "input",
     label: { de: "Auszahlungs-Datum", en: "Payout date" },
-    placeholder: { de: "z.B. n√§chstem Validierungslauf (Anfang Juni)", en: "e.g. next validation run (early June)" },
+    placeholder: { de: "z.B. nächstem Validierungslauf (Anfang Juni)", en: "e.g. next validation run (early June)" },
   },
   ablehnungsgrund: {
     type: "textarea",
-    label: { de: "Erkl√§rung zur Ablehnung", en: "Explanation for rejection" },
-    placeholder: { de: "Erkl√§rung", en: "Explanation" },
+    label: { de: "Erklärung zur Ablehnung", en: "Explanation for rejection" },
+    placeholder: { de: "Erklärung", en: "Explanation" },
     hasDefault: true,
     defaults: {
       de: {
-        du: "Nach R√ºcksprache mit TUI Cruises wurden die Buchungen abgelehnt, da sie √ºber eine andere Agenturnummer gelaufen sind. Reiseb√ºros mit eigener Provisionsquelle werden bei TUI Cruises grunds√§tzlich nicht zus√§tzlich √ºber das Affiliate-Programm validiert.",
-        ihr: "Nach R√ºcksprache mit TUI Cruises wurden die Buchungen abgelehnt, da sie √ºber eine andere Agenturnummer gelaufen sind. Reiseb√ºros mit eigener Provisionsquelle werden bei TUI Cruises grunds√§tzlich nicht zus√§tzlich √ºber das Affiliate-Programm validiert.",
+        du: "Nach Rücksprache mit TUI Cruises wurden die Buchungen abgelehnt, da sie über eine andere Agenturnummer gelaufen sind. Reisebüros mit eigener Provisionsquelle werden bei TUI Cruises grundsätzlich nicht zusätzlich über das Affiliate-Programm validiert.",
+        ihr: "Nach Rücksprache mit TUI Cruises wurden die Buchungen abgelehnt, da sie über eine andere Agenturnummer gelaufen sind. Reisebüros mit eigener Provisionsquelle werden bei TUI Cruises grundsätzlich nicht zusätzlich über das Affiliate-Programm validiert.",
       },
       en: "After checking with TUI Cruises, the bookings were rejected because they ran via a different agency number. Travel agencies with their own commission source are generally not additionally validated via the affiliate program at TUI Cruises.",
     },
@@ -1176,11 +1176,11 @@ const fieldConfig = {
   materialien: {
     type: "textarea",
     label: { de: "Materialien / Formate", en: "Materials / Formats" },
-    placeholder: { de: "z.B.\n- Hero-Banner 728√ó90, 300√ó250, 160√ó600 (JPG/PNG)\n- Logo SVG + PNG (transparent)\n- Social-Cards 1080√ó1080, 1080√ó1920", en: "e.g.\n- Hero banners 728√ó90, 300√ó250, 160√ó600 (JPG/PNG)\n- Logo SVG + PNG (transparent)\n- Social cards 1080√ó1080, 1080√ó1920" },
+    placeholder: { de: "z.B.\n- Hero-Banner 728×90, 300×250, 160×600 (JPG/PNG)\n- Logo SVG + PNG (transparent)\n- Social-Cards 1080×1080, 1080×1920", en: "e.g.\n- Hero banners 728×90, 300×250, 160×600 (JPG/PNG)\n- Logo SVG + PNG (transparent)\n- Social cards 1080×1080, 1080×1920" },
   },
   gueltigkeitszeitraum: {
     type: "input",
-    label: { de: "G√ºltigkeits-Zeitraum", en: "Validity period" },
+    label: { de: "Gültigkeits-Zeitraum", en: "Validity period" },
     placeholder: { de: "z.B. ab sofort bis 31.08.2026", en: "e.g. effective now until Aug 31, 2026" },
   },
 };
@@ -1356,7 +1356,7 @@ function render() {
     if (!v) {
       const cfg = fieldConfig[fieldKey];
       if (cfg && cfg.hasDefault) v = getDefaultFor(fieldKey);
-      else v = currentLang === "de" ? "[bitte ausf√ºllen]" : "[please fill in]";
+      else v = currentLang === "de" ? "[bitte ausfüllen]" : "[please fill in]";
     }
     values[fieldKey] = v;
   });
@@ -1393,7 +1393,7 @@ function getCurrentRenderedTexts() {
     if (!v) {
       const cfg = fieldConfig[fieldKey];
       if (cfg && cfg.hasDefault) v = getDefaultFor(fieldKey);
-      else v = currentLang === "de" ? "[bitte ausf√ºllen]" : "[please fill in]";
+      else v = currentLang === "de" ? "[bitte ausfüllen]" : "[please fill in]";
     }
     values[fieldKey] = v;
   });
