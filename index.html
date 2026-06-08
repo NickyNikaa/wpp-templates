@@ -121,13 +121,20 @@
     <div class="card">
       <h2 id="lbl-controls">Vorlage wählen</h2>
 
-      <label id="lbl-template">Template</label>
-      <select id="template-select" onchange="onTemplateChange()"></select>
+      <label id="lbl-case">Fall beschreiben (optional)</label>
+      <textarea id="case-input" rows="2" placeholder="z.B. Publisher nutzt noch alte Tempur-Motive auf seiner Seite"></textarea>
+      <button type="button" class="copy-btn" id="btn-case" onclick="findCase()" style="margin-top:8px;">🔎 Passendes Template finden</button>
+      <div class="hint" id="case-result" style="margin-top:8px;"></div>
+      <div class="hint" id="case-help">Sucht automatisch das passende Template, wählt Programm + Case und füllt erkannte Infos (z.B. URL) vor.</div>
+      <hr style="border:0;border-top:1px solid var(--line);margin:18px 0;">
 
       <div id="program-wrap">
         <label id="lbl-program">Programm</label>
-        <select id="program-select" onchange="render()"></select>
+        <select id="program-select" onchange="onProgramChange()"></select>
       </div>
+
+      <label id="lbl-template">Template</label>
+      <select id="template-select" onchange="onTemplateChange()"></select>
 
       <div id="anrede-wrap">
         <label id="lbl-anrede">Anrede</label>
@@ -164,7 +171,7 @@
     </div>
   </div>
 
-  <footer>Interne Vorlage · Nicht für externen Versand ohne Review · Stand: Mai 2026</footer>
+  <footer>Interne Vorlage · Nicht für externen Versand ohne Review · Stand: Juni 2026</footer>
 </div>
 
 <script>
@@ -178,6 +185,12 @@ const ui = {
     copyAll: "📋 Komplette E-Mail kopieren", copiedAll: "✓ Alles kopiert!",
     copyHint: "Formatierung (z.B. <em>Mein Schiff</em> kursiv) wird beim Einfügen in Outlook übernommen.",
     reset: "↻ Standard-Text wiederherstellen",
+    caseLabel: "Fall beschreiben (optional)",
+    casePlaceholder: "z.B. Publisher nutzt noch alte Tempur-Motive auf seiner Seite",
+    caseBtn: "🔎 Passendes Template finden",
+    caseHelp: "Sucht automatisch das passende Template, wählt Programm + Case und füllt erkannte Infos (z.B. URL) vor.",
+    caseFound: "Gefunden:",
+    caseNoMatch: "Kein eindeutiger Treffer – bitte Programm und Template manuell wählen.",
   },
   en: {
     headerSub: "WPP Media · Affiliate Team",
@@ -188,6 +201,12 @@ const ui = {
     copyAll: "📋 Copy full email", copiedAll: "✓ All copied!",
     copyHint: "Formatting (e.g. <em>Mein Schiff</em> in italics) is preserved when pasting into Outlook.",
     reset: "↻ Reset to default",
+    caseLabel: "Describe the case (optional)",
+    casePlaceholder: "e.g. publisher still uses old Tempur creatives on their site",
+    caseBtn: "🔎 Find matching template",
+    caseHelp: "Automatically finds the matching template, selects program + case and pre-fills detected info (e.g. URL).",
+    caseFound: "Found:",
+    caseNoMatch: "No clear match – please select program and template manually.",
   },
 };
 
@@ -200,6 +219,560 @@ const programs = [
 ];
 
 const templates = [
+  {
+    id: "tempur-feed",
+    scope: ["Tempur"],
+    label: { de: "Tempur · Produktfeed hochgeladen", en: "Tempur · Product feed uploaded" },
+    fields: ["name", "markt", "signature"],
+    subject: { de: "Tempur {{markt}}: Produktfeeds hochgeladen ✅", en: "Tempur {{markt}}: product feeds uploaded ✅" },
+    body: {
+      de: {
+        du:
+`Hallo {{name}},
+
+besten Dank für die aktualisierten Produktfeeds. Die Feeds für {{markt}} sind hochgeladen und die hinterlegten Aktionen sind pünktlich live gegangen.
+
+Sag mir gerne Bescheid, falls noch weitere Feeds für andere Märkte folgen – wir spielen sie dann zeitnah ein.
+
+Beste Grüße
+{{signature}}`,
+        ihr:
+`Hallo {{name}},
+
+besten Dank für die aktualisierten Produktfeeds. Die Feeds für {{markt}} sind hochgeladen und die hinterlegten Aktionen sind pünktlich live gegangen.
+
+Sagt mir gerne Bescheid, falls noch weitere Feeds für andere Märkte folgen – wir spielen sie dann zeitnah ein.
+
+Beste Grüße
+{{signature}}`,
+      },
+      en:
+`Hi {{name}},
+
+thanks a lot for the updated product feeds. The feeds for {{markt}} have been uploaded and the linked promotions went live on time.
+
+Just let me know if more feeds for other markets are to follow – we'll upload them promptly.
+
+Best regards
+{{signature}}`,
+    },
+  },
+  {
+    id: "tempur-motive-publisher",
+    scope: ["Tempur"],
+    label: { de: "Tempur · Alte Motive – Publisher anschreiben", en: "Tempur · Outdated creatives – publisher" },
+    fields: ["name", "signature"],
+    subject: { de: "Tempur: Bitte alte Motive austauschen", en: "Tempur: please replace outdated creatives" },
+    body: {
+      de: {
+        du:
+`Hallo {{name}},
+
+uns ist aufgefallen, dass Du auf Deiner Seite noch alte Motive von Tempur verwendest, bei denen die Nutzungsrechte abgelaufen sind.
+
+Hiermit bitten wir Dich, diese auszutauschen oder zu entfernen. Solltest Du neue Werbemittel benötigen, findest Du diese in AWIN – oder melde Dich gerne direkt bei uns.
+
+Vielen Dank und beste Grüße
+{{signature}}`,
+        ihr:
+`Hallo liebes {{name}}-Team,
+
+uns ist aufgefallen, dass Ihr auf Eurer Seite noch alte Motive von Tempur verwendet, bei denen die Nutzungsrechte abgelaufen sind.
+
+Hiermit bitten wir Euch, diese auszutauschen oder zu entfernen. Solltet Ihr neue Werbemittel benötigen, findet Ihr diese in AWIN – oder meldet Euch gerne direkt bei uns.
+
+Vielen Dank und beste Grüße
+{{signature}}`,
+      },
+      en:
+`Hello dear {{name}} team,
+
+we noticed that you are still using outdated Tempur creatives on your site for which the usage rights have expired.
+
+We kindly ask you to replace or remove them. If you need new creative assets, you'll find them in AWIN – or feel free to reach out to us directly.
+
+Thank you and best regards
+{{signature}}`,
+    },
+  },
+  {
+    id: "tempur-motive-status",
+    scope: ["Tempur"],
+    label: { de: "Tempur · Bildrechte – Status an Kunde", en: "Tempur · Image rights – status to client" },
+    fields: ["name", "publisherListe", "signature"],
+    subject: { de: "Tempur: Status alte Werbemittel", en: "Tempur: status on outdated creatives" },
+    body: {
+      de: {
+        du:
+`Hallo {{name}},
+
+kurzes Update zum Thema alte Werbemittel:
+
+{{publisherListe}}
+
+Die noch offenen Publisher haben wir erneut angeschrieben und prüfen in 2–3 Tagen nach, ob die Motive ausgetauscht bzw. entfernt wurden. Falls nötig, kontaktieren wir sie noch einmal.
+
+Ich halte Dich auf dem Laufenden.
+
+Beste Grüße
+{{signature}}`,
+        ihr:
+`Hallo {{name}},
+
+kurzes Update zum Thema alte Werbemittel:
+
+{{publisherListe}}
+
+Die noch offenen Publisher haben wir erneut angeschrieben und prüfen in 2–3 Tagen nach, ob die Motive ausgetauscht bzw. entfernt wurden. Falls nötig, kontaktieren wir sie noch einmal.
+
+Ich halte Euch auf dem Laufenden.
+
+Beste Grüße
+{{signature}}`,
+      },
+      en:
+`Hi {{name}},
+
+a quick update on the outdated creatives:
+
+{{publisherListe}}
+
+We have contacted the remaining publishers again and will check in 2–3 days whether the creatives have been replaced or removed. If needed, we'll reach out to them once more.
+
+I'll keep you posted.
+
+Best regards
+{{signature}}`,
+    },
+  },
+  {
+    id: "tempur-promo",
+    scope: ["Tempur"],
+    label: { de: "Tempur · Promo-Kalender umgesetzt", en: "Tempur · Promo calendar confirmed" },
+    fields: ["name", "aktionsliste", "signature"],
+    subject: { de: "Tempur: Promo-Kalender umgesetzt", en: "Tempur: promo calendar implemented" },
+    body: {
+      de: {
+        du:
+`Hallo {{name}},
+
+besten Dank für den aktualisierten Promo-Kalender. Wir haben die neuen Aktionen in AWIN hinterlegt und die Publisher entsprechend informiert:
+
+{{aktionsliste}}
+
+Solltest Du noch Anpassungen haben, gib mir gerne Bescheid – wir aktualisieren das dann zeitnah.
+
+Beste Grüße
+{{signature}}`,
+        ihr:
+`Hallo {{name}},
+
+besten Dank für den aktualisierten Promo-Kalender. Wir haben die neuen Aktionen in AWIN hinterlegt und die Publisher entsprechend informiert:
+
+{{aktionsliste}}
+
+Solltet Ihr noch Anpassungen haben, gebt mir gerne Bescheid – wir aktualisieren das dann zeitnah.
+
+Beste Grüße
+{{signature}}`,
+      },
+      en:
+`Hi {{name}},
+
+thanks a lot for the updated promo calendar. We've set up the new promotions in AWIN and informed the publishers accordingly:
+
+{{aktionsliste}}
+
+If you have any further adjustments, just let me know – we'll update everything promptly.
+
+Best regards
+{{signature}}`,
+    },
+  },
+  {
+    id: "tempur-anfrage",
+    scope: ["Tempur"],
+    label: { de: "Tempur · Publisher-/Partnership-Anfrage", en: "Tempur · Publisher / partnership inquiry" },
+    fields: ["name", "awinId", "signature"],
+    subject: { de: "Eure Anfrage zu Tempur", en: "Your inquiry regarding Tempur" },
+    body: {
+      de: {
+        du:
+`Hallo {{name}},
+
+vielen Dank für Deine Nachricht und das Interesse an einer Zusammenarbeit mit Tempur.
+
+Aktuell haben wir leider kein zusätzliches Budget für weitere Platzierungen eingeplant. Wir kommen aber gerne auf Dich zu, sobald sich das ändert.
+
+Gerne kannst Du Dich in der Zwischenzeit über AWIN (ID {{awinId}}) für unser Programm bewerben, sodass wir Dich bei passender Gelegenheit direkt aktivieren können.
+
+Beste Grüße
+{{signature}}`,
+        ihr:
+`Hallo {{name}},
+
+vielen Dank für Eure Nachricht und das Interesse an einer Zusammenarbeit mit Tempur.
+
+Aktuell haben wir leider kein zusätzliches Budget für weitere Platzierungen eingeplant. Wir kommen aber gerne auf Euch zu, sobald sich das ändert.
+
+Gerne könnt Ihr Euch in der Zwischenzeit über AWIN (ID {{awinId}}) für unser Programm bewerben, sodass wir Euch bei passender Gelegenheit direkt aktivieren können.
+
+Beste Grüße
+{{signature}}`,
+      },
+      en:
+`Hi {{name}},
+
+thank you for your message and your interest in working with Tempur.
+
+At the moment we unfortunately do not have additional budget planned for further placements. We will be sure to get back to you as soon as that changes.
+
+In the meantime, feel free to apply to our program via AWIN (ID {{awinId}}) so we can activate you directly when the right opportunity comes up.
+
+Best regards
+{{signature}}`,
+    },
+  },
+  {
+    id: "tempur-reseller",
+    scope: ["Tempur"],
+    label: { de: "Tempur · Unerlaubte Reseller / Cashback", en: "Tempur · Unauthorised reseller / cashback" },
+    fields: ["name", "signature"],
+    subject: { de: "Tempur: Hinweis zu unerlaubten Reseller-Aktivitäten", en: "Tempur: notice on unauthorised reseller activity" },
+    body: {
+      de: {
+        du:
+`Hallo {{name}},
+
+bei der Sales-Prüfung im Tempur-Programm ist uns aufgefallen, dass über Deinen Account wiederholt Bestellungen durch einen Nutzer generiert wurden, der als Reseller agiert. Dieses Verhalten ist im Rahmen unseres Programms nicht gestattet.
+
+Wir bitten Dich, den betreffenden Nutzer entsprechend zu sensibilisieren. Bereits bezahlte Bestellungen bestätigen wir partnerschaftlich; künftige Sales dieser Art können wir jedoch nicht vergüten.
+
+Vielen Dank für Dein Verständnis und Deine Unterstützung.
+
+Beste Grüße
+{{signature}}`,
+        ihr:
+`Hallo liebes {{name}}-Team,
+
+bei der Sales-Prüfung im Tempur-Programm ist uns aufgefallen, dass über Euren Account wiederholt Bestellungen durch einen Nutzer generiert wurden, der als Reseller agiert. Dieses Verhalten ist im Rahmen unseres Programms nicht gestattet.
+
+Wir bitten Euch, den betreffenden Nutzer entsprechend zu sensibilisieren. Bereits bezahlte Bestellungen bestätigen wir partnerschaftlich; künftige Sales dieser Art können wir jedoch nicht vergüten.
+
+Vielen Dank für Euer Verständnis und Eure Unterstützung.
+
+Beste Grüße
+{{signature}}`,
+      },
+      en:
+`Hello dear {{name}} team,
+
+during the sales review for the Tempur program, we noticed that orders were repeatedly generated through your account by a user acting as a reseller. This behaviour is not permitted within our program.
+
+We kindly ask you to make the user aware of this. Orders that have already been paid we'll confirm in good partnership; however, we cannot remunerate future sales of this kind.
+
+Thank you for your understanding and support.
+
+Best regards
+{{signature}}`,
+    },
+  },
+  {
+    id: "tempur-sitesdown",
+    scope: ["Tempur"],
+    label: { de: "Tempur · Sites down / Störung", en: "Tempur · Sites down / outage" },
+    fields: ["name", "signature"],
+    subject: { de: "AW: Tempur – Sites down", en: "RE: Tempur – sites down" },
+    body: {
+      de: {
+        du:
+`Hallo {{name}},
+
+vielen Dank für die Info. Halte uns gerne auf dem Laufenden – sobald die Sites wieder live sind, freuen wir uns über eine kurze Rückmeldung.
+
+Beste Grüße
+{{signature}}`,
+        ihr:
+`Hallo {{name}},
+
+vielen Dank für die Info. Haltet uns gerne auf dem Laufenden – sobald die Sites wieder live sind, freuen wir uns über eine kurze Rückmeldung.
+
+Beste Grüße
+{{signature}}`,
+      },
+      en:
+`Hi {{name}},
+
+thanks a lot for the heads-up. Please keep us posted – a short note once the sites are back live would be great.
+
+Best regards
+{{signature}}`,
+    },
+  },
+  {
+    id: "messmer-sea-brand",
+    scope: ["Meßmer"],
+    label: { de: "Meßmer · SEA auf Brand – Verstoß / Stopp", en: "Meßmer · SEA on brand – violation / stop" },
+    fields: ["name", "website", "signature"],
+    subject: { de: "Meßmer: SEA auf Brand-Keywords – bitte einstellen", en: "Meßmer: SEA on brand keywords – please stop" },
+    body: {
+      de: {
+        du:
+`Hallo {{name}},
+
+wir haben festgestellt, dass aktuell über Deine Seite {{website}} SEA-Kampagnen auf Google laufen, die auf Meßmer Brand-Keywords abzielen.
+
+Diese Vorgehensweise ist gemäß unseren AWIN-Programmbedingungen nicht gestattet („SEM auf Brand, auch in Falschschreibweisen und Kombinationen, ist nicht gestattet“).
+
+Wir möchten Dich darauf hinweisen, dass bei Nichteinhaltung dieser Bestimmung Provisionskürzungen bis hin zu Provisionsstreichungen erfolgen können. Daher bitten wir Dich, diese Kampagnen umgehend einzustellen.
+
+Vielen Dank und viele Grüße
+{{signature}}`,
+        ihr:
+`Hallo liebes {{name}}-Team,
+
+wir haben festgestellt, dass aktuell über Eure Seite {{website}} SEA-Kampagnen auf Google laufen, die auf Meßmer Brand-Keywords abzielen.
+
+Diese Vorgehensweise ist gemäß unseren AWIN-Programmbedingungen nicht gestattet („SEM auf Brand, auch in Falschschreibweisen und Kombinationen, ist nicht gestattet“).
+
+Wir möchten Euch darauf hinweisen, dass bei Nichteinhaltung dieser Bestimmung Provisionskürzungen bis hin zu Provisionsstreichungen erfolgen können. Daher bitten wir Euch, diese Kampagnen umgehend einzustellen.
+
+Vielen Dank und viele Grüße
+{{signature}}`,
+      },
+      en:
+`Hello dear {{name}} team,
+
+we have noticed that you are currently running SEA campaigns on Google through your site {{website}} that target Meßmer brand keywords.
+
+This practice is not permitted under our AWIN program conditions ("SEM on brand, including misspellings and combinations, is not permitted").
+
+We would like to point out that non-compliance with this provision may lead to commission reductions or even commission cancellations. We therefore kindly ask you to stop these campaigns immediately.
+
+Thank you and best regards
+{{signature}}`,
+    },
+  },
+  {
+    id: "messmer-bewerbung",
+    scope: ["Meßmer"],
+    label: { de: "Meßmer · Publisher-Bewerbung / AWIN-Einladung", en: "Meßmer · Publisher application / AWIN invite" },
+    fields: ["name", "awinId", "signature"],
+    subject: { de: "Zusammenarbeit mit Meßmer über AWIN", en: "Working with Meßmer via AWIN" },
+    body: {
+      de: {
+        du:
+`Hallo {{name}},
+
+vielen Dank für Deine Nachricht und Dein Interesse an einer Zusammenarbeit mit Meßmer. 😊
+
+Wenn Du Interesse hast, kannst Du Dich gerne über AWIN (ID {{awinId}}) bewerben. So können wir Dich direkt zu unserem Programm hinzufügen.
+
+Bitte beachte, dass wir bei Meßmer hauptsächlich auf CPO-Basis arbeiten.
+
+Für weitere Fragen stehe ich Dir jederzeit gerne zur Verfügung.
+
+Viele Grüße
+{{signature}}`,
+        ihr:
+`Hallo {{name}},
+
+vielen Dank für Eure Nachricht und Euer Interesse an einer Zusammenarbeit mit Meßmer. 😊
+
+Wenn Ihr Interesse habt, könnt Ihr Euch gerne über AWIN (ID {{awinId}}) bewerben. So können wir Euch direkt zu unserem Programm hinzufügen.
+
+Bitte beachtet, dass wir bei Meßmer hauptsächlich auf CPO-Basis arbeiten.
+
+Für weitere Fragen stehen wir Euch jederzeit gerne zur Verfügung.
+
+Viele Grüße
+{{signature}}`,
+      },
+      en:
+`Hi {{name}},
+
+thank you for your message and your interest in working with Meßmer. 😊
+
+If you're interested, feel free to apply via AWIN (ID {{awinId}}). That way we can add you directly to our program.
+
+Please note that with Meßmer we mainly work on a CPO basis.
+
+I'm happy to help if you have any further questions.
+
+Best regards
+{{signature}}`,
+    },
+  },
+  {
+    id: "messmer-sea-richtlinien",
+    scope: ["Meßmer"],
+    label: { de: "Meßmer · Ad Hijacking / SEA-Richtlinien", en: "Meßmer · Ad hijacking / SEA policy" },
+    fields: ["name", "signature"],
+    subject: { de: "Meßmer: SEA-Ausspielung & Ad Hijacking – Einordnung", en: "Meßmer: SEA usage & ad hijacking – overview" },
+    body: {
+      de: {
+        du:
+`Hallo {{name}},
+
+vielen Dank für Deine Nachricht und die Fragen rund um die SEA-Ausspielung durch unsere Affiliate-Partner. Gerne hole ich Dich umfassend ab:
+
+- Richtlinien: Die Ausspielung von SEA ist grundsätzlich verboten und in unseren AWIN-Programmrichtlinien klar verankert. Ausnahmen machen wir nur in eng abgestimmten Zeiträumen (z. B. bei einer Platzierung auf Coupons.de), immer in Absprache mit dem Search-Team.
+- Monitoring: Wir behalten das Thema laufend im Blick und führen regelmäßige Checks durch. Zusätzlich erhalten wir oft Hinweise von anderen Publishern.
+- Maßnahmen: Sobald ein Publisher ohne Erlaubnis SEA auf Brand schaltet, verwarnen wir ihn per E-Mail und weisen auf mögliche Provisionskürzungen bis hin zu -streichungen hin.
+
+Melde Dich gerne, falls noch etwas unklar ist oder Du weitere Fragen hast.
+
+Liebe Grüße
+{{signature}}`,
+        ihr:
+`Hallo {{name}},
+
+vielen Dank für Eure Nachricht und die Fragen rund um die SEA-Ausspielung durch unsere Affiliate-Partner. Gerne holen wir Euch umfassend ab:
+
+- Richtlinien: Die Ausspielung von SEA ist grundsätzlich verboten und in unseren AWIN-Programmrichtlinien klar verankert. Ausnahmen machen wir nur in eng abgestimmten Zeiträumen (z. B. bei einer Platzierung auf Coupons.de), immer in Absprache mit dem Search-Team.
+- Monitoring: Wir behalten das Thema laufend im Blick und führen regelmäßige Checks durch. Zusätzlich erhalten wir oft Hinweise von anderen Publishern.
+- Maßnahmen: Sobald ein Publisher ohne Erlaubnis SEA auf Brand schaltet, verwarnen wir ihn per E-Mail und weisen auf mögliche Provisionskürzungen bis hin zu -streichungen hin.
+
+Meldet Euch gerne, falls noch etwas unklar ist oder Ihr weitere Fragen habt.
+
+Liebe Grüße
+{{signature}}`,
+      },
+      en:
+`Hi {{name}},
+
+thank you for your message and your questions around SEA activity by our affiliate partners. Happy to give you the full picture:
+
+- Policy: Running SEA is generally prohibited and clearly anchored in our AWIN program terms. We only make exceptions in closely coordinated periods (e.g. a placement on Coupons.de), always in agreement with the search team.
+- Monitoring: We keep an eye on this on an ongoing basis and run regular checks. We also often receive tips from other publishers.
+- Measures: As soon as a publisher runs SEA on brand without permission, we warn them by email and point out possible commission reductions up to cancellations.
+
+Feel free to reach out if anything is unclear or you have further questions.
+
+Best regards
+{{signature}}`,
+    },
+  },
+  {
+    id: "messmer-lp-check",
+    scope: ["Meßmer"],
+    label: { de: "Meßmer · Landingpage geprüft", en: "Meßmer · Landing page checked" },
+    fields: ["name", "lpurl", "signature"],
+    subject: { de: "Meßmer: Landingpage geprüft", en: "Meßmer: landing page checked" },
+    body: {
+      de: {
+        du:
+`Hallo {{name}},
+
+danke für die Info. Ich habe es geprüft: Die URL {{lpurl}} wird aktuell in keiner unserer Aktionen bzw. Anzeigen beworben.
+
+Sollte sich daran etwas ändern, passen wir es selbstverständlich kurzfristig an und geben Dir Bescheid.
+
+Viele Grüße
+{{signature}}`,
+        ihr:
+`Hallo {{name}},
+
+danke für die Info. Wir haben es geprüft: Die URL {{lpurl}} wird aktuell in keiner unserer Aktionen bzw. Anzeigen beworben.
+
+Sollte sich daran etwas ändern, passen wir es selbstverständlich kurzfristig an und geben Euch Bescheid.
+
+Viele Grüße
+{{signature}}`,
+      },
+      en:
+`Hi {{name}},
+
+thanks for the heads-up. I've checked it: the URL {{lpurl}} is currently not promoted in any of our campaigns or ads.
+
+Should that change, we'll of course adjust it at short notice and let you know.
+
+Best regards
+{{signature}}`,
+    },
+  },
+  {
+    id: "messmer-ki",
+    scope: ["Meßmer"],
+    label: { de: "Meßmer · Generative KI – Auskunft", en: "Meßmer · Generative AI – statement" },
+    fields: ["name", "signature"],
+    subject: { de: "Meßmer: Einsatz generativer KI im Affiliate", en: "Meßmer: use of generative AI in affiliate" },
+    body: {
+      de: {
+        du:
+`Hallo {{name}},
+
+danke für Deine Anfrage. Gerne die Einordnung für den Affiliate-Kanal:
+
+Im Affiliate wird generative KI bis dato nicht eingesetzt. In der Kommunikation mit Publishern nutzen wir ausschließlich von Euch freigegebene Texte sowie das von Euch bereitgestellte Bild- und Videomaterial. KI verwenden wir allenfalls intern zur Ideensammlung, nicht jedoch für veröffentlichte Inhalte.
+
+Solltest Du für die Rechtsabteilung eine strukturierte Übersicht benötigen, stelle ich Dir diese gerne zusammen.
+
+Beste Grüße
+{{signature}}`,
+        ihr:
+`Hallo {{name}},
+
+danke für Eure Anfrage. Gerne die Einordnung für den Affiliate-Kanal:
+
+Im Affiliate wird generative KI bis dato nicht eingesetzt. In der Kommunikation mit Publishern nutzen wir ausschließlich von Euch freigegebene Texte sowie das von Euch bereitgestellte Bild- und Videomaterial. KI verwenden wir allenfalls intern zur Ideensammlung, nicht jedoch für veröffentlichte Inhalte.
+
+Solltet Ihr für die Rechtsabteilung eine strukturierte Übersicht benötigen, stellen wir Euch diese gerne zusammen.
+
+Beste Grüße
+{{signature}}`,
+      },
+      en:
+`Hi {{name}},
+
+thanks for your request. Here's the picture for the affiliate channel:
+
+To date, generative AI is not used in affiliate. In our communication with publishers we only use copy approved by you as well as the image and video material you provide. We use AI at most internally for idea generation, but never for published content.
+
+If you need a structured overview for your legal team, I'm happy to put one together for you.
+
+Best regards
+{{signature}}`,
+    },
+  },
+  {
+    id: "messmer-reporting",
+    scope: ["Meßmer"],
+    label: { de: "Meßmer · Quartalsreporting – Lieferung", en: "Meßmer · Quarterly report – delivery" },
+    fields: ["name", "quartal", "signature"],
+    subject: { de: "Meßmer: Affiliate-Reporting {{quartal}}", en: "Meßmer: affiliate report {{quartal}}" },
+    body: {
+      de: {
+        du:
+`Hallo {{name}},
+
+anbei findest Du den Affiliate-Recap für {{quartal}}. Enthalten sind KPI-Überblick, Tops & Downs, abgelaufene Aktionen sowie konkrete Optimierungspotenziale und Handlungsempfehlungen.
+
+Schau gerne drüber – bei Fragen oder Anpassungswünschen melde Dich jederzeit.
+
+Beste Grüße
+{{signature}}`,
+        ihr:
+`Hallo {{name}},
+
+anbei findet Ihr den Affiliate-Recap für {{quartal}}. Enthalten sind KPI-Überblick, Tops & Downs, abgelaufene Aktionen sowie konkrete Optimierungspotenziale und Handlungsempfehlungen.
+
+Schaut gerne drüber – bei Fragen oder Anpassungswünschen meldet Euch jederzeit.
+
+Beste Grüße
+{{signature}}`,
+      },
+      en:
+`Hi {{name}},
+
+please find attached the affiliate recap for {{quartal}}. It covers the KPI overview, tops & downs, completed promotions as well as concrete optimisation potential and recommended actions.
+
+Feel free to take a look – if you have any questions or change requests, just reach out anytime.
+
+Best regards
+{{signature}}`,
+    },
+  },
   {
     id: "annahme",
     label: { de: "Affiliate-Bewerbung – Annahme", en: "Affiliate application – accepted" },
@@ -1183,6 +1756,37 @@ const fieldConfig = {
     label: { de: "Gültigkeits-Zeitraum", en: "Validity period" },
     placeholder: { de: "z.B. ab sofort bis 31.08.2026", en: "e.g. effective now until Aug 31, 2026" },
   },
+  markt: {
+    type: "input",
+    label: { de: "Markt / Land", en: "Market / country" },
+    placeholder: { de: "z.B. DE und AT", en: "e.g. DE and AT" },
+  },
+  publisherListe: {
+    type: "textarea",
+    label: { de: "Status je Publisher", en: "Status per publisher" },
+    placeholder: { de: "z.B.\n- i-reductions.ch: Motive ausgetauscht\n- TopCashback: angepasst\n- eCentime: erneut angeschrieben", en: "e.g.\n- i-reductions.ch: creatives replaced\n- TopCashback: updated\n- eCentime: contacted again" },
+  },
+  aktionsliste: {
+    type: "textarea",
+    label: { de: "Neue Aktionen / Änderungen", en: "New promotions / changes" },
+    placeholder: { de: "z.B.\n- AT: 04.05.–31.05. = 35 % auf alle Topper\n- CH: 01.06.–31.07. = 25 % auf FORM Matratzen", en: "e.g.\n- AT: May 4–31 = 35% on all toppers\n- CH: Jun 1 – Jul 31 = 25% on FORM mattresses" },
+  },
+  lpurl: {
+    type: "input",
+    label: { de: "Landingpage-URL", en: "Landing page URL" },
+    placeholder: { de: "z.B. messmer.de/collections/cold-tea-sets", en: "e.g. messmer.de/collections/cold-tea-sets" },
+  },
+  quartal: {
+    type: "input",
+    label: { de: "Quartal", en: "Quarter" },
+    placeholder: { de: "z.B. Q1 2026", en: "e.g. Q1 2026" },
+  },
+  awinId: {
+    type: "input",
+    label: { de: "AWIN-Advertiser-ID", en: "AWIN advertiser ID" },
+    placeholder: { de: "z.B. 55091", en: "e.g. 55091" },
+    hasDefault: true,
+  },
 };
 
 let currentLang = "de";
@@ -1195,6 +1799,10 @@ function escapeHtml(s) {
 }
 
 function getDefaultFor(fieldKey) {
+  if (fieldKey === "awinId") {
+    const prog = document.getElementById("program-select").value;
+    return programAwinId[prog] || "";
+  }
   const cfg = fieldConfig[fieldKey];
   if (!cfg || !cfg.hasDefault) return "";
   const d = cfg.defaults[currentLang];
@@ -1218,6 +1826,93 @@ function getTemplateText(tpl, kind) {
   return t[currentAddress];
 }
 
+const CRUISE = ["Mein Schiff", "Mein Schiff International", "Hapag-Lloyd Cruises"];
+const programAwinId = {
+  "Mein Schiff": "9127",
+  "Mein Schiff International": "104581",
+  "Hapag-Lloyd Cruises": "87095",
+  "Meßmer": "55091",
+  "Tempur": "16657",
+};
+const caseKeywords = {
+  annahme: ["bewerbung annehmen","annahme","willkommen","zusage","aufnehmen","accept","approve","accepted","onboarding"],
+  ablehnung: ["bewerbung ablehnen","ablehnung","absage","decline","reject","passt nicht","nicht aufnehmen"],
+  rueckfrage: ["rückfrage","nachfrage","mehr infos","weitere informationen","frage zur bewerbung","question","clarify"],
+  "bereits-beworben": ["bereits beworben","schon beworben","doppelte bewerbung","already applied","duplicate"],
+  performance: ["performance anfrage","kennzahlen","wie läuft","umsatz anfrage","clicks","sales anfrage"],
+  "tui-outreach": ["outreach","cold","akquise","neuer publisher ansprechen","proaktiv ansprechen","kennenlernen"],
+  "guidelines-overview": ["guidelines","richtlinien übersicht","programmbedingungen","regeln übersicht","terms","conditions"],
+  "guidelines-violation": ["verstoß","verstoss","freundlicher hinweis","guidelines verstoß","hinweis verstoß","guidelines verletzt","regel gebrochen","violation","breach"],
+  "ablehnung-cashback": ["cashback","couponing","retargeting","kein cashback","gutschein publisher ablehnen"],
+  salesvalidierung: ["salesvalidierung","sales validierung","validierung","validation","monatliche liste","sales liste"],
+  "tracking-ausfall": ["tracking ausfall","tracking down","kompensation","ausgleich","outage tracking","tracking fehler","gutschrift tracking"],
+  "reisebuero-storno": ["reisebüro","reisebuero","storno","abgelehnte buchung","agenturnummer","travel agency"],
+  "werbemittel-anlieferung": ["werbemittel anliefern","banner liefern","creatives liefern","assets liefern","logo liefern","motive liefern"],
+  "tempur-feed": ["feed","produktfeed","product feed","datafeed","data feed","feed update","feed hochladen","feed aktualisieren","upload feed"],
+  "tempur-motive-publisher": ["motive","alte motive","alte bilder","alte images","bildrechte","nutzungsrechte","abgelaufene rechte","motive austauschen","outdated creatives","old images","expired rights"],
+  "tempur-motive-status": ["status motive","status werbemittel","update bildrechte","status bildrechte","status publisher motive"],
+  "tempur-promo": ["promo","promo-kalender","promo kalender","aktionskalender","neue aktionen","promo calendar","kampagnenkalender"],
+  "tempur-anfrage": ["partnership","kooperationsanfrage","partner anfrage","zusammenarbeit anfrage","placement anfrage","proposal","partnermatic","incent","fanli"],
+  "tempur-reseller": ["reseller","unerlaubt","wiederverkäufer","cashback missbrauch","top cashback nutzer","abgemahnt","unauthorised"],
+  "tempur-sitesdown": ["sites down","seite down","störung","ausfall seite","website down","shop down","offline","outage"],
+  "messmer-sea-brand": ["sea auf brand","sea auf","brand bidding","markenbegriff","sem auf brand","brand keywords","brand-keyword","markenkeywords","sea verstoß","sea on brand","brand-bidding"],
+  "messmer-bewerbung": ["bewerbung","awin einladung","zusammenarbeit","neuer publisher","möchte zusammenarbeiten","reichweite anfrage","publisher interesse","einladen","apply","invite","cpo basis","neue zusammenarbeit"],
+  "messmer-sea-richtlinien": ["ad hijacking","sea richtlinien","sea policy","richtlinien sea","sea ausspielung","markenbidding richtlinie","hijacking","sea regeln"],
+  "messmer-lp-check": ["landingpage","landing page","lp prüfen","url prüfen","lp check","seite prüfen kampagne","landingpage check"],
+  "messmer-ki": ["künstliche intelligenz","generative ki","generativen ki","ki nutzung","ki content","rechtsabteilung","generative ai","ki einsatz","ai usage","gen ai"],
+  "messmer-reporting": ["quartalsreporting","quartal report","reporting liefern","q1 report","q2 report","recap","quarterly report"],
+};
+function findCase() {
+  const inEl = document.getElementById("case-input");
+  const q = (inEl.value || "").toLowerCase().trim();
+  const resultEl = document.getElementById("case-result");
+  if (!q) { resultEl.textContent = ""; return; }
+  let best = null, bestScore = 0;
+  for (const t of templates) {
+    const kws = caseKeywords[t.id] || [];
+    let score = 0;
+    for (const kw of kws) { if (q.includes(kw)) score += (kw.length >= 5 ? 2 : 1); }
+    if (score > bestScore) { bestScore = score; best = t; }
+  }
+  if (!best) { resultEl.textContent = ui[currentLang].caseNoMatch; return; }
+  const program = templateScope(best)[0];
+  document.getElementById("program-select").value = program;
+  populateTemplates();
+  document.getElementById("template-select").value = best.id;
+  onTemplateChange();
+  const urlMatch = (inEl.value || "").match(/((?:https?:\/\/)?[a-z0-9.-]+\.[a-z]{2,}(?:\/[^\s]*)?)/i);
+  if (urlMatch) {
+    ["website","lpurl"].forEach(f => {
+      const el = document.getElementById("field-" + f);
+      if (el) { el.value = urlMatch[1]; dirtyFields.add(f); }
+    });
+    render();
+  }
+  resultEl.innerHTML = ui[currentLang].caseFound + " <strong>" + escapeHtml(best.label[currentLang]) + "</strong> (" + escapeHtml(program) + ")";
+}
+function templateScope(t) { return t.scope || CRUISE; }
+function templatesForProgram() {
+  const program = document.getElementById("program-select").value;
+  return templates.filter(t => templateScope(t).includes(program));
+}
+function populateTemplates() {
+  const sel = document.getElementById("template-select");
+  const prev = sel.value;
+  sel.innerHTML = "";
+  const list = templatesForProgram();
+  list.forEach(t => {
+    const opt = document.createElement("option");
+    opt.value = t.id;
+    opt.textContent = t.label[currentLang];
+    sel.appendChild(opt);
+  });
+  if (list.some(t => t.id === prev)) sel.value = prev;
+}
+function onProgramChange() {
+  populateTemplates();
+  onTemplateChange();
+}
+
 function init() {
   const progSel = document.getElementById("program-select");
   programs.forEach(p => {
@@ -1226,13 +1921,7 @@ function init() {
     opt.textContent = p.name + (p.italic ? "  (kursiv im Text)" : "");
     progSel.appendChild(opt);
   });
-  const sel = document.getElementById("template-select");
-  templates.forEach(t => {
-    const opt = document.createElement("option");
-    opt.value = t.id;
-    opt.textContent = t.label[currentLang];
-    sel.appendChild(opt);
-  });
+  populateTemplates();
   onTemplateChange();
 }
 
@@ -1246,6 +1935,10 @@ function setLang(lang) {
   const t = ui[lang];
   document.getElementById("header-sub").textContent = t.headerSub;
   document.getElementById("lbl-controls").textContent = t.controls;
+  document.getElementById("lbl-case").textContent = t.caseLabel;
+  document.getElementById("case-input").placeholder = t.casePlaceholder;
+  document.getElementById("btn-case").textContent = t.caseBtn;
+  document.getElementById("case-help").textContent = t.caseHelp;
   document.getElementById("lbl-template").textContent = t.template;
   document.getElementById("lbl-program").textContent = t.program;
   document.getElementById("lbl-anrede").textContent = t.anrede;
@@ -1258,16 +1951,7 @@ function setLang(lang) {
   document.getElementById("btn-copy-all").textContent = t.copyAll;
   document.getElementById("copy-hint").innerHTML = t.copyHint;
   document.getElementById("anrede-wrap").classList.toggle("hidden", lang === "en");
-  const sel = document.getElementById("template-select");
-  const currentValue = sel.value;
-  sel.innerHTML = "";
-  templates.forEach(tpl => {
-    const opt = document.createElement("option");
-    opt.value = tpl.id;
-    opt.textContent = tpl.label[lang];
-    sel.appendChild(opt);
-  });
-  sel.value = currentValue;
+  populateTemplates();
   renderFields(preserved);
   render();
 }
@@ -1300,7 +1984,7 @@ function renderFields(preserved) {
   const tpl = templates.find(t => t.id === tplId);
   const container = document.getElementById("dynamic-fields");
   container.innerHTML = "";
-  document.getElementById("program-wrap").classList.toggle("hidden", tpl.usesProgram === false);
+  document.getElementById("program-wrap").classList.remove("hidden");
 
   tpl.fields.forEach(fieldKey => {
     const cfg = fieldConfig[fieldKey];
@@ -1341,6 +2025,12 @@ function renderFields(preserved) {
         render();
       };
       container.appendChild(reset);
+    }
+    if (fieldKey === "awinId" && document.getElementById("program-select").value === "Tempur") {
+      const h = document.createElement("div");
+      h.className = "hint";
+      h.textContent = "Tempur: DE 16657 · AT 41158 · CH 41186 · IT 27423";
+      container.appendChild(h);
     }
   });
 }
