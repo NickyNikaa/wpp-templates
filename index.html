@@ -513,14 +513,14 @@ Best regards
     id: "messmer-sea-brand",
     scope: ["Meßmer"],
     label: { de: "Meßmer · SEA auf Brand – Verstoß / Stopp", en: "Meßmer · SEA on brand – violation / stop" },
-    fields: ["name", "website", "signature"],
+    fields: ["name", "signature"],
     subject: { de: "Meßmer: SEA auf Brand-Keywords – bitte einstellen", en: "Meßmer: SEA on brand keywords – please stop" },
     body: {
       de: {
         du:
 `Hallo {{name}},
 
-wir haben festgestellt, dass aktuell über Deine Seite {{website}} SEA-Kampagnen auf Google laufen, die auf Meßmer Brand-Keywords abzielen.
+wir haben festgestellt, dass aktuell über Deine Seite SEA-Kampagnen auf Google laufen, die auf Meßmer Brand-Keywords abzielen.
 
 Diese Vorgehensweise ist gemäß unseren AWIN-Programmbedingungen nicht gestattet („SEM auf Brand, auch in Falschschreibweisen und Kombinationen, ist nicht gestattet“).
 
@@ -531,7 +531,7 @@ Vielen Dank und viele Grüße
         ihr:
 `Hallo liebes {{name}}-Team,
 
-wir haben festgestellt, dass aktuell über Eure Seite {{website}} SEA-Kampagnen auf Google laufen, die auf Meßmer Brand-Keywords abzielen.
+wir haben festgestellt, dass aktuell über Eure Seite SEA-Kampagnen auf Google laufen, die auf Meßmer Brand-Keywords abzielen.
 
 Diese Vorgehensweise ist gemäß unseren AWIN-Programmbedingungen nicht gestattet („SEM auf Brand, auch in Falschschreibweisen und Kombinationen, ist nicht gestattet“).
 
@@ -543,7 +543,7 @@ Vielen Dank und viele Grüße
       en:
 `Hello dear {{name}} team,
 
-we have noticed that you are currently running SEA campaigns on Google through your site {{website}} that target Meßmer brand keywords.
+we have noticed that you are currently running SEA campaigns on Google through your site that target Meßmer brand keywords.
 
 This practice is not permitted under our AWIN program conditions ("SEM on brand, including misspellings and combinations, is not permitted").
 
@@ -551,6 +551,53 @@ We would like to point out that non-compliance with this provision may lead to c
 
 Thank you and best regards
 {{signature}}`,
+    },
+  },
+  {
+    id: "messmer-ablehnung",
+    scope: ["Meßmer"],
+    label: { de: "Meßmer · Ablehnung – passt nicht zum Programm", en: "Meßmer · Decline – not a fit for the program" },
+    fields: ["name", "signature"],
+    subject: { de: "Deine Bewerbung für unser Meßmer-Partnerprogramm", en: "Your application for our Meßmer affiliate program" },
+    body: {
+      de: {
+        du:`Hallo {{name}},
+
+vielen Dank für Dein Interesse an unserem Meßmer-Partnerprogramm und die Zeit, die Du Dir für die Bewerbung genommen hast.
+
+Wir haben Deine Bewerbung geprüft und uns entschieden, die Affiliate-Partnerschaft aktuell nicht einzugehen, da sie derzeit nicht zur Ausrichtung unseres Meßmer-Programms passt.
+
+Sobald sich auf Deiner Seite etwas Relevantes ändert, freuen wir uns über eine erneute Bewerbung.
+
+Vielen Dank für Dein Verständnis und weiterhin viel Erfolg!
+
+Liebe Grüße
+{{signature}} 😊`,
+        ihr:`Hallo liebes {{name}}-Team,
+
+vielen Dank für Euer Interesse an unserem Meßmer-Partnerprogramm und die Zeit, die Ihr Euch für die Bewerbung genommen habt.
+
+Wir haben Eure Bewerbung geprüft und uns entschieden, die Affiliate-Partnerschaft aktuell nicht einzugehen, da sie derzeit nicht zur Ausrichtung unseres Meßmer-Programms passt.
+
+Sobald sich auf Eurer Seite etwas Relevantes ändert, freuen wir uns über eine erneute Bewerbung.
+
+Vielen Dank für Euer Verständnis und weiterhin viel Erfolg!
+
+Liebe Grüße
+{{signature}} 😊`,
+      },
+      en:`Hi {{name}},
+
+thanks for your interest in our Meßmer affiliate program and for taking the time to apply.
+
+We've reviewed your application and have decided not to move forward with an affiliate partnership at this point, as it currently isn't a fit for the direction of our Meßmer program.
+
+Once something relevant changes on your side, we’d be happy to receive a fresh application.
+
+Thanks for understanding and continued success!
+
+Best regards
+{{signature}} 😊`,
     },
   },
   {
