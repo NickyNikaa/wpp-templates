@@ -776,7 +776,7 @@ Best regards
   {
     id: "annahme",
     label: { de: "Affiliate-Bewerbung – Annahme", en: "Affiliate application – accepted" },
-    fields: ["name", "website"],
+    fields: ["name", "website", "signature"],
     subject: {
       de: {
         du: "Willkommen im {{program}}-Partnerprogramm 🚢",
@@ -798,7 +798,7 @@ Solltest Du Fragen haben – zu Wunsch-Werbemitteln, individuellen Aktionen oder
 Viel Erfolg und gutes Gelingen mit {{website}}!
 
 Liebe Grüße
-Nicole 😊`,
+{{signature}} 😊`,
         ihr:
 `Hallo {{name}},
 
@@ -811,7 +811,7 @@ Solltet Ihr Fragen haben – zu Wunsch-Werbemitteln, individuellen Aktionen oder
 Viel Erfolg und gutes Gelingen mit {{website}}!
 
 Liebe Grüße
-Nicole 😊`,
+{{signature}} 😊`,
       },
       en:
 `Hi {{name}},
@@ -825,14 +825,14 @@ If you have any questions – about specific creatives, custom promotions or tra
 Wishing you great success with {{website}}!
 
 Best regards
-Nicole 😊`,
+{{signature}} 😊`,
     },
   },
 
   {
     id: "ablehnung",
     label: { de: "Affiliate-Bewerbung – Ablehnung", en: "Affiliate application – declined" },
-    fields: ["name"],
+    fields: ["name", "signature"],
     subject: {
       de: {
         du: "Deine Bewerbung für unser {{program}}-Partnerprogramm",
@@ -854,7 +854,7 @@ Sobald sich auf Deiner Seite etwas Relevantes ändert, freuen wir uns über eine
 Vielen Dank für Dein Verständnis und weiterhin viel Erfolg!
 
 Liebe Grüße
-Nicole 😊`,
+{{signature}} 😊`,
         ihr:
 `Hallo {{name}},
 
@@ -867,7 +867,7 @@ Sobald sich auf Eurer Seite etwas Relevantes ändert, freuen wir uns über eine 
 Vielen Dank für Euer Verständnis und weiterhin viel Erfolg!
 
 Liebe Grüße
-Nicole 😊`,
+{{signature}} 😊`,
       },
       en:
 `Hi {{name}},
@@ -881,14 +881,14 @@ Once something relevant changes on your side, we'd be happy to receive a fresh a
 Thanks for understanding and continued success!
 
 Best regards
-Nicole 😊`,
+{{signature}} 😊`,
     },
   },
 
   {
     id: "rueckfrage",
     label: { de: "Affiliate-Bewerbung – Rückfrage", en: "Affiliate application – follow-up question" },
-    fields: ["name", "question"],
+    fields: ["name", "question", "signature"],
     subject: {
       de: {
         du: "Kurze Rückfrage zu Deiner Bewerbung – {{program}}",
@@ -912,7 +912,7 @@ Sobald ich Deine Antwort habe, prüfe ich Deine Bewerbung umgehend und melde mic
 Vielen Dank vorab!
 
 Liebe Grüße
-Nicole 😊`,
+{{signature}} 😊`,
         ihr:
 `Hallo {{name}},
 
@@ -927,7 +927,7 @@ Sobald ich Eure Antwort habe, prüfe ich Eure Bewerbung umgehend und melde mich 
 Vielen Dank vorab!
 
 Liebe Grüße
-Nicole 😊`,
+{{signature}} 😊`,
       },
       en:
 `Hi {{name}},
@@ -943,14 +943,14 @@ As soon as I have your reply, I'll review your application and come back to you 
 Thanks in advance!
 
 Best regards
-Nicole 😊`,
+{{signature}} 😊`,
     },
   },
 
   {
     id: "bereits-beworben",
     label: { de: "Bereits beworbener Publisher", en: "Already-applied publisher" },
-    fields: ["name", "status"],
+    fields: ["name", "status", "signature"],
     subject: {
       de: {
         du: "Status Deiner Bewerbung – {{program}}",
@@ -970,7 +970,7 @@ danke für Deine erneute Nachricht! Ich habe in unserem System nachgeschaut: Du 
 Falls sich auf Deiner Seite zwischenzeitlich etwas geändert hat, freue ich mich über ein kurzes Update – dann schaue ich mir die Bewerbung gerne noch einmal an.
 
 Liebe Grüße
-Nicole 😊`,
+{{signature}} 😊`,
         ihr:
 `Hallo {{name}},
 
@@ -981,7 +981,7 @@ danke für Eure erneute Nachricht! Ich habe in unserem System nachgeschaut: Ihr 
 Falls sich auf Eurer Seite zwischenzeitlich etwas geändert hat, freue ich mich über ein kurzes Update – dann schaue ich mir die Bewerbung gerne noch einmal an.
 
 Liebe Grüße
-Nicole 😊`,
+{{signature}} 😊`,
       },
       en:
 `Hi {{name}},
@@ -993,14 +993,14 @@ thanks for getting back in touch! I just checked our system: you've already appl
 If something has changed on your side in the meantime, I'd love a quick update – I'm happy to review the application again.
 
 Best regards
-Nicole 😊`,
+{{signature}} 😊`,
     },
   },
 
   {
     id: "performance",
     label: { de: "Performance-Anfrage Antwort", en: "Performance request reply" },
-    fields: ["name", "period", "numbers"],
+    fields: ["name", "period", "numbers", "signature"],
     subject: {
       de: {
         du: "Deine Performance im {{program}}-Programm ({{period}})",
@@ -1022,7 +1022,7 @@ Zeitraum: {{period}}
 Falls Du Ideen hast, die Performance gemeinsam weiter zu pushen (z.B. spezielle Aktionen, individuelle Werbemittel oder Sub-IDs für besseres Tracking), lass es mich gerne wissen – ich unterstütze Dich gerne.
 
 Liebe Grüße
-Nicole 😊`,
+{{signature}} 😊`,
         ihr:
 `Hallo {{name}},
 
@@ -1035,7 +1035,7 @@ Zeitraum: {{period}}
 Falls Ihr Ideen habt, die Performance gemeinsam weiter zu pushen (z.B. spezielle Aktionen, individuelle Werbemittel oder Sub-IDs für besseres Tracking), lasst es mich gerne wissen – ich unterstütze Euch gerne.
 
 Liebe Grüße
-Nicole 😊`,
+{{signature}} 😊`,
       },
       en:
 `Hi {{name}},
@@ -1049,7 +1049,7 @@ Period: {{period}}
 If you have ideas to push performance further together (e.g. dedicated promotions, custom creatives or sub-IDs for better tracking), just let me know – happy to support.
 
 Best regards
-Nicole 😊`,
+{{signature}} 😊`,
     },
   },
 
@@ -1132,7 +1132,7 @@ Best regards
     id: "guidelines-overview",
     label: { de: "Affiliate Guidelines – Übersicht (TUI Cruises)", en: "Affiliate Guidelines – Overview (TUI Cruises)" },
     usesProgram: false,
-    fields: ["name"],
+    fields: ["name", "signature"],
     subject: {
       de: {
         du: "Affiliate Guidelines für unser TUI Cruises <em>Mein Schiff</em> Partnerprogramm",
@@ -1172,7 +1172,7 @@ damit unsere Zusammenarbeit reibungslos läuft, hier nochmal die wichtigsten Aff
 Bei Unsicherheit oder Fragen zu einer geplanten Aktion: Sprich mich vorab gerne kurz an – dann klären wir gemeinsam, ob alles passt.
 
 Liebe Grüße
-Nicole 😊`,
+{{signature}} 😊`,
         ihr:
 `Hallo {{name}},
 
@@ -1203,7 +1203,7 @@ damit unsere Zusammenarbeit reibungslos läuft, hier nochmal die wichtigsten Aff
 Bei Unsicherheit oder Fragen zu einer geplanten Aktion: Sprecht mich vorab gerne kurz an – dann klären wir gemeinsam, ob alles passt.
 
 Liebe Grüße
-Nicole 😊`,
+{{signature}} 😊`,
       },
       en:
 `Hi {{name}},
@@ -1235,7 +1235,7 @@ to make sure our collaboration runs smoothly, here's an overview of the most imp
 If anything is unclear or you're planning a specific activation: just check in with me beforehand – we'll figure out together if it fits.
 
 Best regards
-Nicole 😊`,
+{{signature}} 😊`,
     },
   },
 
@@ -1243,7 +1243,7 @@ Nicole 😊`,
     id: "guidelines-violation",
     label: { de: "Guidelines-Verstoß – freundlicher Hinweis", en: "Guidelines violation – friendly notice" },
     usesProgram: false,
-    fields: ["name", "verstoss", "frist"],
+    fields: ["name", "verstoss", "frist", "signature"],
     subject: {
       de: {
         du: "Hinweis zu unserem TUI Cruises <em>Mein Schiff</em> Partnerprogramm",
@@ -1267,7 +1267,7 @@ Hintergrund: TUI Cruises legt großen Wert auf den Schutz der Marke und ein kons
 Sollten Fragen offen sein oder ein Missverständnis vorliegen, melde Dich sehr gerne direkt bei mir. Wir finden gemeinsam eine Lösung.
 
 Liebe Grüße
-Nicole 😊`,
+{{signature}} 😊`,
         ihr:
 `Hallo {{name}},
 
@@ -1282,7 +1282,7 @@ Hintergrund: TUI Cruises legt großen Wert auf den Schutz der Marke und ein kons
 Sollten Fragen offen sein oder ein Missverständnis vorliegen, meldet Euch sehr gerne direkt bei mir. Wir finden gemeinsam eine Lösung.
 
 Liebe Grüße
-Nicole 😊`,
+{{signature}} 😊`,
       },
       en:
 `Hi {{name}},
@@ -1298,7 +1298,7 @@ Background: TUI Cruises places great importance on brand protection and a consis
 If anything is unclear or there's been a misunderstanding, just reach out directly. Happy to find a solution together.
 
 Best regards
-Nicole 😊`,
+{{signature}} 😊`,
     },
   },
 
@@ -1306,7 +1306,7 @@ Nicole 😊`,
     id: "ablehnung-cashback",
     label: { de: "Absage: Cashback / Couponing / Retargeting", en: "Decline: Cashback / Couponing / Retargeting" },
     usesProgram: false,
-    fields: ["name", "model"],
+    fields: ["name", "model", "signature"],
     subject: {
       de: {
         du: "Deine Anfrage zum TUI Cruises <em>Mein Schiff</em> Partnerprogramm",
@@ -1336,7 +1336,7 @@ Sollte sich Dein Modell perspektivisch ändern oder erweitern, freuen wir uns se
 Vielen Dank für Dein Verständnis und alles Gute weiterhin.
 
 Liebe Grüße
-Nicole 😊`,
+{{signature}} 😊`,
         ihr:
 `Hallo {{name}},
 
@@ -1357,7 +1357,7 @@ Sollte sich Euer Modell perspektivisch ändern oder erweitern, freuen wir uns se
 Vielen Dank für Euer Verständnis und alles Gute weiterhin.
 
 Liebe Grüße
-Nicole 😊`,
+{{signature}} 😊`,
       },
       en:
 `Hi {{name}},
@@ -1379,7 +1379,7 @@ If your model evolves or expands in the future, we'd be very happy to reconsider
 Thanks for understanding and best of luck going forward.
 
 Best regards
-Nicole 😊`,
+{{signature}} 😊`,
     },
   },
 
@@ -1387,7 +1387,7 @@ Nicole 😊`,
     id: "salesvalidierung",
     label: { de: "Salesvalidierungsliste (monatlich)", en: "Sales validation list (monthly)" },
     usesProgram: false,
-    fields: ["name", "monat", "frist"],
+    fields: ["name", "monat", "frist", "signature"],
     subject: {
       de: {
         du: "TUI Cruises – Salesvalidierungsliste DACH {{monat}}",
@@ -1410,7 +1410,7 @@ Hinweise zur Bearbeitung:
 Vielen Dank vorab für Deine Unterstützung!
 
 Liebe Grüße
-Nicole 😊`,
+{{signature}} 😊`,
         ihr:
 `Hallo {{name}},
 
@@ -1424,7 +1424,7 @@ Hinweise zur Bearbeitung:
 Vielen Dank vorab für Eure Unterstützung!
 
 Liebe Grüße
-Nicole 😊`,
+{{signature}} 😊`,
       },
       en:
 `Hi {{name}},
@@ -1439,7 +1439,7 @@ Notes:
 Thanks in advance for your support!
 
 Best regards
-Nicole 😊`,
+{{signature}} 😊`,
     },
   },
 
@@ -1447,7 +1447,7 @@ Nicole 😊`,
     id: "tracking-ausfall",
     label: { de: "Tracking-Ausfall – Ausgleichs-Methodik", en: "Tracking outage – compensation method" },
     usesProgram: false,
-    fields: ["name", "ausfallzeitraum", "methodik", "ausgleichsbetrag", "auszahlungsdatum"],
+    fields: ["name", "ausfallzeitraum", "methodik", "ausgleichsbetrag", "auszahlungsdatum", "signature"],
     subject: {
       de: {
         du: "Trackingausfall – Ausgleichs-Methodik für unsere Zusammenarbeit",
@@ -1476,7 +1476,7 @@ Die Provision werde ich als Bonus in AWIN einstellen – die Auszahlung läuft d
 Sollten zur Berechnung noch Fragen offen sein, melde Dich gerne kurz bei mir.
 
 Liebe Grüße
-Nicole 😊`,
+{{signature}} 😊`,
         ihr:
 `Hallo {{name}},
 
@@ -1496,7 +1496,7 @@ Die Provision werde ich als Bonus in AWIN einstellen – die Auszahlung läuft d
 Sollten zur Berechnung noch Fragen offen sein, meldet Euch gerne kurz bei mir.
 
 Liebe Grüße
-Nicole 😊`,
+{{signature}} 😊`,
       },
       en:
 `Hi {{name}},
@@ -1517,7 +1517,7 @@ I'll set the commission as a bonus in AWIN – payout will then run automaticall
 If anything about the calculation is unclear, just let me know.
 
 Best regards
-Nicole 😊`,
+{{signature}} 😊`,
     },
   },
 
@@ -1525,7 +1525,7 @@ Nicole 😊`,
     id: "reisebuero-storno",
     label: { de: "Reisebüro – Erklärung abgelehnte Buchungen", en: "Travel agency – explanation for rejected bookings" },
     usesProgram: false,
-    fields: ["name", "ablehnungsgrund"],
+    fields: ["name", "ablehnungsgrund", "signature"],
     subject: {
       de: {
         du: "<em>Mein Schiff</em> Partnerprogramm – abgelehnte Buchungen",
@@ -1545,7 +1545,7 @@ danke für Deine Rückfrage zu den abgelehnten Buchungen.
 Zur Erläuterung: Die im AWIN-System hinterlegten Standard-Gründe wie „Ungültige Buchung" sind generisch und lassen sich daher nicht als individueller Grund pro Buchung herauslesen. Den konkreten Hintergrund kann ich nur in Rücksprache mit TUI Cruises klären – das mache ich gerne, sobald Du mir die betreffenden Sale-IDs nennst.
 
 Liebe Grüße
-Nicole 😊`,
+{{signature}} 😊`,
         ihr:
 `Hallo {{name}},
 
@@ -1556,7 +1556,7 @@ danke für Eure Rückfrage zu den abgelehnten Buchungen.
 Zur Erläuterung: Die im AWIN-System hinterlegten Standard-Gründe wie „Ungültige Buchung" sind generisch und lassen sich daher nicht als individueller Grund pro Buchung herauslesen. Den konkreten Hintergrund kann ich nur in Rücksprache mit TUI Cruises klären – das mache ich gerne, sobald Ihr mir die betreffenden Sale-IDs nennt.
 
 Liebe Grüße
-Nicole 😊`,
+{{signature}} 😊`,
       },
       en:
 `Hi {{name}},
@@ -1568,14 +1568,14 @@ thanks for your follow-up on the rejected bookings.
 For context: The standard reasons in the AWIN system (e.g. "Invalid booking") are generic and can't be read as an individual reason per booking. I can only clarify the specific background after checking with TUI Cruises – happy to do that as soon as you share the relevant sale IDs.
 
 Best regards
-Nicole 😊`,
+{{signature}} 😊`,
     },
   },
 
   {
     id: "werbemittel-anlieferung",
     label: { de: "Werbemittel-Anlieferung", en: "Creative delivery" },
-    fields: ["name", "anlass", "materialien", "gueltigkeitszeitraum"],
+    fields: ["name", "anlass", "materialien", "gueltigkeitszeitraum", "signature"],
     subject: {
       de: {
         du: "Neue Werbemittel: {{anlass}} – {{program}}",
@@ -1598,7 +1598,7 @@ Gültigkeits-Zeitraum: {{gueltigkeitszeitraum}}
 Bei Wünschen zu speziellen Formaten oder individuellen Anpassungen, gib mir gerne kurz Bescheid – ich frage das beim Kunden direkt nach.
 
 Liebe Grüße
-Nicole 😊`,
+{{signature}} 😊`,
         ihr:
 `Hallo {{name}},
 
@@ -1612,7 +1612,7 @@ Gültigkeits-Zeitraum: {{gueltigkeitszeitraum}}
 Bei Wünschen zu speziellen Formaten oder individuellen Anpassungen, gebt mir gerne kurz Bescheid – ich frage das beim Kunden direkt nach.
 
 Liebe Grüße
-Nicole 😊`,
+{{signature}} 😊`,
       },
       en:
 `Hi {{name}},
@@ -1627,7 +1627,7 @@ Validity period: {{gueltigkeitszeitraum}}
 If you have requests for specific formats or custom adjustments, just let me know – I'll follow up with the client directly.
 
 Best regards
-Nicole 😊`,
+{{signature}} 😊`,
     },
   },
 ];
