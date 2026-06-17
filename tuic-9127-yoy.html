@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mein Schiff DACH (9127) — Year-over-Year (indexiert)</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root{--bg:#f5f6f8;--card:#fff;--ink:#1a1f2e;--muted:#6b7280;--line:#e5e7eb;
+    --navy:#0f3a5f;--accent:#2c5282;--blue:#2ea3f2;--slate:#9db2ce;--pos:#16a34a;--neg:#dc2626;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;font-size:15px;line-height:1.5}
+  .wrap{max-width:900px;margin:0 auto;padding:32px 24px 72px}
+  h1{font-size:22px;margin:0 0 2px;color:var(--navy)}
+  .sub{color:var(--muted);font-size:13px;margin-bottom:8px}
+  .note{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:8px;
+    padding:8px 12px;font-size:12px;margin:14px 0 22px}
+  .btns{display:flex;gap:10px;margin:0 0 22px;flex-wrap:wrap}
+  .btns button{background:var(--navy);color:#fff;border:0;border-radius:8px;padding:9px 16px;
+    font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+  .btns button.ghost{background:#fff;color:var(--navy);border:1px solid var(--line)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:20px;
+    box-shadow:0 1px 3px rgba(0,0,0,.04)}
+  canvas{width:100%!important}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{padding:8px 10px;text-align:right;border-bottom:1px solid var(--line)}
+  th:first-child,td:first-child{text-align:left}
+  thead th{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+  .pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}
+  .ytd{background:#ebf2fb;font-weight:600}
+  .foot{color:var(--muted);font-size:12px;margin-top:18px;line-height:1.55}
+  @media print{.btns,.note{display:none}body{background:#fff}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Mein Schiff DACH (9127) — Affiliate Year-over-Year</h1>
+  <div class="sub">Indexierte Darstellung (Vorjahresmonat = 100) · exkl. Payback · Stand 17.06.2026</div>
+  <div class="note">Öffentliche Ansicht: aus Vertraulichkeitsgründen nur relative Veränderungen (Index &amp; YoY&nbsp;%) — keine absoluten Umsatzwerte.</div>
+
+  <div class="btns">
+    <button onclick="dlPng()">Chart als PNG</button>
+    <button class="ghost" onclick="window.print()">Seite als PDF speichern</button>
+  </div>
+
+  <div class="card">
+    <canvas id="chart" height="150"></canvas>
+  </div>
+
+  <div class="card">
+    <table>
+      <thead><tr><th>Monat</th><th>Index 2026 (VJ&nbsp;=&nbsp;100)</th><th>Δ YoY</th></tr></thead>
+      <tbody id="tb"></tbody>
+    </table>
+    <div class="foot">
+      Lesart: Index 100 = Umsatz auf Vorjahresniveau. Der YTD-Rückgang (Jan–Mai) ist mengen-, nicht wertgetrieben —
+      bei sinkender Sales-Zahl bleibt der durchschnittliche Warenkorbwert stabil. Juni = Month-to-Date, nicht vergleichbar.
+    </div>
+  </div>
+</div>
+
+<script>
+const M=["Jan","Feb","Mär","Apr","Mai","Jun"];
+const IDX=[66.8,112.5,99.4,97.1,77.0,null]; // Jun MTD = n/v
+const MTD=52.2;
+const fmt=x=>(x>0?"+":"−")+Math.abs(x).toFixed(1).replace(".",",")+" %";
+const yoy=IDX.map(v=>v==null?null:v-100);
+
+const tb=document.getElementById("tb");
+M.forEach((m,i)=>{
+  const idx=IDX[i], d=yoy[i];
+  tb.insertAdjacentHTML("beforeend",
+    `<tr><td>${m}${i===5?' (MTD)':''}</td>
+     <td>${idx!=null?idx.toLocaleString("de-DE",{minimumFractionDigits:1,maximumFractionDigits:1}):"–"}</td>
+     <td class="${d==null?'':(d>=0?'pos':'neg')}">${d==null?"–":fmt(d)}</td></tr>`);
+});
+tb.insertAdjacentHTML("beforeend",
+  `<tr class="ytd"><td>YTD Jan–Mai</td><td>87,6</td><td class="neg">−12,4 %</td></tr>`);
+
+const vals=IDX.map((v)=>v==null?MTD:v);
+const cols=IDX.map((v)=>v==null?"#a9d6f5":(v>=100?"#16a34a":"#2ea3f2"));
+const ctx=document.getElementById("chart");
+const chart=new Chart(ctx,{
+  type:"bar",
+  data:{labels:M,datasets:[{label:"Index 2026 (Vorjahr = 100)",data:vals,backgroundColor:cols,borderRadius:4}]},
+  options:{responsive:true,
+    plugins:{legend:{display:false},
+      tooltip:{callbacks:{label:c=>{
+        const i=c.dataIndex;
+        if(IDX[i]==null) return "Index "+MTD.toFixed(1)+" (MTD)";
+        return "Index "+IDX[i].toFixed(1)+"   ("+fmt(yoy[i])+")";
+      }}}},
+    scales:{
+      x:{grid:{display:false},ticks:{color:"#6b7280"}},
+      y:{grid:{color:"#e5e7eb"},ticks:{color:"#6b7280"},
+         title:{display:true,text:"Index (Vorjahr = 100)",color:"#6b7280"}}
+    }
+  },
+  plugins:[{id:"baseline",afterDraw(c){
+    const y=c.scales.y.getPixelForValue(100);
+    const{left,right}=c.chartArea, x=c.ctx;
+    x.save();x.strokeStyle="#94a3b8";x.setLineDash([5,4]);x.lineWidth=1;
+    x.beginPath();x.moveTo(left,y);x.lineTo(right,y);x.stroke();
+    x.setLineDash([]);x.fillStyle="#94a3b8";x.font="11px sans-serif";x.fillText("100 = Vorjahr",left+6,y-5);x.restore();
+  }}]
+});
+
+function dlPng(){
+  const a=document.createElement("a");
+  a.href=chart.toBase64Image("image/png",1);
+  a.download="MeinSchiff_9127_YoY_Index.png";a.click();
+}
+</script>
+</body>
+</html>
