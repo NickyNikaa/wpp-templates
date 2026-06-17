@@ -5,189 +5,452 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Podcast Learnings — DOAC · ungeskriptet · Chase Hughes</title>
 <style>
-  :root {
-    --bg: #0f1115;
-    --card: #1a1d24;
-    --card-hover: #21252e;
-    --border: #2a2f3a;
-    --text: #e8eaed;
-    --muted: #9aa0ab;
-    --doac: #d4a24e;
-    --unge: #4ec9a2;
-    --chase: #8c9bff;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.55;
-    padding: 0 0 60px;
-  }
-  header {
-    padding: 40px 24px 24px;
-    max-width: 1100px;
-    margin: 0 auto;
-    text-align: center;
-  }
-  header .kicker {
-    color: var(--muted);
-    font-size: 13px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    font-weight: 600;
-  }
-  header h1 { font-size: 34px; margin: 10px 0 6px; letter-spacing: -0.5px; }
-  header p { color: var(--muted); font-size: 15px; max-width: 660px; margin: 0 auto; }
-  .controls { max-width: 1100px; margin: 24px auto 0; padding: 0 24px; }
-  #search {
-    width: 100%; padding: 14px 18px; font-size: 16px;
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: 12px; color: var(--text); outline: none; transition: border 0.15s;
-  }
-  #search:focus { border-color: #6b7280; }
-  #search::placeholder { color: var(--muted); }
-  .filters { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
-  .chip {
-    padding: 8px 16px; font-size: 13.5px; border-radius: 999px;
-    border: 1px solid var(--border); background: var(--card); color: var(--muted);
-    cursor: pointer; transition: all 0.15s; user-select: none;
-    display: flex; align-items: center; gap: 8px;
-  }
-  .chip .dot { width: 9px; height: 9px; border-radius: 50%; }
-  .chip:hover { background: var(--card-hover); color: var(--text); }
-  .chip.active { color: var(--text); font-weight: 600; }
-  .chip.active[data-src="Alle"] { border-color: #6b7280; background: #2a2f3a; }
-  .chip.active[data-src="Diary of a CEO"] { border-color: var(--doac); background: rgba(212,162,78,0.14); color: var(--doac); }
-  .chip.active[data-src="{ungeskriptet}"] { border-color: var(--unge); background: rgba(78,201,162,0.14); color: var(--unge); }
-  .chip.active[data-src="Chase Hughes"] { border-color: var(--chase); background: rgba(140,155,255,0.16); color: var(--chase); }
-  .count { max-width: 1100px; margin: 18px auto 0; padding: 0 24px; color: var(--muted); font-size: 13px; }
-  .grid {
-    max-width: 1100px; margin: 14px auto 0; padding: 0 24px;
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px;
-  }
-  .card {
-    background: var(--card); border: 1px solid var(--border); border-left-width: 3px;
-    border-radius: 12px; padding: 20px; display: flex; flex-direction: column;
-    transition: transform 0.12s, border-color 0.12s;
-  }
-  .card:hover { transform: translateY(-2px); }
-  .card[data-src="Diary of a CEO"] { border-left-color: var(--doac); }
-  .card[data-src="{ungeskriptet}"] { border-left-color: var(--unge); }
-  .card[data-src="Chase Hughes"] { border-left-color: var(--chase); }
-  .badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
-  .badge {
-    font-size: 11px; letter-spacing: 0.4px; padding: 4px 10px;
-    border-radius: 6px; font-weight: 600;
-  }
-  .badge.pod { color: #11141a; }
-  .card[data-src="Diary of a CEO"] .badge.pod { background: var(--doac); }
-  .card[data-src="{ungeskriptet}"] .badge.pod { background: var(--unge); }
-  .card[data-src="Chase Hughes"] .badge.pod { background: var(--chase); }
-  .badge.theme { background: var(--border); color: var(--muted); text-transform: uppercase; }
-  .card h3 { font-size: 16.5px; margin-bottom: 8px; line-height: 1.35; }
-  .card p { font-size: 14.5px; color: #c7ccd5; flex-grow: 1; }
-  .card .src {
-    margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border);
-    font-size: 12.5px; color: var(--muted);
-  }
-  .empty {
-    max-width: 1100px; margin: 40px auto; padding: 0 24px;
-    text-align: center; color: var(--muted);
-  }
-  footer {
-    max-width: 1100px; margin: 50px auto 0; padding: 24px; text-align: center;
-    color: var(--muted); font-size: 12px; border-top: 1px solid var(--border);
-  }
-  footer a { color: var(--muted); }
-  mark { background: #d4a24e; color: #1a1d24; padding: 0 2px; border-radius: 3px; }
+  :root { --bg:#0f1115; --card:#1a1d24; --card-hover:#21252e; --border:#2a2f3a; --text:#e8eaed; --muted:#9aa0ab; --doac:#d4a24e; --unge:#4ec9a2; --chase:#8c9bff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; background:var(--bg); color:var(--text); line-height:1.55; padding:0 0 60px; }
+  header { padding:40px 24px 24px; max-width:1100px; margin:0 auto; text-align:center; }
+  header .kicker { color:var(--muted); font-size:13px; letter-spacing:2px; text-transform:uppercase; font-weight:600; }
+  header h1 { font-size:34px; margin:10px 0 6px; letter-spacing:-0.5px; }
+  header p { color:var(--muted); font-size:15px; max-width:660px; margin:0 auto; }
+  .controls { max-width:1100px; margin:24px auto 0; padding:0 24px; }
+  #search { width:100%; padding:14px 18px; font-size:16px; background:var(--card); border:1px solid var(--border); border-radius:12px; color:var(--text); outline:none; transition:border .15s; }
+  #search:focus { border-color:#6b7280; }
+  #search::placeholder { color:var(--muted); }
+  .filters { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+  .chip { padding:8px 16px; font-size:13.5px; border-radius:999px; border:1px solid var(--border); background:var(--card); color:var(--muted); cursor:pointer; transition:all .15s; user-select:none; display:flex; align-items:center; gap:8px; }
+  .chip .dot { width:9px; height:9px; border-radius:50%; }
+  .chip:hover { background:var(--card-hover); color:var(--text); }
+  .chip.active { color:var(--text); font-weight:600; }
+  .chip.active[data-src="Alle"] { border-color:#6b7280; background:#2a2f3a; }
+  .chip.active[data-src="Diary of a CEO"] { border-color:var(--doac); background:rgba(212,162,78,.14); color:var(--doac); }
+  .chip.active[data-src="{ungeskriptet}"] { border-color:var(--unge); background:rgba(78,201,162,.14); color:var(--unge); }
+  .chip.active[data-src="Chase Hughes"] { border-color:var(--chase); background:rgba(140,155,255,.16); color:var(--chase); }
+  .count { max-width:1100px; margin:18px auto 0; padding:0 24px; color:var(--muted); font-size:13px; }
+  .grid { max-width:1100px; margin:14px auto 0; padding:0 24px; display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:16px; }
+  .card { background:var(--card); border:1px solid var(--border); border-left-width:3px; border-radius:12px; padding:20px; display:flex; flex-direction:column; transition:transform .12s,border-color .12s; }
+  .card:hover { transform:translateY(-2px); }
+  .card[data-src="Diary of a CEO"] { border-left-color:var(--doac); }
+  .card[data-src="{ungeskriptet}"] { border-left-color:var(--unge); }
+  .card[data-src="Chase Hughes"] { border-left-color:var(--chase); }
+  .badges { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }
+  .badge { font-size:11px; letter-spacing:.4px; padding:4px 10px; border-radius:6px; font-weight:600; }
+  .badge.pod { color:#11141a; }
+  .card[data-src="Diary of a CEO"] .badge.pod { background:var(--doac); }
+  .card[data-src="{ungeskriptet}"] .badge.pod { background:var(--unge); }
+  .card[data-src="Chase Hughes"] .badge.pod { background:var(--chase); }
+  .badge.theme { background:var(--border); color:var(--muted); text-transform:uppercase; }
+  .card h3 { font-size:16.5px; margin-bottom:8px; line-height:1.35; }
+  .card p { font-size:14.5px; color:#c7ccd5; flex-grow:1; }
+  .card .src { margin-top:14px; padding-top:12px; border-top:1px solid var(--border); font-size:12.5px; color:var(--muted); }
+  .empty { max-width:1100px; margin:40px auto; padding:0 24px; text-align:center; color:var(--muted); }
+  footer { max-width:1100px; margin:50px auto 0; padding:24px; text-align:center; color:var(--muted); font-size:12px; border-top:1px solid var(--border); }
+  footer a { color:var(--muted); }
+  mark { background:#d4a24e; color:#1a1d24; padding:0 2px; border-radius:3px; }
 </style>
 </head>
 <body>
 <header>
   <div class="kicker">Learnings &amp; Insights</div>
   <h1>Podcast-Wissensbibliothek</h1>
-  <p>Die Kernideen aus drei Quellen &mdash; <strong style="color:var(--doac)">Diary of a CEO</strong>, <strong style="color:var(--unge)">{ungeskriptet}</strong> und <strong style="color:var(--chase)">Chase Hughes</strong>. Filtere nach Quelle, suche nach Stichwort oder Thema.</p>
+  <p>Die Kernideen aus drei Quellen &mdash; <strong style="color:var(--doac)">Diary of a CEO</strong>, <strong style="color:var(--unge)">{ungeskriptet}</strong> und <strong style="color:var(--chase)">Chase Hughes</strong>. Filtere nach Quelle, suche nach Stichwort oder Thema &mdash; die Treffer erscheinen sofort beim Tippen.</p>
 </header>
-
 <div class="controls">
   <input id="search" type="text" placeholder="Suche nach Stichwort, Gast oder Thema… (z. B. Schlaf, FATE, Zuhören, Disziplin)" autocomplete="off">
   <div class="filters" id="filters"></div>
 </div>
-
 <div class="count" id="count"></div>
 <div class="grid" id="grid"></div>
 <div class="empty" id="empty" style="display:none">Keine Treffer. Versuch ein anderes Stichwort.</div>
-
 <footer>
-  Inhalte zusammengefasst aus öffentlich verfügbaren Episoden-Notizen, Show-Notes, Büchern und Interviews.
-  Eine kuratierte Übersicht der Kernideen &mdash; keine vollständigen Transkripte.
-  Die {ungeskriptet}-Karten beschreiben die wiederkehrende Haltung &amp; Gesprächsphilosophie des Podcasts (die konkreten Inhalte variieren je Gast).
-  &nbsp;·&nbsp; <a href="diary-of-a-ceo.html">Zur reinen Diary-of-a-CEO-Seite →</a>
+  Inhalte zusammengefasst aus öffentlich verfügbaren Episoden-Notizen, Show-Notes, Büchern und Interviews. Eine kuratierte Übersicht der Kernideen &mdash; keine vollständigen Transkripte. Die {ungeskriptet}-Karten beschreiben die wiederkehrende Haltung &amp; Gesprächsphilosophie des Podcasts (die konkreten Inhalte variieren je Gast). &nbsp;·&nbsp; <a href="diary-of-a-ceo.html">Zur reinen Diary-of-a-CEO-Seite →</a>
 </footer>
-
 <script>
 const DATA = [
-  // ===================== DIARY OF A CEO =====================
-  {pod:"Diary of a CEO", theme:"Mindset", title:"Spiele das Leben wie ein Videospiel", insight:"Bartletts „Video-Game State of Mind": Beim Zocken handeln wir furchtlos, im echten Leben zögerlich. Dieselbe spielerische Risikobereitschaft aufs Leben zu übertragen, half ihm durch dunkle Phasen und Krisen.", source:"Steven Bartlett"},
-  {pod:"Diary of a CEO", theme:"Mindset", title:"Scheitern ist die Studiengebühr für Weisheit", insight:"Die erfolgreichsten Menschen und Firmen sind oft die, die am meisten scheitern. Jeder Misserfolg enthält Feedback, Feedback wird zu Wissen, angewandtes Wissen wird zu Macht.", source:"33 Laws of Business and Life"},
-  {pod:"Diary of a CEO", theme:"Mindset", title:"Kleine Fehler kompoundieren", insight:"Winzige, ignorierte Fehler wachsen über Zeit zu großen Katastrophen — ob in Beziehungen, Business oder persönlicher Entwicklung. Wer kleine Missstände übersieht, zahlt später teuer.", source:"33 Laws of Business and Life"},
-  {pod:"Diary of a CEO", theme:"Mindset", title:"Verletzlichkeit ist kein Schwäche, sondern Mut", insight:"Brené Brown (meistgewünschter Gast des Podcasts): Verletzlichkeit ist der Kern von Mut und authentischem Leben. Wer sie vermeidet, vermeidet auch echte Verbindung.", source:"Brené Brown"},
-  {pod:"Diary of a CEO", theme:"Mindset", title:"Geschwindigkeit schlägt Perfektion", insight:"Schnelle Akteure überholen langsame — immer. Statt auf den perfekten Moment zu warten, lieber zügig handeln, iterieren und aus dem Feedback lernen.", source:"33 Laws of Business and Life"},
-  {pod:"Diary of a CEO", theme:"Mindset", title:"„Screw it, just do it"", insight:"Richard Branson baute Virgin mit radikaler Handlungsbereitschaft auf und machte seine Dyslexie zum Geschäftsvorteil. Anfangen schlägt Grübeln.", source:"Richard Branson"},
-  {pod:"Diary of a CEO", theme:"Business", title:"Fülle deine fünf Eimer", insight:"Erfolg beginnt mit dem Füllen von fünf „Buckets" in dieser Reihenfolge: Wissen, Fähigkeiten, Netzwerk, Ressourcen, Reputation. Die ersten beiden kann dir niemand nehmen.", source:"33 Laws of Business and Life"},
-  {pod:"Diary of a CEO", theme:"Business", title:"Die vier Säulen des Erfolgs", insight:"Bartletts Rahmenwerk: Das Selbst (Selbsterkenntnis & Disziplin), Die Story (Einfluss durch Erzählen), Die Philosophie (Werte als Kompass) und Das Team (die richtigen Menschen).", source:"33 Laws of Business and Life"},
-  {pod:"Diary of a CEO", theme:"Business", title:"Die fünf Prinzipien der Innovation", insight:"Bürokratie abbauen, Anreize richtig setzen, die richtigen Führungskräfte befördern, korrekt messen und Misserfolge offen teilen. So bleibt eine Organisation innovativ.", source:"33 Laws of Business and Life"},
-  {pod:"Diary of a CEO", theme:"Business", title:"Community-led Marketing schlägt Werbung", insight:"Ben Francis baute Gymshark über eine echte Community und authentische Markenidentität statt klassischer Werbung — der Blueprint für moderne Marken.", source:"Ben Francis (Gymshark)"},
-  {pod:"Diary of a CEO", theme:"Business", title:"Fokus auf Menschen sichert Freiheit", insight:"Branson: Wer langfristig auf Menschen — Mitarbeitende wie Kund:innen — setzt, gewinnt unternehmerische Freiheit. Kultur ist kein Beiwerk, sondern Fundament.", source:"Richard Branson"},
-  {pod:"Diary of a CEO", theme:"Geld", title:"Zwei Wege zu mehr Wohlstand", insight:"Morgan Housel: Es gibt nur zwei Hebel — mehr verzichten (sparen) oder weniger wollen. Beide verkleinern die Lücke zwischen Ego und Einkommen.", source:"Morgan Housel"},
-  {pod:"Diary of a CEO", theme:"Geld", title:"Reichtum ist unsichtbar, Status ist sichtbar", insight:"Was man sieht — Autos, Uhren, Häuser — ist Status. Echter Reichtum ist still, geduldig und unsichtbar: das Geld, das man NICHT ausgegeben hat.", source:"Morgan Housel"},
-  {pod:"Diary of a CEO", theme:"Geld", title:"Der „Midwit"-Investor verliert", insight:"Anfänger und Wall-Street-Profis kaufen beide Index-Fonds. Nur der Halbwissende glaubt, den Markt schlagen zu können. Stetiges Compounding über Jahrzehnte schlägt Aktivität.", source:"Morgan Housel"},
-  {pod:"Diary of a CEO", theme:"Geld", title:"Der Hausmeister mit 8 Mio. Dollar", insight:"Ronald Read, Tankwart und Hausmeister, hinterließ 8 Mio. $ — durch 70 Jahre geduldiges Investieren. Zeit im Markt schlägt Timing und Gehalt.", source:"Morgan Housel"},
-  {pod:"Diary of a CEO", theme:"Geld", title:"Harte Arbeit allein baut keinen Reichtum", insight:"Codie Sanchez: Wohlstand entsteht durch Eigentum an Cashflow-Geschäften, nicht durch Stunden. Sie plädiert für den Kauf „langweiliger" Main-Street-Unternehmen.", source:"Codie Sanchez"},
-  {pod:"Diary of a CEO", theme:"Gesundheit", title:"Feste Schlafzeiten sind die Nr. 1 Regel", insight:"Matthew Walker: Jeden Tag zur selben Zeit ins Bett und aufstehen — auch am Wochenende. Regelmäßigkeit stabilisiert den circadianen Rhythmus stärker als jede lange Nacht.", source:"Matthew Walker"},
-  {pod:"Diary of a CEO", theme:"Gesundheit", title:"Kühl, dunkel, ruhig schlafen", insight:"Schlafzimmer auf 18–18,5 °C, Licht in der Stunde vor dem Bett reduzieren, statt Scrollen etwas Beruhigendes tun. Licht und Wärme arbeiten gegen Tiefschlaf.", source:"Matthew Walker"},
-  {pod:"Diary of a CEO", theme:"Gesundheit", title:"Alkohol & Koffein sabotieren den Tiefschlaf", insight:"Beide stören heimlich die Erholungsphasen des Schlafs und die mentale Leistung — selbst wenn man das Gefühl hat, gut geschlafen zu haben.", source:"Matthew Walker"},
-  {pod:"Diary of a CEO", theme:"Gesundheit", title:"Schlafmangel ist ein Ganzkörper-Risiko", insight:"Zu wenig Schlaf erhöht das Risiko für Prädiabetes, Herz-Kreislauf-Erkrankungen, Übergewicht, gesenkte Hormonspiegel, Angst und Depression — bis hin zu früherer Sterblichkeit.", source:"Matthew Walker"},
-  {pod:"Diary of a CEO", theme:"Gesundheit", title:"Gesundheit beginnt im Darm", insight:"Tim Spector: Neue Forschung verknüpft Demenz, Depression und Angst mit der Darmgesundheit. Vielfalt (30+ Pflanzen/Woche) zählt mehr als Kalorienzählen.", source:"Tim Spector"},
-  {pod:"Diary of a CEO", theme:"Gesundheit", title:"Vorsicht bei Online-Gesundheitstrends", insight:"Dr. Mike warnt vor schädlichen Diäten und dem Mythos des reinen Kalorienzählens. Viele virale Gesundheitstrends halten der Evidenz nicht stand.", source:"Dr. Mike"},
-  {pod:"Diary of a CEO", theme:"Psychologie", title:"Trauma sind unerfüllte emotionale Bedürfnisse", insight:"Gabor Maté: Trauma ist nicht nur Missbrauch, sondern die Wunde, wenn als Kind emotionale Bedürfnisse unerfüllt bleiben — selbst in liebevollen Familien.", source:"Gabor Maté"},
-  {pod:"Diary of a CEO", theme:"Psychologie", title:"Der Körper hält die Rechnung", insight:"Unverarbeitetes Trauma versetzt das Nervensystem in Dauer-Stress oder Taubheit und kann sich als körperliche Krankheit, Sucht oder chronische Dysfunktion zeigen.", source:"Gabor Maté"},
-  {pod:"Diary of a CEO", theme:"Psychologie", title:"Mach das Trauma zum Freund, nicht zum Meister", insight:"Trauma wirkt wie ein Puppenspieler. Der Ausweg: es bewusst wahrnehmen und integrieren. Das Gegenteil von Trauma ist Befreiung.", source:"Gabor Maté"},
-  {pod:"Diary of a CEO", theme:"Psychologie", title:"„Abnormales" Verhalten ist oft normal", insight:"Vieles, was als psychische Krankheit gilt, ist eine normale Reaktion auf widrige Lebenserfahrungen. Maté plädiert für einen trauma-informierten Blick auf die Ursachen.", source:"Gabor Maté"},
-  {pod:"Diary of a CEO", theme:"Psychologie", title:"Genetik erklärt nur die halbe Zufriedenheit", insight:"Etwa die Hälfte des individuellen Glücks ist genetisch — der Rest hängt von Entscheidungen ab, vor allem der Wahl von Partner:in und Beruf.", source:"Diary of a CEO (Happiness)"},
-  {pod:"Diary of a CEO", theme:"Beziehungen", title:"Die Partnerwahl ist eine der größten Lebensentscheidungen", insight:"Wiederkehrendes Thema: Wen man als Partner:in wählt und welchen Beruf man ergreift, beeinflusst die Lebenszufriedenheit stärker als fast jede andere Entscheidung.", source:"Diary of a CEO"},
-  {pod:"Diary of a CEO", theme:"Beziehungen", title:"Die stille Epidemie der Vereinsamung", insight:"Brené Brown: Trotz digitaler Vernetzung leben viele in einer versteckten Epidemie der Disconnection. Echte Zugehörigkeit erfordert verletzliche, präsente Verbindung.", source:"Brené Brown"},
-  {pod:"Diary of a CEO", theme:"Beziehungen", title:"Zeit für Familie ist die unsichtbare Priorität", insight:"Ein Faden durch fast jede Folge: Bartlett reflektiert, wie wenig Zeit er Familie und engen Freund:innen gibt — und wie zentral diese Beziehungen für ein gutes Leben sind.", source:"Steven Bartlett"},
-  {pod:"Diary of a CEO", theme:"Tech & Fokus", title:"Dein Handy ist eine Skinner-Box", insight:"Digitale Geräte funktionieren wie Belohnungs-Apparate, die unsere Biologie hacken. Short-Form-Video kann Gedächtnis und kognitive Funktion messbar beeinträchtigen.", source:"Diary of a CEO (Tech)"},
-  {pod:"Diary of a CEO", theme:"Tech & Fokus", title:"Gen Z trägt die Last der Always-On-Kultur", insight:"Höhere Raten von Angst und Depression unter jungen Nutzer:innen werden mit intensivem Konsum kurzer Videoformate und permanenter Erreichbarkeit in Verbindung gebracht.", source:"Diary of a CEO (Tech)"},
-  {pod:"Diary of a CEO", theme:"Tech & Fokus", title:"KI: Macht konzentriert sich bei wenigen", insight:"Diskussionen zu KI heben hervor, wie wenige Akteure die Entscheidungsmacht halten, wie Narrative gespielt werden und welche realen Umweltkosten große Rechenzentren verursachen.", source:"Diary of a CEO (KI)"},
-
-  // ===================== {ungeskriptet} — BEN BERNDT =====================
-  {pod:"{ungeskriptet}", theme:"Format & Haltung", title:"Echte Gespräche statt Schnitt", insight:"Ben Berndt schneidet seine Folgen bewusst nicht. Gäste können nicht aus dem Kontext gerissen werden — das erzeugt eine Authentizität und Offenheit, die geschnittene Formate selten erreichen.", source:"Ben Berndt"},
-  {pod:"{ungeskriptet}", theme:"Haltung", title:"Neugier ist der Antrieb", insight:"Ben führt seine Gespräche primär, um zu verstehen, was er noch nicht weiß. Nicht das Rechthaben, sondern das Lernen steht im Zentrum jeder Folge.", source:"Ben Berndt"},
-  {pod:"{ungeskriptet}", theme:"Perspektivenwechsel", title:"Lernen von Menschen außerhalb der Norm", insight:"„Was kann ich von einem Menschen lernen, der nicht der Norm entspricht?" Gerade kontroverse Gäste reizen Ben — weil sie den eigenen Horizont am stärksten herausfordern.", source:"Ben Berndt"},
-  {pod:"{ungeskriptet}", theme:"Zweck", title:"Gespräche, die weiterbringen", insight:"Das erklärte Ziel: Gespräche, die nicht nur Ben selbst, sondern auch die Zuhörenden voranbringen. Erkenntnis statt Unterhaltung um ihrer selbst willen.", source:"Ben Berndt"},
-  {pod:"{ungeskriptet}", theme:"Format", title:"Tiefe vor Reichweite", insight:"Statt schneller Soundbites setzt das Format auf lange, tiefe Gespräche mit besonderen Menschen — und wurde gerade dadurch erfolgreich.", source:"Ben Berndt"},
-  {pod:"{ungeskriptet}", theme:"Gesprächsführung", title:"Zuhören, um zu verstehen", insight:"Auch bei polarisierenden Gästen steht echtes Zuhören und Interesse im Vordergrund, nicht Konfrontation. Verstehen kommt vor Bewerten.", source:"Ben Berndt"},
-  {pod:"{ungeskriptet}", theme:"Perspektivenwechsel", title:"Den eigenen Horizont erweitern", insight:"Die bewusste Vielfalt der Gäste — von Politik über Wirtschaft bis Subkultur — dient dazu, den eigenen Horizont und den des Publikums zu weiten.", source:"Ben Berndt"},
-  {pod:"{ungeskriptet}", theme:"Haltung", title:"Mut zur Kontroverse", insight:"Ben lädt gezielt Menschen mit „Ecken und Kanten" ein. Reibung wird nicht vermieden, sondern als Quelle echter Erkenntnis zugelassen.", source:"Ben Berndt"},
-
-  // ===================== CHASE HUGHES =====================
-  {pod:"Chase Hughes", theme:"Beeinflussung", title:"Das FATE-Modell", insight:"Der Kern von Hughes' Arbeit: Focus, Authority, Tribe, Emotion — die vier Urinstinkte, über die menschliches Verhalten gesteuert und beeinflusst wird.", source:"Chase Hughes"},
-  {pod:"Chase Hughes", theme:"Beeinflussung", title:"Focus — ohne Aufmerksamkeit kein Einfluss", insight:"Der erste Schritt ist, Aufmerksamkeit zu fangen — über Neuheit, Überraschung oder Veränderung im Umfeld. Ohne Fokus ist keine weitere Beeinflussung möglich.", source:"Chase Hughes (FATE)"},
-  {pod:"Chase Hughes", theme:"Autorität", title:"Authority — Status wird ausgestrahlt", insight:"Wahrgenommene Autorität entsteht aus fünf Qualitäten: Dominanz, Disziplin, Leadership, Dankbarkeit und Spaß. Ein ruhiges, gelassenes Auftreten signalisiert Status.", source:"Chase Hughes (FATE)"},
-  {pod:"Chase Hughes", theme:"Beeinflussung", title:"Tribe — Zugehörigkeit steuert Verhalten", insight:"„Wir vs. Sie": Soziale Zugehörigkeit, Gruppendruck und die Angst vor Ausschluss verstärken Verhalten und erzeugen Konsistenz.", source:"Chase Hughes (FATE)"},
-  {pod:"Chase Hughes", theme:"Beeinflussung", title:"Emotion — was emotional verankert ist, bleibt", insight:"Erlebnisse, die wir emotional aufladen, prägen uns tief. Einfluss wirkt am stärksten über emotionale Verankerung, nicht über Argumente.", source:"Chase Hughes (FATE)"},
-  {pod:"Chase Hughes", theme:"Selbstmeisterung", title:"Drei Faktoren für Erfolg oder Scheitern", insight:"Ob jemand erfolgreich ist oder scheitert, lässt sich an drei Dingen ablesen: Selbstbeherrschung, Beobachtungsgabe (den Raum & das Gegenüber lesen) und Kommunikation.", source:"Chase Hughes"},
-  {pod:"Chase Hughes", theme:"Kommunikation", title:"Das ACSS-Modell", insight:"Authority, Comfort, Social skills, Skills. 90 % glauben, sie bräuchten mehr Skills — tatsächlich fehlt ihnen meist Autorität oder die Fähigkeit, sich im Gespräch wohlzufühlen.", source:"Chase Hughes"},
-  {pod:"Chase Hughes", theme:"Beeinflussung", title:"Identität ist der #1 Hebel", insight:"Identität ist das Wichtigste bei Persuasion und Einfluss: Menschen handeln im Einklang mit dem, wer sie glauben zu sein. Wer Identität adressiert, verändert Verhalten.", source:"Chase Hughes"},
-  {pod:"Chase Hughes", theme:"Körpersprache", title:"Die Blinzelrate verrät Stress", insight:"Vermehrtes Blinzeln signalisiert verborgenen Stress. Steigt es, sobald ein neues Thema aufkommt, ist dieses Thema für die Person heikel.", source:"Chase Hughes"},
-  {pod:"Chase Hughes", theme:"Körpersprache", title:"Beobachte die langsamste Person im Raum", insight:"Die langsamste Person und ihre Blinzelrate zu beobachten hilft, Interesse oder Täuschung im Raum einzuschätzen.", source:"Chase Hughes"},
-  {pod:"Chase Hughes", theme:"Gesprächstaktik", title:"Elicitation: Aussagen statt Fragen", insight:"Statt zu fragen, stellt man Behauptungen auf. Der menschliche Drang, eine falsche Aussage zu korrigieren, lockt Informationen hervor — ohne Misstrauen zu wecken.", source:"Chase Hughes (Ellipsis Manual)"},
-  {pod:"Chase Hughes", theme:"Rapport", title:"Spiegeln nach der 3er-Regel", insight:"Drei Gesten oder Bewegungen spiegeln, die vierte bewusst auslassen — und das wiederholen, bis man die Körpersprache des Gegenübers sogar führen kann.", source:"Chase Hughes"},
-  {pod:"Chase Hughes", theme:"Disziplin", title:"Disziplin = das Zukunfts-Ich priorisieren", insight:"Disziplin heißt, die Bedürfnisse des zukünftigen Ich über die des gegenwärtigen zu stellen. Sie startet mit Mikro-Gewohnheiten, die zu Routinen wachsen.", source:"Chase Hughes"},
-  {pod:"Chase Hughes", theme:"Disziplin", title:"Gewohnheiten schlagen Ziele", insight:"Langfristige Veränderung baut auf Gewohnheiten, nicht auf Zielen. Wer Systeme statt Vorsätze etabliert, hält durch.", source:"Chase Hughes"}
+{
+"pod": "Diary of a CEO",
+"theme": "Mindset",
+"title": "Spiele das Leben wie ein Videospiel",
+"insight": "Bartletts „Video-Game State of Mind“: Beim Zocken handeln wir furchtlos, im echten Leben zögerlich. Dieselbe spielerische Risikobereitschaft aufs Leben zu übertragen, half ihm durch dunkle Phasen und Krisen.",
+"source": "Steven Bartlett"
+},
+{
+"pod": "Diary of a CEO",
+"theme": "Mindset",
+"title": "Scheitern ist die Studiengebühr für Weisheit",
+"insight": "Die erfolgreichsten Menschen und Firmen sind oft die, die am meisten scheitern. Jeder Misserfolg enthält Feedback, Feedback wird zu Wissen, angewandtes Wissen wird zu Macht.",
+"source": "33 Laws of Business and Life"
+},
+{
+"pod": "Diary of a CEO",
+"theme": "Mindset",
+"title": "Kleine Fehler kompoundieren",
+"insight": "Winzige, ignorierte Fehler wachsen über Zeit zu großen Katastrophen — ob in Beziehungen, Business oder persönlicher Entwicklung. Wer kleine Missstände übersieht, zahlt später teuer.",
+"source": "33 Laws of Business and Life"
+},
+{
+"pod": "Diary of a CEO",
+"theme": "Mindset",
+"title": "Verletzlichkeit ist kein Schwäche, sondern Mut",
+"insight": "Brené Brown (meistgewünschter Gast des Podcasts): Verletzlichkeit ist der Kern von Mut und authentischem Leben. Wer sie vermeidet, vermeidet auch echte Verbindung.",
+"source": "Brené Brown"
+},
+{
+"pod": "Diary of a CEO",
+"theme": "Mindset",
+"title": "Geschwindigkeit schlägt Perfektion",
+"insight": "Schnelle Akteure überholen langsame — immer. Statt auf den perfekten Moment zu warten, lieber zügig handeln, iterieren und aus dem Feedback lernen.",
+"source": "33 Laws of Business and Life"
+},
+{
+"pod": "Diary of a CEO",
+"theme": "Mindset",
+"title": "„Screw it, just do it“",
+"insight": "Richard Branson baute Virgin mit radikaler Handlungsbereitschaft auf und machte seine Dyslexie zum Geschäftsvorteil. Anfangen schlägt Grübeln.",
+"source": "Richard Branson"
+},
+{
+"pod": "Diary of a CEO",
+"theme": "Business",
+"title": "Fülle deine fünf Eimer",
+"insight": "Erfolg beginnt mit dem Füllen von fünf „Buckets“ in dieser Reihenfolge: Wissen, Fähigkeiten, Netzwerk, Ressourcen, Reputation. Die ersten beiden kann dir niemand nehmen.",
+"source": "33 Laws of Business and Life"
+},
+{
+"pod": "Diary of a CEO",
+"theme": "Business",
+"title": "Die vier Säulen des Erfolgs",
+"insight": "Bartletts Rahmenwerk: Das Selbst (Selbsterkenntnis & Disziplin), Die Story (Einfluss durch Erzählen), Die Philosophie (Werte als Kompass) und Das Team (die richtigen Menschen).",
+"source": "33 Laws of Business and Life"
+},
+{
+"pod": "Diary of a CEO",
+"theme": "Business",
+"title": "Die fünf Prinzipien der Innovation",
+"insight": "Bürokratie abbauen, Anreize richtig setzen, die richtigen Führungskräfte befördern, korrekt messen und Misserfolge offen teilen. So bleibt eine Organisation innovativ.",
+"source": "33 Laws of Business and Life"
+},
+{
+"pod": "Diary of a CEO",
+"theme": "Business",
+"title": "Community-led Marketing schlägt Werbung",
+"insight": "Ben Francis baute Gymshark über eine echte Community und authentische Markenidentität statt klassischer Werbung — der Blueprint für moderne Marken.",
+"source": "Ben Francis (Gymshark)"
+},
+{
+"pod": "Diary of a CEO",
+"theme": "Business",
+"title": "Fokus auf Menschen sichert Freiheit",
+"insight": "Branson: Wer langfristig auf Menschen — Mitarbeitende wie Kund:innen — setzt, gewinnt unternehmerische Freiheit. Kultur ist kein Beiwerk, sondern Fundament.",
+"source": "Richard Branson"
+},
+{
+"pod": "Diary of a CEO",
+"theme": "Geld",
+"title": "Zwei Wege zu mehr Wohlstand",
+"insight": "Morgan Housel: Es gibt nur zwei Hebel — mehr verzichten (sparen) oder weniger wollen. Beide verkleinern die Lücke zwischen Ego und Einkommen.",
+"source": "Morgan Housel"
+},
+{
+"pod": "Diary of a CEO",
+"theme": "Geld",
+"title": "Reichtum ist unsichtbar, Status ist sichtbar",
+"insight": "Was man sieht — Autos, Uhren, Häuser — ist Status. Echter Reichtum ist still, geduldig und unsichtbar: das Geld, das man NICHT ausgegeben hat.",
+"source": "Morgan Housel"
+},
+{
+"pod": "Diary of a CEO",
+"theme": "Geld",
+"title": "Der „Midwit“-Investor verliert",
+"insight": "Anfänger und Wall-Street-Profis kaufen beide Index-Fonds. Nur der Halbwissende glaubt, den Markt schlagen zu können. Stetiges Compounding über Jahrzehnte schlägt Aktivität.",
+"source": "Morgan Housel"
+},
+{
+"pod": "Diary of a CEO",
+"theme": "Geld",
+"title": "Der Hausmeister mit 8 Mio. Dollar",
+"insight": "Ronald Read, Tankwart und Hausmeister, hinterließ 8 Mio. $ — durch 70 Jahre geduldiges Investieren. Zeit im Markt schlägt Timing und Gehalt.",
+"source": "Morgan Housel"
+},
+{
+"pod": "Diary of a CEO",
+"theme": "Geld",
+"title": "Harte Arbeit allein baut keinen Reichtum",
+"insight": "Codie Sanchez: Wohlstand entsteht durch Eigentum an Cashflow-Geschäften, nicht durch Stunden. Sie plädiert für den Kauf „langweiliger“ Main-Street-Unternehmen.",
+"source": "Codie Sanchez"
+},
+{
+"pod": "Diary of a CEO",
+"theme": "Gesundheit",
+"title": "Feste Schlafzeiten sind die Nr. 1 Regel",
+"insight": "Matthew Walker: Jeden Tag zur selben Zeit ins Bett und aufstehen — auch am Wochenende. Regelmäßigkeit stabilisiert den circadianen Rhythmus stärker als jede lange Nacht.",
+"source": "Matthew Walker"
+},
+{
+"pod": "Diary of a CEO",
+"theme": "Gesundheit",
+"title": "Kühl, dunkel, ruhig schlafen",
+"insight": "Schlafzimmer auf 18–18,5 °C, Licht in der Stunde vor dem Bett reduzieren, statt Scrollen etwas Beruhigendes tun. Licht und Wärme arbeiten gegen Tiefschlaf.",
+"source": "Matthew Walker"
+},
+{
+"pod": "Diary of a CEO",
+"theme": "Gesundheit",
+"title": "Alkohol & Koffein sabotieren den Tiefschlaf",
+"insight": "Beide stören heimlich die Erholungsphasen des Schlafs und die mentale Leistung — selbst wenn man das Gefühl hat, gut geschlafen zu haben.",
+"source": "Matthew Walker"
+},
+{
+"pod": "Diary of a CEO",
+"theme": "Gesundheit",
+"title": "Schlafmangel ist ein Ganzkörper-Risiko",
+"insight": "Zu wenig Schlaf erhöht das Risiko für Prädiabetes, Herz-Kreislauf-Erkrankungen, Übergewicht, gesenkte Hormonspiegel, Angst und Depression — bis hin zu früherer Sterblichkeit.",
+"source": "Matthew Walker"
+},
+{
+"pod": "Diary of a CEO",
+"theme": "Gesundheit",
+"title": "Gesundheit beginnt im Darm",
+"insight": "Tim Spector: Neue Forschung verknüpft Demenz, Depression und Angst mit der Darmgesundheit. Vielfalt (30+ Pflanzen/Woche) zählt mehr als Kalorienzählen.",
+"source": "Tim Spector"
+},
+{
+"pod": "Diary of a CEO",
+"theme": "Gesundheit",
+"title": "Vorsicht bei Online-Gesundheitstrends",
+"insight": "Dr. Mike warnt vor schädlichen Diäten und dem Mythos des reinen Kalorienzählens. Viele virale Gesundheitstrends halten der Evidenz nicht stand.",
+"source": "Dr. Mike"
+},
+{
+"pod": "Diary of a CEO",
+"theme": "Psychologie",
+"title": "Trauma sind unerfüllte emotionale Bedürfnisse",
+"insight": "Gabor Maté: Trauma ist nicht nur Missbrauch, sondern die Wunde, wenn als Kind emotionale Bedürfnisse unerfüllt bleiben — selbst in liebevollen Familien.",
+"source": "Gabor Maté"
+},
+{
+"pod": "Diary of a CEO",
+"theme": "Psychologie",
+"title": "Der Körper hält die Rechnung",
+"insight": "Unverarbeitetes Trauma versetzt das Nervensystem in Dauer-Stress oder Taubheit und kann sich als körperliche Krankheit, Sucht oder chronische Dysfunktion zeigen.",
+"source": "Gabor Maté"
+},
+{
+"pod": "Diary of a CEO",
+"theme": "Psychologie",
+"title": "Mach das Trauma zum Freund, nicht zum Meister",
+"insight": "Trauma wirkt wie ein Puppenspieler. Der Ausweg: es bewusst wahrnehmen und integrieren. Das Gegenteil von Trauma ist Befreiung.",
+"source": "Gabor Maté"
+},
+{
+"pod": "Diary of a CEO",
+"theme": "Psychologie",
+"title": "„Abnormales“ Verhalten ist oft normal",
+"insight": "Vieles, was als psychische Krankheit gilt, ist eine normale Reaktion auf widrige Lebenserfahrungen. Maté plädiert für einen trauma-informierten Blick auf die Ursachen.",
+"source": "Gabor Maté"
+},
+{
+"pod": "Diary of a CEO",
+"theme": "Psychologie",
+"title": "Genetik erkl�ärt nur die halbe Zufriedenheit",
+"insight": "Etwa die Hälfte des individuellen Glücks ist genetisch — der Rest hängt von Entscheidungen ab, vor allem der Wahl von Partner:in und Beruf.",
+"source": "Diary of a CEO (Happiness)"
+},
+{
+"pod": "Diary of a CEO",
+"theme": "Beziehungen",
+"title": "Die Partnerwahl ist eine der größten Lebensentscheidungen",
+"insight": "Wiederkehrendes Thema: Wen man als Partner:in wählt und welchen Beruf man ergreift, beeinflusst die Lebenszufriedenheit stärker als fast jede andere Entscheidung.",
+"source": "Diary of a CEO"
+},
+{
+"pod": "Diary of a CEO",
+"theme": "Beziehungen",
+"title": "Die stille Epidemie der Vereinsamung",
+"insight": "Brené Brown: Trotz digitaler Vernetzung leben viele in einer versteckten Epidemie der Disconnection. Echte Zugehörigkeit erfordert verletzliche, präsente Verbindung.",
+"source": "Brené Brown"
+},
+{
+"pod": "Diary of a CEO",
+"theme": "Beziehungen",
+"title": "Zeit für Familie ist die unsichtbare Priorität",
+"insight": "Ein Faden durch fast jede Folge: Bartlett reflektiert, wie wenig Zeit er Familie und engen Freund:innen gibt — und wie zentral diese Beziehungen für ein gutes Leben sind.",
+"source": "Steven Bartlett"
+},
+{
+"pod": "Diary of a CEO",
+"theme": "Tech & Fokus",
+"title": "Dein Handy ist eine Skinner-Box",
+"insight": "Digitale Geräte funktionieren wie Belohnungs-Apparate, die unsere Biologie hacken. Short-Form-Video kann Gedächtnis und kognitive Funktion messbar beeinträchtigen.",
+"source": "Diary of a CEO (Tech)"
+},
+{
+"pod": "Diary of a CEO",
+"theme": "Tech & Fokus",
+"title": "Gen Z trägt die Last der Always-On-Kultur",
+"insight": "Höhere Raten von Angst und Depression unter jungen Nutzer:innen werden mit intensivem Konsum kurzer Videoformate und permanenter Erreichbarkeit in Verbindung gebracht.",
+"source": "Diary of a CEO (Tech)"
+},
+{
+"pod": "Diary of a CEO",
+"theme": "Tech & Fokus",
+"title": "KI: Macht konzentriert sich bei wenigen",
+"insight": "Diskussionen zu KI heben hervor, wie wenige Akteure die Entscheidungsmacht halten, wie Narrative gespielt werden und welche realen Umweltkosten große Rechenzentren verursachen.",
+"source": "Diary of a CEO (KI)"
+},
+{
+"pod": "{ungeskriptet}",
+"theme": "Format & Haltung",
+"title": "Echte Gespräche statt Schnitt",
+"insight": "Ben Berndt schneidet seine Folgen bewusst nicht. Gäste können nicht aus dem Kontext gerissen werden — das erzeugt eine Authentizität und Offenheit, die geschnittene Formate selten erreichen.",
+"source": "Ben Berndt"
+},
+{
+"pod": "{ungeskriptet}",
+"theme": "Haltung",
+"title": "Neugier ist der Antrieb",
+"insight": "Ben führt seine Gespräche primär, um zu verstehen, was er noch nicht weiß. Nicht das Rechthaben, sondern das Lernen steht im Zentrum jeder Folge.",
+"source": "Ben Berndt"
+},
+{
+"pod": "{ungeskriptet}",
+"theme": "Perspektivenwechsel",
+"title": "Lernen von Menschen außerhalb der Norm",
+"insight": "„Was kann ich von einem Menschen lernen, der nicht der Norm entspricht?“ Gerade kontroverse Gäste reizen Ben — weil sie den eigenen Horizont am stärksten herausfordern.",
+"source": "Ben Berndt"
+},
+{
+"pod": "{ungeskriptet}",
+"theme": "Zweck",
+"title": "Gespräche, die weiterbringen",
+"insight": "Das erklärte Ziel: Gespräche, die nicht nur Ben selbst, sondern auch die Zuhörenden voranbringen. Erkenntnis statt Unterhaltung um ihrer selbst willen.",
+"source": "Ben Berndt"
+},
+{
+"pod": "{ungeskriptet}",
+"theme": "Format",
+"title": "Tiefe vor Reichweite",
+"insight": "Statt schneller Soundbites setzt das Format auf lange, tiefe Gespräche mit besonderen Menschen — und wurde gerade dadurch erfolgreich.",
+"source": "Ben Berndt"
+},
+{
+"pod": "{ungeskriptet}",
+"theme": "Gesprächsführung",
+"title": "Zuhören, um zu verstehen",
+"insight": "Auch bei polarisierenden Gästen steht echtes Zuhören und Interesse im Vordergrund, nicht Konfrontation. Verstehen kommt vor Bewerten.",
+"source": "Ben Berndt"
+},
+{
+"pod": "{ungeskriptet}",
+"theme": "Perspektivenwechsel",
+"title": "Den eigenen Horizont erweitern",
+"insight": "Die bewusste Vielfalt der Gäste — von Politik über Wirtschaft bis Subkultur — dient dazu, den eigenen Horizont und den des Publikums zu weiten.",
+"source": "Ben Berndt"
+},
+{
+"pod": "{ungeskriptet}",
+"theme": "Haltung",
+"title": "Mut zur Kontroverse",
+"insight": "Ben lädt gezielt Menschen mit „Ecken und Kanten“ ein. Reibung wird nicht vermieden, sondern als Quelle echter Erkenntnis zugelassen.",
+"source": "Ben Berndt"
+},
+{
+"pod": "Chase Hughes",
+"theme": "Beeinflussung",
+"title": "Das FATE-Modell",
+"insight": "Der Kern von Hughes' Arbeit: Focus, Authority, Tribe, Emotion — die vier Urinstinkte, über die menschliches Verhalten gesteuert und beeinflusst wird.",
+"source": "Chase Hughes"
+},
+{
+"pod": "Chase Hughes",
+"theme": "Beeinflussung",
+"title": "Focus — ohne Aufmerksamkeit kein Einfluss",
+"insight": "Der erste Schritt ist, Aufmerksamkeit zu fangen — über Neuheit, Überraschung oder Veränderung im Umfeld. Ohne Fokus ist keine weitere Beeinflussung möglich.",
+"source": "Chase Hughes (FATE)"
+},
+{
+"pod": "Chase Hughes",
+"theme": "Autorität",
+"title": "Authority — Status wird ausgestrahlt",
+"insight": "Wahrgenommene Autorität entsteht aus fünf Qualitäten: Dominanz, Disziplin, Leadership, Dankbarkeit und Spaß. Ein ruhiges, gelassenes Auftreten signalisiert Status.",
+"source": "Chase Hughes (FATE)"
+},
+{
+"pod": "Chase Hughes",
+"theme": "Beeinflussung",
+"title": "Tribe — Zugehörigkeit steuert Verhalten",
+"insight": "„Wir vs. Sie“: Soziale Zugehörigkeit, Gruppendruck und die Angst vor Ausschluss verstärken Verhalten und erzeugen Konsistenz.",
+"source": "Chase Hughes (FATE)"
+},
+{
+"pod": "Chase Hughes",
+"theme": "Beeinflussung",
+"title": "Emotion — was emotional verankert ist, bleibt",
+"insight": "Erlebnisse, die wir emotional aufladen, prägen uns tief. Einfluss wirkt am stärksten über emotionale Verankerung, nicht über Argumente.",
+"source": "Chase Hughes (FATE)"
+},
+{
+"pod": "Chase Hughes",
+"theme": "Selbstmeisterung",
+"title": "Drei Faktoren für Erfolg oder Scheitern",
+"insight": "Ob jemand erfolgreich ist oder scheitert, lässt sich an drei Dingen ablesen: Selbstbeherrschung, Beobachtungsgabe (den Raum & das Gegenüber lesen) und Kommunikation.",
+"source": "Chase Hughes"
+},
+{
+"pod": "Chase Hughes",
+"theme": "Kommunikation",
+"title": "Das ACSS-Modell",
+"insight": "Authority, Comfort, Social skills, Skills. 90 % glauben, sie bräuchten mehr Skills — tatsächlich fehlt ihnen meist Autorität oder die Fähigkeit, sich im Gespräch wohlzufühlen.",
+"source": "Chase Hughes"
+},
+{
+"pod": "Chase Hughes",
+"theme": "Beeinflussung",
+"title": "Identität ist der #1 Hebel",
+"insight": "Identität ist das Wichtigste bei Persuasion und Einfluss: Menschen handeln im Einklang mit dem, wer sie glauben zu sein. Wer Identität adressiert, verändert Verhalten.",
+"source": "Chase Hughes"
+},
+{
+"pod": "Chase Hughes",
+"theme": "Körpersprache",
+"title": "Die Blinzelrate verrät Stress",
+"insight": "Vermehrtes Blinzeln signalisiert verborgenen Stress. Steigt es, sobald ein neues Thema aufkommt, ist dieses Thema für die Person heikel.",
+"source": "Chase Hughes"
+},
+{
+"pod": "Chase Hughes",
+"theme": "Körpersprache",
+"title": "Beobachte die langsamste Person im Raum",
+"insight": "Die langsamste Person und ihre Blinzelrate zu beobachten hilft, Interesse oder Täuschung im Raum einzuschätzen.",
+"source": "Chase Hughes"
+},
+{
+"pod": "Chase Hughes",
+"theme": "Gesprächstaktik",
+"title": "Elicitation: Aussagen statt Fragen",
+"insight": "Statt zu fragen, stellt man Behauptungen auf. Der menschliche Drang, eine falsche Aussage zu korrigieren, lockt Informationen hervor — ohne Misstrauen zu wecken.",
+"source": "Chase Hughes (Ellipsis Manual)"
+},
+{
+"pod": "Chase Hughes",
+"theme": "Rapport",
+"title": "Spiegeln nach der 3er-Regel",
+"insight": "Drei Gesten oder Bewegungen spiegeln, die vierte bewusst auslassen — und das wiederholen, bis man die Körpersprache des Gegenübers sogar führen kann.",
+"source": "Chase Hughes"
+},
+{
+"pod": "Chase Hughes",
+"theme": "Disziplin",
+"title": "Disziplin = das Zukunfts-Ich priorisieren",
+"insight": "Disziplin heißt, die Bedürfnisse des zukünftigen Ich über die des gegenwärtigen zu stellen. Sie startet mit Mikro-Gewohnheiten, die zu Routinen wachsen.",
+"source": "Chase Hughes"
+},
+{
+"pod": "Chase Hughes",
+"theme": "Disziplin",
+"title": "Gewohnheiten schlagen Ziele",
+"insight": "Langfristige Veränderung baut auf Gewohnheiten, nicht auf Zielen. Wer Systeme statt Vorsätze etabliert, hält durch.",
+"source": "Chase Hughes"
+}
 ];
 
 const SOURCES = [
@@ -196,66 +459,40 @@ const SOURCES = [
   {key:"{ungeskriptet}", label:"{ungeskriptet}", color:"var(--unge)"},
   {key:"Chase Hughes", label:"Chase Hughes", color:"var(--chase)"}
 ];
-
-let activeSrc = "Alle";
-let query = "";
-
-const grid = document.getElementById("grid");
-const filters = document.getElementById("filters");
-const countEl = document.getElementById("count");
-const emptyEl = document.getElementById("empty");
-const searchEl = document.getElementById("search");
-
-SOURCES.forEach(s => {
-  const chip = document.createElement("div");
-  chip.className = "chip" + (s.key === "Alle" ? " active" : "");
-  chip.dataset.src = s.key;
-  const dot = document.createElement("span");
-  dot.className = "dot";
-  dot.style.background = s.color;
-  chip.appendChild(dot);
-  chip.appendChild(document.createTextNode(s.label));
-  chip.onclick = () => {
-    activeSrc = s.key;
-    document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
-    chip.classList.add("active");
-    render();
-  };
+let activeSrc="Alle", query="";
+const grid=document.getElementById("grid"), filters=document.getElementById("filters"),
+      countEl=document.getElementById("count"), emptyEl=document.getElementById("empty"),
+      searchEl=document.getElementById("search");
+SOURCES.forEach(s=>{
+  const chip=document.createElement("div");
+  chip.className="chip"+(s.key==="Alle"?" active":""); chip.dataset.src=s.key;
+  const dot=document.createElement("span"); dot.className="dot"; dot.style.background=s.color;
+  chip.appendChild(dot); chip.appendChild(document.createTextNode(s.label));
+  chip.onclick=()=>{ activeSrc=s.key; document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active")); chip.classList.add("active"); render(); };
   filters.appendChild(chip);
 });
-
-function escapeHtml(s){return s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
-
-function highlight(text, q){
-  const safe = escapeHtml(text);
-  if(!q) return safe;
-  const re = new RegExp("("+q.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+")","gi");
-  return safe.replace(re,"<mark>$1</mark>");
-}
-
+function escapeHtml(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function highlight(t,q){const safe=escapeHtml(t); if(!q) return safe; const re=new RegExp("("+q.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+")","gi"); return safe.replace(re,"<mark>$1</mark>");}
 function render(){
-  const q = query.trim().toLowerCase();
-  const items = DATA.filter(d => {
-    const srcOk = activeSrc === "Alle" || d.pod === activeSrc;
-    const text = (d.title+" "+d.insight+" "+d.source+" "+d.theme+" "+d.pod).toLowerCase();
-    return srcOk && (!q || text.includes(q));
+  const q=query.trim().toLowerCase();
+  const items=DATA.filter(d=>{
+    const srcOk=activeSrc==="Alle"||d.pod===activeSrc;
+    const text=(d.title+" "+d.insight+" "+d.source+" "+d.theme+" "+d.pod).toLowerCase();
+    return srcOk&&(!q||text.includes(q));
   });
-  countEl.textContent = items.length + (items.length === 1 ? " Learning" : " Learnings");
-  grid.innerHTML = items.map(d => `
+  countEl.textContent=items.length+(items.length===1?" Learning":" Learnings");
+  grid.innerHTML=items.map(d=>`
     <div class="card" data-src="${escapeHtml(d.pod)}">
-      <div class="badges">
-        <span class="badge pod">${escapeHtml(d.pod)}</span>
-        <span class="badge theme">${escapeHtml(d.theme)}</span>
-      </div>
-      <h3>${highlight(d.title, q)}</h3>
-      <p>${highlight(d.insight, q)}</p>
-      <div class="src">Quelle: ${highlight(d.source, q)}</div>
+      <div class="badges"><span class="badge pod">${escapeHtml(d.pod)}</span><span class="badge theme">${escapeHtml(d.theme)}</span></div>
+      <h3>${highlight(d.title,q)}</h3>
+      <p>${highlight(d.insight,q)}</p>
+      <div class="src">Quelle: ${highlight(d.source,q)}</div>
     </div>`).join("");
-  emptyEl.style.display = items.length ? "none" : "block";
+  emptyEl.style.display=items.length?"none":"block";
 }
-
-searchEl.addEventListener("input", e => { query = e.target.value; render(); });
+searchEl.addEventListener("input",e=>{query=e.target.value; render();});
 render();
+
 </script>
 </body>
 </html>
