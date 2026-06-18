@@ -3,494 +3,117 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Podcast Learnings — DOAC · ungeskriptet · Chase Hughes</title>
+<title>Podcast-Wissensbibliothek — Insights mit Quellen</title>
 <style>
-  :root { --bg:#0f1115; --card:#1a1d24; --card-hover:#21252e; --border:#2a2f3a; --text:#e8eaed; --muted:#9aa0ab; --doac:#d4a24e; --unge:#4ec9a2; --chase:#8c9bff; }
+  :root { --bg:#0f1115; --card:#1a1d24; --card-hover:#21252e; --border:#2a2f3a; --text:#e8eaed; --muted:#9aa0ab; --accent:#d4a24e; --accent-soft:rgba(212,162,78,.14); --link:#7fb4ff; }
   * { box-sizing:border-box; margin:0; padding:0; }
   body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; background:var(--bg); color:var(--text); line-height:1.55; padding:0 0 60px; }
-  header { padding:40px 24px 24px; max-width:1100px; margin:0 auto; text-align:center; }
-  header .kicker { color:var(--muted); font-size:13px; letter-spacing:2px; text-transform:uppercase; font-weight:600; }
-  header h1 { font-size:34px; margin:10px 0 6px; letter-spacing:-0.5px; }
-  header p { color:var(--muted); font-size:15px; max-width:660px; margin:0 auto; }
-  .controls { max-width:1100px; margin:24px auto 0; padding:0 24px; }
-  #search { width:100%; padding:14px 18px; font-size:16px; background:var(--card); border:1px solid var(--border); border-radius:12px; color:var(--text); outline:none; transition:border .15s; }
-  #search:focus { border-color:#6b7280; }
+  header { padding:38px 24px 8px; max-width:1180px; margin:0 auto; text-align:center; }
+  header .kicker { color:var(--accent); font-size:13px; letter-spacing:2px; text-transform:uppercase; font-weight:600; }
+  header h1 { font-size:33px; margin:10px 0 6px; letter-spacing:-0.5px; }
+  header p { color:var(--muted); font-size:15px; max-width:680px; margin:0 auto; }
+  .controls { max-width:1180px; margin:22px auto 0; padding:0 24px; }
+  .searchrow { display:flex; gap:10px; }
+  #search { flex:1; padding:15px 18px; font-size:16px; background:var(--card); border:1px solid var(--border); border-radius:12px; color:var(--text); outline:none; transition:border .15s; }
+  #search:focus { border-color:var(--accent); }
   #search::placeholder { color:var(--muted); }
+  #searchBtn { padding:0 26px; font-size:15px; font-weight:600; background:var(--accent); color:#1a1d24; border:none; border-radius:12px; cursor:pointer; transition:filter .15s; white-space:nowrap; }
+  #searchBtn:hover { filter:brightness(1.08); }
+  #clearBtn { padding:0 18px; font-size:14px; background:var(--card); color:var(--muted); border:1px solid var(--border); border-radius:12px; cursor:pointer; }
+  #clearBtn:hover { color:var(--text); }
   .filters { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
-  .chip { padding:8px 16px; font-size:13.5px; border-radius:999px; border:1px solid var(--border); background:var(--card); color:var(--muted); cursor:pointer; transition:all .15s; user-select:none; display:flex; align-items:center; gap:8px; }
-  .chip .dot { width:9px; height:9px; border-radius:50%; }
+  .chip { padding:7px 14px; font-size:13px; border-radius:999px; border:1px solid var(--border); background:var(--card); color:var(--muted); cursor:pointer; transition:all .15s; user-select:none; }
   .chip:hover { background:var(--card-hover); color:var(--text); }
-  .chip.active { color:var(--text); font-weight:600; }
-  .chip.active[data-src="Alle"] { border-color:#6b7280; background:#2a2f3a; }
-  .chip.active[data-src="Diary of a CEO"] { border-color:var(--doac); background:rgba(212,162,78,.14); color:var(--doac); }
-  .chip.active[data-src="{ungeskriptet}"] { border-color:var(--unge); background:rgba(78,201,162,.14); color:var(--unge); }
-  .chip.active[data-src="Chase Hughes"] { border-color:var(--chase); background:rgba(140,155,255,.16); color:var(--chase); }
-  .count { max-width:1100px; margin:18px auto 0; padding:0 24px; color:var(--muted); font-size:13px; }
-  .grid { max-width:1100px; margin:14px auto 0; padding:0 24px; display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:16px; }
-  .card { background:var(--card); border:1px solid var(--border); border-left-width:3px; border-radius:12px; padding:20px; display:flex; flex-direction:column; transition:transform .12s,border-color .12s; }
-  .card:hover { transform:translateY(-2px); }
-  .card[data-src="Diary of a CEO"] { border-left-color:var(--doac); }
-  .card[data-src="{ungeskriptet}"] { border-left-color:var(--unge); }
-  .card[data-src="Chase Hughes"] { border-left-color:var(--chase); }
-  .badges { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }
-  .badge { font-size:11px; letter-spacing:.4px; padding:4px 10px; border-radius:6px; font-weight:600; }
-  .badge.pod { color:#11141a; }
-  .card[data-src="Diary of a CEO"] .badge.pod { background:var(--doac); }
-  .card[data-src="{ungeskriptet}"] .badge.pod { background:var(--unge); }
-  .card[data-src="Chase Hughes"] .badge.pod { background:var(--chase); }
-  .badge.theme { background:var(--border); color:var(--muted); text-transform:uppercase; }
+  .chip.active { background:var(--accent-soft); border-color:var(--accent); color:var(--accent); font-weight:600; }
+  .count { max-width:1180px; margin:16px auto 0; padding:0 24px; color:var(--muted); font-size:13px; }
+  .grid { max-width:1180px; margin:12px auto 0; padding:0 24px; display:grid; grid-template-columns:repeat(auto-fill,minmax(330px,1fr)); gap:16px; }
+  .card { background:var(--card); border:1px solid var(--border); border-radius:13px; padding:20px; display:flex; flex-direction:column; transition:transform .12s,border-color .12s; }
+  .card:hover { transform:translateY(-2px); border-color:var(--accent); }
+  .badges { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:11px; align-items:center; }
+  .badge { font-size:11px; letter-spacing:.3px; padding:4px 10px; border-radius:6px; font-weight:600; }
+  .badge.topic { background:var(--accent-soft); color:var(--accent); text-transform:uppercase; }
+  .badge.pod { background:var(--border); color:#c7ccd5; }
+  .badge.date { color:var(--muted); font-size:11px; margin-left:auto; }
   .card h3 { font-size:16.5px; margin-bottom:8px; line-height:1.35; }
   .card p { font-size:14.5px; color:#c7ccd5; flex-grow:1; }
-  .card .src { margin-top:14px; padding-top:12px; border-top:1px solid var(--border); font-size:12.5px; color:var(--muted); }
-  .empty { max-width:1100px; margin:40px auto; padding:0 24px; text-align:center; color:var(--muted); }
-  footer { max-width:1100px; margin:50px auto 0; padding:24px; text-align:center; color:var(--muted); font-size:12px; border-top:1px solid var(--border); }
-  footer a { color:var(--muted); }
-  mark { background:#d4a24e; color:#1a1d24; padding:0 2px; border-radius:3px; }
+  .card .src { margin-top:14px; padding-top:12px; border-top:1px solid var(--border); font-size:12.5px; color:var(--muted); display:flex; justify-content:space-between; align-items:center; gap:10px; }
+  .card .src .who { flex:1; }
+  .card .src a { color:var(--link); text-decoration:none; font-weight:600; white-space:nowrap; }
+  .card .src a:hover { text-decoration:underline; }
+  .empty { max-width:1180px; margin:40px auto; padding:0 24px; text-align:center; color:var(--muted); }
+  footer { max-width:1180px; margin:48px auto 0; padding:24px; text-align:center; color:var(--muted); font-size:12px; border-top:1px solid var(--border); }
+  footer a { color:var(--accent); }
+  mark { background:var(--accent); color:#1a1d24; padding:0 2px; border-radius:3px; }
+  @media (max-width:560px){ .searchrow{flex-wrap:wrap} #searchBtn,#clearBtn{flex:1} }
 </style>
 </head>
 <body>
 <header>
-  <div class="kicker">Learnings &amp; Insights</div>
+  <div class="kicker">Learnings &amp; Insights aus den großen Podcasts</div>
   <h1>Podcast-Wissensbibliothek</h1>
-  <p>Die Kernideen aus drei Quellen &mdash; <strong style="color:var(--doac)">Diary of a CEO</strong>, <strong style="color:var(--unge)">{ungeskriptet}</strong> und <strong style="color:var(--chase)">Chase Hughes</strong>. Filtere nach Quelle, suche nach Stichwort oder Thema &mdash; die Treffer erscheinen sofort beim Tippen.</p>
+  <p>Die wichtigsten Erkenntnisse aus aktuellen Folgen von Diary of a CEO, Lex Fridman, Huberman Lab, Modern Wisdom, My First Million, ZOE, OMR, ungeskriptet &amp; vielen mehr. Gib ein Stichwort ein (z.&nbsp;B. <strong>AI</strong>, <strong>Schlaf</strong>, <strong>Geld</strong>) &mdash; jede Karte verlinkt direkt zur Quelle.</p>
 </header>
 <div class="controls">
-  <input id="search" type="text" placeholder="Suche nach Stichwort, Gast oder Thema… (z. B. Schlaf, FATE, Zuhören, Disziplin)" autocomplete="off">
+  <div class="searchrow">
+    <input id="search" type="text" placeholder="Suche nach Thema, Gast oder Stichwort… (z. B. AI, Künstliche Intelligenz, Dopamin, Investieren)" autocomplete="off">
+    <button id="searchBtn">Suchen</button>
+    <button id="clearBtn">Zurücksetzen</button>
+  </div>
   <div class="filters" id="filters"></div>
 </div>
 <div class="count" id="count"></div>
 <div class="grid" id="grid"></div>
-<div class="empty" id="empty" style="display:none">Keine Treffer. Versuch ein anderes Stichwort.</div>
+<div class="empty" id="empty" style="display:none">Keine Treffer. Versuch ein anderes Stichwort oder Thema.</div>
 <footer>
-  Inhalte zusammengefasst aus öffentlich verfügbaren Episoden-Notizen, Show-Notes, Büchern und Interviews. Eine kuratierte Übersicht der Kernideen &mdash; keine vollständigen Transkripte. Die {ungeskriptet}-Karten beschreiben die wiederkehrende Haltung &amp; Gesprächsphilosophie des Podcasts (die konkreten Inhalte variieren je Gast). &nbsp;·&nbsp; <a href="diary-of-a-ceo.html">Zur reinen Diary-of-a-CEO-Seite →</a>
+  137 Insights aus öffentlich verfügbaren Podcast-Folgen, Show-Notes und Interviews &mdash; kuratierte Kurzfassungen mit Link zur Originalquelle (kein vollständiges Transkript). Klicke „Quelle ansehen" für das jeweilige Video bzw. die Folge.
+  &nbsp;·&nbsp; <a href="diary-of-a-ceo.html">Reine Diary-of-a-CEO-Seite →</a>
 </footer>
 <script>
-const DATA = [
-{
-"pod": "Diary of a CEO",
-"theme": "Mindset",
-"title": "Spiele das Leben wie ein Videospiel",
-"insight": "Bartletts „Video-Game State of Mind“: Beim Zocken handeln wir furchtlos, im echten Leben zögerlich. Dieselbe spielerische Risikobereitschaft aufs Leben zu übertragen, half ihm durch dunkle Phasen und Krisen.",
-"source": "Steven Bartlett"
-},
-{
-"pod": "Diary of a CEO",
-"theme": "Mindset",
-"title": "Scheitern ist die Studiengebühr für Weisheit",
-"insight": "Die erfolgreichsten Menschen und Firmen sind oft die, die am meisten scheitern. Jeder Misserfolg enthält Feedback, Feedback wird zu Wissen, angewandtes Wissen wird zu Macht.",
-"source": "33 Laws of Business and Life"
-},
-{
-"pod": "Diary of a CEO",
-"theme": "Mindset",
-"title": "Kleine Fehler kompoundieren",
-"insight": "Winzige, ignorierte Fehler wachsen über Zeit zu großen Katastrophen — ob in Beziehungen, Business oder persönlicher Entwicklung. Wer kleine Missstände übersieht, zahlt später teuer.",
-"source": "33 Laws of Business and Life"
-},
-{
-"pod": "Diary of a CEO",
-"theme": "Mindset",
-"title": "Verletzlichkeit ist kein Schwäche, sondern Mut",
-"insight": "Brené Brown (meistgewünschter Gast des Podcasts): Verletzlichkeit ist der Kern von Mut und authentischem Leben. Wer sie vermeidet, vermeidet auch echte Verbindung.",
-"source": "Brené Brown"
-},
-{
-"pod": "Diary of a CEO",
-"theme": "Mindset",
-"title": "Geschwindigkeit schlägt Perfektion",
-"insight": "Schnelle Akteure überholen langsame — immer. Statt auf den perfekten Moment zu warten, lieber zügig handeln, iterieren und aus dem Feedback lernen.",
-"source": "33 Laws of Business and Life"
-},
-{
-"pod": "Diary of a CEO",
-"theme": "Mindset",
-"title": "„Screw it, just do it“",
-"insight": "Richard Branson baute Virgin mit radikaler Handlungsbereitschaft auf und machte seine Dyslexie zum Geschäftsvorteil. Anfangen schlägt Grübeln.",
-"source": "Richard Branson"
-},
-{
-"pod": "Diary of a CEO",
-"theme": "Business",
-"title": "Fülle deine fünf Eimer",
-"insight": "Erfolg beginnt mit dem Füllen von fünf „Buckets“ in dieser Reihenfolge: Wissen, Fähigkeiten, Netzwerk, Ressourcen, Reputation. Die ersten beiden kann dir niemand nehmen.",
-"source": "33 Laws of Business and Life"
-},
-{
-"pod": "Diary of a CEO",
-"theme": "Business",
-"title": "Die vier Säulen des Erfolgs",
-"insight": "Bartletts Rahmenwerk: Das Selbst (Selbsterkenntnis & Disziplin), Die Story (Einfluss durch Erzählen), Die Philosophie (Werte als Kompass) und Das Team (die richtigen Menschen).",
-"source": "33 Laws of Business and Life"
-},
-{
-"pod": "Diary of a CEO",
-"theme": "Business",
-"title": "Die fünf Prinzipien der Innovation",
-"insight": "Bürokratie abbauen, Anreize richtig setzen, die richtigen Führungskräfte befördern, korrekt messen und Misserfolge offen teilen. So bleibt eine Organisation innovativ.",
-"source": "33 Laws of Business and Life"
-},
-{
-"pod": "Diary of a CEO",
-"theme": "Business",
-"title": "Community-led Marketing schlägt Werbung",
-"insight": "Ben Francis baute Gymshark über eine echte Community und authentische Markenidentität statt klassischer Werbung — der Blueprint für moderne Marken.",
-"source": "Ben Francis (Gymshark)"
-},
-{
-"pod": "Diary of a CEO",
-"theme": "Business",
-"title": "Fokus auf Menschen sichert Freiheit",
-"insight": "Branson: Wer langfristig auf Menschen — Mitarbeitende wie Kund:innen — setzt, gewinnt unternehmerische Freiheit. Kultur ist kein Beiwerk, sondern Fundament.",
-"source": "Richard Branson"
-},
-{
-"pod": "Diary of a CEO",
-"theme": "Geld",
-"title": "Zwei Wege zu mehr Wohlstand",
-"insight": "Morgan Housel: Es gibt nur zwei Hebel — mehr verzichten (sparen) oder weniger wollen. Beide verkleinern die Lücke zwischen Ego und Einkommen.",
-"source": "Morgan Housel"
-},
-{
-"pod": "Diary of a CEO",
-"theme": "Geld",
-"title": "Reichtum ist unsichtbar, Status ist sichtbar",
-"insight": "Was man sieht — Autos, Uhren, Häuser — ist Status. Echter Reichtum ist still, geduldig und unsichtbar: das Geld, das man NICHT ausgegeben hat.",
-"source": "Morgan Housel"
-},
-{
-"pod": "Diary of a CEO",
-"theme": "Geld",
-"title": "Der „Midwit“-Investor verliert",
-"insight": "Anfänger und Wall-Street-Profis kaufen beide Index-Fonds. Nur der Halbwissende glaubt, den Markt schlagen zu können. Stetiges Compounding über Jahrzehnte schlägt Aktivität.",
-"source": "Morgan Housel"
-},
-{
-"pod": "Diary of a CEO",
-"theme": "Geld",
-"title": "Der Hausmeister mit 8 Mio. Dollar",
-"insight": "Ronald Read, Tankwart und Hausmeister, hinterließ 8 Mio. $ — durch 70 Jahre geduldiges Investieren. Zeit im Markt schlägt Timing und Gehalt.",
-"source": "Morgan Housel"
-},
-{
-"pod": "Diary of a CEO",
-"theme": "Geld",
-"title": "Harte Arbeit allein baut keinen Reichtum",
-"insight": "Codie Sanchez: Wohlstand entsteht durch Eigentum an Cashflow-Geschäften, nicht durch Stunden. Sie plädiert für den Kauf „langweiliger“ Main-Street-Unternehmen.",
-"source": "Codie Sanchez"
-},
-{
-"pod": "Diary of a CEO",
-"theme": "Gesundheit",
-"title": "Feste Schlafzeiten sind die Nr. 1 Regel",
-"insight": "Matthew Walker: Jeden Tag zur selben Zeit ins Bett und aufstehen — auch am Wochenende. Regelmäßigkeit stabilisiert den circadianen Rhythmus stärker als jede lange Nacht.",
-"source": "Matthew Walker"
-},
-{
-"pod": "Diary of a CEO",
-"theme": "Gesundheit",
-"title": "Kühl, dunkel, ruhig schlafen",
-"insight": "Schlafzimmer auf 18–18,5 °C, Licht in der Stunde vor dem Bett reduzieren, statt Scrollen etwas Beruhigendes tun. Licht und Wärme arbeiten gegen Tiefschlaf.",
-"source": "Matthew Walker"
-},
-{
-"pod": "Diary of a CEO",
-"theme": "Gesundheit",
-"title": "Alkohol & Koffein sabotieren den Tiefschlaf",
-"insight": "Beide stören heimlich die Erholungsphasen des Schlafs und die mentale Leistung — selbst wenn man das Gefühl hat, gut geschlafen zu haben.",
-"source": "Matthew Walker"
-},
-{
-"pod": "Diary of a CEO",
-"theme": "Gesundheit",
-"title": "Schlafmangel ist ein Ganzkörper-Risiko",
-"insight": "Zu wenig Schlaf erhöht das Risiko für Prädiabetes, Herz-Kreislauf-Erkrankungen, Übergewicht, gesenkte Hormonspiegel, Angst und Depression — bis hin zu früherer Sterblichkeit.",
-"source": "Matthew Walker"
-},
-{
-"pod": "Diary of a CEO",
-"theme": "Gesundheit",
-"title": "Gesundheit beginnt im Darm",
-"insight": "Tim Spector: Neue Forschung verknüpft Demenz, Depression und Angst mit der Darmgesundheit. Vielfalt (30+ Pflanzen/Woche) zählt mehr als Kalorienzählen.",
-"source": "Tim Spector"
-},
-{
-"pod": "Diary of a CEO",
-"theme": "Gesundheit",
-"title": "Vorsicht bei Online-Gesundheitstrends",
-"insight": "Dr. Mike warnt vor schädlichen Diäten und dem Mythos des reinen Kalorienzählens. Viele virale Gesundheitstrends halten der Evidenz nicht stand.",
-"source": "Dr. Mike"
-},
-{
-"pod": "Diary of a CEO",
-"theme": "Psychologie",
-"title": "Trauma sind unerfüllte emotionale Bedürfnisse",
-"insight": "Gabor Maté: Trauma ist nicht nur Missbrauch, sondern die Wunde, wenn als Kind emotionale Bedürfnisse unerfüllt bleiben — selbst in liebevollen Familien.",
-"source": "Gabor Maté"
-},
-{
-"pod": "Diary of a CEO",
-"theme": "Psychologie",
-"title": "Der Körper hält die Rechnung",
-"insight": "Unverarbeitetes Trauma versetzt das Nervensystem in Dauer-Stress oder Taubheit und kann sich als körperliche Krankheit, Sucht oder chronische Dysfunktion zeigen.",
-"source": "Gabor Maté"
-},
-{
-"pod": "Diary of a CEO",
-"theme": "Psychologie",
-"title": "Mach das Trauma zum Freund, nicht zum Meister",
-"insight": "Trauma wirkt wie ein Puppenspieler. Der Ausweg: es bewusst wahrnehmen und integrieren. Das Gegenteil von Trauma ist Befreiung.",
-"source": "Gabor Maté"
-},
-{
-"pod": "Diary of a CEO",
-"theme": "Psychologie",
-"title": "„Abnormales“ Verhalten ist oft normal",
-"insight": "Vieles, was als psychische Krankheit gilt, ist eine normale Reaktion auf widrige Lebenserfahrungen. Maté plädiert für einen trauma-informierten Blick auf die Ursachen.",
-"source": "Gabor Maté"
-},
-{
-"pod": "Diary of a CEO",
-"theme": "Psychologie",
-"title": "Genetik erkl�ärt nur die halbe Zufriedenheit",
-"insight": "Etwa die Hälfte des individuellen Glücks ist genetisch — der Rest hängt von Entscheidungen ab, vor allem der Wahl von Partner:in und Beruf.",
-"source": "Diary of a CEO (Happiness)"
-},
-{
-"pod": "Diary of a CEO",
-"theme": "Beziehungen",
-"title": "Die Partnerwahl ist eine der größten Lebensentscheidungen",
-"insight": "Wiederkehrendes Thema: Wen man als Partner:in wählt und welchen Beruf man ergreift, beeinflusst die Lebenszufriedenheit stärker als fast jede andere Entscheidung.",
-"source": "Diary of a CEO"
-},
-{
-"pod": "Diary of a CEO",
-"theme": "Beziehungen",
-"title": "Die stille Epidemie der Vereinsamung",
-"insight": "Brené Brown: Trotz digitaler Vernetzung leben viele in einer versteckten Epidemie der Disconnection. Echte Zugehörigkeit erfordert verletzliche, präsente Verbindung.",
-"source": "Brené Brown"
-},
-{
-"pod": "Diary of a CEO",
-"theme": "Beziehungen",
-"title": "Zeit für Familie ist die unsichtbare Priorität",
-"insight": "Ein Faden durch fast jede Folge: Bartlett reflektiert, wie wenig Zeit er Familie und engen Freund:innen gibt — und wie zentral diese Beziehungen für ein gutes Leben sind.",
-"source": "Steven Bartlett"
-},
-{
-"pod": "Diary of a CEO",
-"theme": "Tech & Fokus",
-"title": "Dein Handy ist eine Skinner-Box",
-"insight": "Digitale Geräte funktionieren wie Belohnungs-Apparate, die unsere Biologie hacken. Short-Form-Video kann Gedächtnis und kognitive Funktion messbar beeinträchtigen.",
-"source": "Diary of a CEO (Tech)"
-},
-{
-"pod": "Diary of a CEO",
-"theme": "Tech & Fokus",
-"title": "Gen Z trägt die Last der Always-On-Kultur",
-"insight": "Höhere Raten von Angst und Depression unter jungen Nutzer:innen werden mit intensivem Konsum kurzer Videoformate und permanenter Erreichbarkeit in Verbindung gebracht.",
-"source": "Diary of a CEO (Tech)"
-},
-{
-"pod": "Diary of a CEO",
-"theme": "Tech & Fokus",
-"title": "KI: Macht konzentriert sich bei wenigen",
-"insight": "Diskussionen zu KI heben hervor, wie wenige Akteure die Entscheidungsmacht halten, wie Narrative gespielt werden und welche realen Umweltkosten große Rechenzentren verursachen.",
-"source": "Diary of a CEO (KI)"
-},
-{
-"pod": "{ungeskriptet}",
-"theme": "Format & Haltung",
-"title": "Echte Gespräche statt Schnitt",
-"insight": "Ben Berndt schneidet seine Folgen bewusst nicht. Gäste können nicht aus dem Kontext gerissen werden — das erzeugt eine Authentizität und Offenheit, die geschnittene Formate selten erreichen.",
-"source": "Ben Berndt"
-},
-{
-"pod": "{ungeskriptet}",
-"theme": "Haltung",
-"title": "Neugier ist der Antrieb",
-"insight": "Ben führt seine Gespräche primär, um zu verstehen, was er noch nicht weiß. Nicht das Rechthaben, sondern das Lernen steht im Zentrum jeder Folge.",
-"source": "Ben Berndt"
-},
-{
-"pod": "{ungeskriptet}",
-"theme": "Perspektivenwechsel",
-"title": "Lernen von Menschen außerhalb der Norm",
-"insight": "„Was kann ich von einem Menschen lernen, der nicht der Norm entspricht?“ Gerade kontroverse Gäste reizen Ben — weil sie den eigenen Horizont am stärksten herausfordern.",
-"source": "Ben Berndt"
-},
-{
-"pod": "{ungeskriptet}",
-"theme": "Zweck",
-"title": "Gespräche, die weiterbringen",
-"insight": "Das erklärte Ziel: Gespräche, die nicht nur Ben selbst, sondern auch die Zuhörenden voranbringen. Erkenntnis statt Unterhaltung um ihrer selbst willen.",
-"source": "Ben Berndt"
-},
-{
-"pod": "{ungeskriptet}",
-"theme": "Format",
-"title": "Tiefe vor Reichweite",
-"insight": "Statt schneller Soundbites setzt das Format auf lange, tiefe Gespräche mit besonderen Menschen — und wurde gerade dadurch erfolgreich.",
-"source": "Ben Berndt"
-},
-{
-"pod": "{ungeskriptet}",
-"theme": "Gesprächsführung",
-"title": "Zuhören, um zu verstehen",
-"insight": "Auch bei polarisierenden Gästen steht echtes Zuhören und Interesse im Vordergrund, nicht Konfrontation. Verstehen kommt vor Bewerten.",
-"source": "Ben Berndt"
-},
-{
-"pod": "{ungeskriptet}",
-"theme": "Perspektivenwechsel",
-"title": "Den eigenen Horizont erweitern",
-"insight": "Die bewusste Vielfalt der Gäste — von Politik über Wirtschaft bis Subkultur — dient dazu, den eigenen Horizont und den des Publikums zu weiten.",
-"source": "Ben Berndt"
-},
-{
-"pod": "{ungeskriptet}",
-"theme": "Haltung",
-"title": "Mut zur Kontroverse",
-"insight": "Ben lädt gezielt Menschen mit „Ecken und Kanten“ ein. Reibung wird nicht vermieden, sondern als Quelle echter Erkenntnis zugelassen.",
-"source": "Ben Berndt"
-},
-{
-"pod": "Chase Hughes",
-"theme": "Beeinflussung",
-"title": "Das FATE-Modell",
-"insight": "Der Kern von Hughes' Arbeit: Focus, Authority, Tribe, Emotion — die vier Urinstinkte, über die menschliches Verhalten gesteuert und beeinflusst wird.",
-"source": "Chase Hughes"
-},
-{
-"pod": "Chase Hughes",
-"theme": "Beeinflussung",
-"title": "Focus — ohne Aufmerksamkeit kein Einfluss",
-"insight": "Der erste Schritt ist, Aufmerksamkeit zu fangen — über Neuheit, Überraschung oder Veränderung im Umfeld. Ohne Fokus ist keine weitere Beeinflussung möglich.",
-"source": "Chase Hughes (FATE)"
-},
-{
-"pod": "Chase Hughes",
-"theme": "Autorität",
-"title": "Authority — Status wird ausgestrahlt",
-"insight": "Wahrgenommene Autorität entsteht aus fünf Qualitäten: Dominanz, Disziplin, Leadership, Dankbarkeit und Spaß. Ein ruhiges, gelassenes Auftreten signalisiert Status.",
-"source": "Chase Hughes (FATE)"
-},
-{
-"pod": "Chase Hughes",
-"theme": "Beeinflussung",
-"title": "Tribe — Zugehörigkeit steuert Verhalten",
-"insight": "„Wir vs. Sie“: Soziale Zugehörigkeit, Gruppendruck und die Angst vor Ausschluss verstärken Verhalten und erzeugen Konsistenz.",
-"source": "Chase Hughes (FATE)"
-},
-{
-"pod": "Chase Hughes",
-"theme": "Beeinflussung",
-"title": "Emotion — was emotional verankert ist, bleibt",
-"insight": "Erlebnisse, die wir emotional aufladen, prägen uns tief. Einfluss wirkt am stärksten über emotionale Verankerung, nicht über Argumente.",
-"source": "Chase Hughes (FATE)"
-},
-{
-"pod": "Chase Hughes",
-"theme": "Selbstmeisterung",
-"title": "Drei Faktoren für Erfolg oder Scheitern",
-"insight": "Ob jemand erfolgreich ist oder scheitert, lässt sich an drei Dingen ablesen: Selbstbeherrschung, Beobachtungsgabe (den Raum & das Gegenüber lesen) und Kommunikation.",
-"source": "Chase Hughes"
-},
-{
-"pod": "Chase Hughes",
-"theme": "Kommunikation",
-"title": "Das ACSS-Modell",
-"insight": "Authority, Comfort, Social skills, Skills. 90 % glauben, sie bräuchten mehr Skills — tatsächlich fehlt ihnen meist Autorität oder die Fähigkeit, sich im Gespräch wohlzufühlen.",
-"source": "Chase Hughes"
-},
-{
-"pod": "Chase Hughes",
-"theme": "Beeinflussung",
-"title": "Identität ist der #1 Hebel",
-"insight": "Identität ist das Wichtigste bei Persuasion und Einfluss: Menschen handeln im Einklang mit dem, wer sie glauben zu sein. Wer Identität adressiert, verändert Verhalten.",
-"source": "Chase Hughes"
-},
-{
-"pod": "Chase Hughes",
-"theme": "Körpersprache",
-"title": "Die Blinzelrate verrät Stress",
-"insight": "Vermehrtes Blinzeln signalisiert verborgenen Stress. Steigt es, sobald ein neues Thema aufkommt, ist dieses Thema für die Person heikel.",
-"source": "Chase Hughes"
-},
-{
-"pod": "Chase Hughes",
-"theme": "Körpersprache",
-"title": "Beobachte die langsamste Person im Raum",
-"insight": "Die langsamste Person und ihre Blinzelrate zu beobachten hilft, Interesse oder Täuschung im Raum einzuschätzen.",
-"source": "Chase Hughes"
-},
-{
-"pod": "Chase Hughes",
-"theme": "Gesprächstaktik",
-"title": "Elicitation: Aussagen statt Fragen",
-"insight": "Statt zu fragen, stellt man Behauptungen auf. Der menschliche Drang, eine falsche Aussage zu korrigieren, lockt Informationen hervor — ohne Misstrauen zu wecken.",
-"source": "Chase Hughes (Ellipsis Manual)"
-},
-{
-"pod": "Chase Hughes",
-"theme": "Rapport",
-"title": "Spiegeln nach der 3er-Regel",
-"insight": "Drei Gesten oder Bewegungen spiegeln, die vierte bewusst auslassen — und das wiederholen, bis man die Körpersprache des Gegenübers sogar führen kann.",
-"source": "Chase Hughes"
-},
-{
-"pod": "Chase Hughes",
-"theme": "Disziplin",
-"title": "Disziplin = das Zukunfts-Ich priorisieren",
-"insight": "Disziplin heißt, die Bedürfnisse des zukünftigen Ich über die des gegenwärtigen zu stellen. Sie startet mit Mikro-Gewohnheiten, die zu Routinen wachsen.",
-"source": "Chase Hughes"
-},
-{
-"pod": "Chase Hughes",
-"theme": "Disziplin",
-"title": "Gewohnheiten schlagen Ziele",
-"insight": "Langfristige Veränderung baut auf Gewohnheiten, nicht auf Zielen. Wer Systeme statt Vorsätze etabliert, hält durch.",
-"source": "Chase Hughes"
-}
-];
+const DATA = [{"topic":"KI","pod":"Lex Fridman Podcast","guest":"Sam Altman","title":"Der schwierige Weg zur AGI bei OpenAI","insight":"Altman spricht über die Board-Saga, GPT-5 und den enormen Compute-Bedarf und betont, dass AGI eher schrittweise als durch einen einzelnen Durchbruch entstehen wird.","source":"Lex Fridman #419 · Sam Altman","url":"https://www.youtube.com/watch?v=jvqFAi7vkBc","keywords":"AI KI Künstliche Intelligenz AGI ChatGPT OpenAI GPT-5 Sam Altman","date":"2024-03"},{"topic":"KI","pod":"Lex Fridman Podcast","guest":"Sam Altman","title":"GPT-4 und die Zukunft von ChatGPT","insight":"Altman erklärt, wie GPT-4 entstand, warum AI-Sicherheit und iteratives Ausrollen entscheidend sind und welche Macht- und Konkurrenzfragen mit der Technologie verbunden sind.","source":"Lex Fridman #367 · Sam Altman","url":"https://www.youtube.com/watch?v=L_Guz73e6fw","keywords":"AI KI Künstliche Intelligenz AGI GPT-4 ChatGPT OpenAI Sam Altman","date":"2023-03"},{"topic":"KI","pod":"OpenAI Podcast","guest":"Sam Altman","title":"AGI ist faktisch schon erreicht","insight":"Altman argumentiert, dass AGI im Sinne wirtschaftlich wertvoller Aufgaben bereits Realität ist, und gibt einen Ausblick auf GPT-5, Project Stargate und KI im Alltag.","source":"OpenAI Podcast Ep. 1 · Sam Altman","url":"https://www.youtube.com/watch?v=DB9mjd-65gw","keywords":"AI KI Künstliche Intelligenz AGI GPT-5 OpenAI Stargate Sam Altman","date":"2025-06"},{"topic":"KI","pod":"Lex Fridman Podcast","guest":"Dario Amodei","title":"Skalierungsgesetze treiben Claude und AGI","insight":"Anthropic-CEO Amodei erklärt, warum das Hochskalieren von Modellen weiter funktioniert und wie mechanistische Interpretierbarkeit und Sicherheit über die Zukunft der KI entscheiden.","source":"Lex Fridman #452 · Dario Amodei","url":"https://www.youtube.com/watch?v=ugvHCXCOmm4","keywords":"AI KI Künstliche Intelligenz AGI Claude Anthropic Scaling Dario Amodei","date":"2024-11"},{"topic":"KI","pod":"Dwarkesh Podcast","guest":"Dario Amodei","title":"Wir nähern uns dem Ende des Exponentiellen","insight":"Amodei diskutiert die Skalierungshypothese im RL-Zeitalter, wie KI sich in der Wirtschaft ausbreitet und warum Anthropics Umsatz rasant von 1 auf rund 10 Milliarden Dollar wuchs.","source":"Dwarkesh Podcast · Dario Amodei","url":"https://www.dwarkesh.com/p/dario-amodei-2","keywords":"AI KI Künstliche Intelligenz AGI Claude Anthropic Scaling Dario Amodei","date":"2025"},{"topic":"KI","pod":"Lex Fridman Podcast","guest":"Demis Hassabis","title":"KI als Werkzeug zur Simulation der Realität","insight":"DeepMind-CEO und Nobelpreisträger Hassabis spricht über World Models, das Simulieren physikalischer Realität und wie KI von AlphaFold bis zu wissenschaftlichen Durchbrüchen führt.","source":"Lex Fridman #475 · Demis Hassabis","url":"https://www.youtube.com/watch?v=-HzgcbRXUK8","keywords":"AI KI Künstliche Intelligenz AGI DeepMind AlphaFold World Models Demis Hassabis","date":"2025"},{"topic":"KI","pod":"Dwarkesh Podcast","guest":"Demis Hassabis","title":"Superhuman KI durch AlphaZero auf LLMs","insight":"Hassabis erklärt, wie das Kombinieren von Suchverfahren à la AlphaZero mit Sprachmodellen den Weg zu übermenschlicher KI und echtem Verständnis ebnen könnte.","source":"Dwarkesh Podcast · Demis Hassabis","url":"https://www.dwarkesh.com/p/demis-hassabis","keywords":"AI KI Künstliche Intelligenz AGI DeepMind AlphaZero AlphaFold Demis Hassabis","date":"2025"},{"topic":"KI","pod":"Lex Fridman Podcast","guest":"Yann LeCun","title":"LLMs führen nicht zur echten AGI","insight":"Metas Chef-KI-Forscher LeCun argumentiert, dass heutige Sprachmodelle fundamental begrenzt sind und der Weg zur AGI über offene Forschung und neue Architekturen läuft.","source":"Lex Fridman #416 · Yann LeCun","url":"https://www.youtube.com/watch?v=5t1vTLU7s40","keywords":"AI KI Künstliche Intelligenz AGI LLM Open Source Meta Llama Yann LeCun","date":"2024-03"},{"topic":"KI","pod":"Dwarkesh Podcast","guest":"Andrej Karpathy","title":"AGI ist noch ein Jahrzehnt entfernt","insight":"Ex-OpenAI-Mitgründer Karpathy nennt heutige KI-Agenten überschätzt und prognostiziert ein 'Jahrzehnt der Agenten', da Modellen noch Zuverlässigkeit und kontinuierliches Lernen fehlen.","source":"Dwarkesh Podcast · Andrej Karpathy","url":"https://www.youtube.com/watch?v=c0-0gGdDJyE","keywords":"AI KI Künstliche Intelligenz AGI Agenten Agents LLM Karpathy","date":"2025-10"},{"topic":"KI","pod":"Dwarkesh Podcast","guest":"Ilya Sutskever","title":"Vom Zeitalter des Skalierens zur Forschung","insight":"OpenAI-Mitgründer Sutskever erklärt, dass die Ära des reinen Hochskalierens endet und ab 2026 wieder echte Forschung über den Fortschritt zur AGI entscheidet.","source":"Dwarkesh Podcast · Ilya Sutskever","url":"https://www.youtube.com/watch?v=aR20FWCCjAs","keywords":"AI KI Künstliche Intelligenz AGI Scaling Forschung SSI Ilya Sutskever","date":"2025-11"},{"topic":"KI","pod":"Dwarkesh Podcast","guest":"Mark Zuckerberg","title":"Open Source als Weg zur AGI","insight":"Zuckerberg begründet, warum Meta milliardenteure Modelle wie Llama 3 quelloffen macht und sieht offene KI als Schlüssel für Innovation, Sicherheit und Wettbewerb.","source":"Dwarkesh Podcast · Mark Zuckerberg","url":"https://www.youtube.com/watch?v=bc6uFV9CJGg","keywords":"AI KI Künstliche Intelligenz AGI Open Source Llama Meta Zuckerberg","date":"2024-04"},{"topic":"KI","pod":"Diary of a CEO","guest":"Mo Gawdat","title":"15 Jahre Hölle bevor KI uns hilft","insight":"Ex-Google-Manager Gawdat warnt, dass KI Jobs vernichtet und eine etwa 15-jährige Umbruchphase auslöst, bevor die Technologie der Menschheit nützen kann.","source":"Diary of a CEO · Mo Gawdat","url":"https://www.youtube.com/watch?v=S9a1nLw70p0","keywords":"AI KI Künstliche Intelligenz Zukunft Jobs Arbeitsplätze Mo Gawdat","date":"2024"},{"topic":"KI","pod":"Diary of a CEO","guest":"Mo Gawdat","title":"Nur noch wenige Jahre bis zum Umbruch","insight":"Gawdat behauptet, AGI sei faktisch da, bis 2027 könnten rund 30 Prozent der Jobs verschwinden, und appelliert an Menschen, sich jetzt vorzubereiten.","source":"Diary of a CEO · Mo Gawdat","url":"https://www.youtube.com/watch?v=RwlgFC6S-OE","keywords":"AI KI Künstliche Intelligenz AGI Jobs Zukunft Mo Gawdat","date":"2025"},{"topic":"KI","pod":"Diary of a CEO","guest":"Yuval Noah Harari","title":"KI verändert Sprache, Macht und Vertrauen","insight":"Historiker Harari erklärt, wie KI als erste Technologie selbst Geschichten und Sprache erzeugen kann und damit Demokratie, Wahrheit und menschliche Aufmerksamkeit grundlegend bedroht.","source":"Diary of a CEO · Yuval Noah Harari","url":"https://www.youtube.com/watch?v=cmfLYUjOXoc","keywords":"AI KI Künstliche Intelligenz Nexus Information Demokratie Harari","date":"2024"},{"topic":"KI","pod":"Diary of a CEO","guest":"Mustafa Suleyman","title":"KI bewegt sich schneller als erwartet","insight":"Microsoft-AI-Chef und DeepMind-Mitgründer Suleyman warnt, dass es keinen einfachen Aus-Schalter gibt und KI gefährliche Fähigkeiten wie das Designen von Viren ermöglichen könnte.","source":"Diary of a CEO · Mustafa Suleyman","url":"https://www.youtube.com/watch?v=xuIQREciVCM","keywords":"AI KI Künstliche Intelligenz Coming Wave Containment Risiko Suleyman","date":"2023"},{"topic":"KI","pod":"Diary of a CEO","guest":"Geoffrey Hinton","title":"Godfather of AI warnt vor Kontrollverlust","insight":"KI-Pionier Hinton schildert, warum er vor den existenziellen Gefahren der KI warnt und befürchtet, dass die Menschheit die Kontrolle über superintelligente Systeme verlieren könnte.","source":"Diary of a CEO · Geoffrey Hinton","url":"https://www.youtube.com/watch?v=giT0ytynSqg","keywords":"AI KI Künstliche Intelligenz Risiko Superintelligenz Hinton","date":"2024"},{"topic":"KI","pod":"The Weekly Show with Jon Stewart","guest":"Geoffrey Hinton","title":"Was bei KI alles schiefgehen kann","insight":"Hinton diskutiert mit Jon Stewart, was die KI-Branche eigentlich erschaffen hat und welche gesellschaftlichen und sicherheitstechnischen Risiken durch das rasante Tempo entstehen.","source":"The Weekly Show · Geoffrey Hinton","url":"https://www.youtube.com/watch?v=jrK3PsD3APk","keywords":"AI KI Künstliche Intelligenz Risiko Jobs Hinton Jon Stewart","date":"2024"},{"topic":"KI","pod":"Lex Fridman Podcast","guest":"Marc Andreessen","title":"Warum KI die Welt retten wird","insight":"Investor Andreessen vertritt eine techno-optimistische Sicht: KI werde als persönlicher Coach für Gesundheit, Finanzen und Entscheidungen dienen und Wohlstand massiv steigern.","source":"Lex Fridman #386 · Marc Andreessen","url":"https://lexfridman.com/marc-andreessen/","keywords":"AI KI Künstliche Intelligenz Techno-Optimismus Zukunft Andreessen","date":"2023-06"},{"topic":"KI","pod":"Huberman Lab","guest":"Marc Andreessen","title":"KI als persönlicher Coach für jeden","insight":"Andreessen prognostiziert, dass bald jeder Mensch KI als personalisierten Berater für Gesundheit, Beziehungen und Finanzen nutzen wird, und ordnet Risiko und Innovation ein.","source":"Huberman Lab · Marc Andreessen","url":"https://www.hubermanlab.com/episode/marc-andreessen-how-risk-taking-innovation-and-artificial-intelligence-transform-human-experience","keywords":"AI KI Künstliche Intelligenz Coach Innovation Risiko Andreessen Huberman","date":"2024"},{"topic":"KI","pod":"Lex Fridman Podcast","guest":"Aravind Srinivas","title":"KI revolutioniert die Internetsuche","insight":"Perplexity-CEO Srinivas erklärt, wie die Kombination aus Suche und Sprachmodellen mit Quellenangaben Antworten liefert und so Googles klassisches Suchmodell herausfordert.","source":"Lex Fridman #434 · Aravind Srinivas","url":"https://www.youtube.com/watch?v=e-gwvmhyU7A","keywords":"AI KI Künstliche Intelligenz Suche Search Perplexity RAG Srinivas","date":"2024"},{"topic":"KI","pod":"Dwarkesh Podcast","guest":"Dylan Patel","title":"Die drei Engpässe beim KI-Compute","insight":"Halbleiter-Analyst Patel erklärt detailliert, warum Rechenleistung, Energie und Lieferketten die zentralen Engpässe beim Skalieren von KI-Infrastruktur sind.","source":"Dwarkesh Podcast · Dylan Patel","url":"https://www.dwarkesh.com/p/dylan-patel","keywords":"AI KI Künstliche Intelligenz Compute GPU Chips Rechenzentren Dylan Patel","date":"2025"},{"topic":"KI","pod":"OMR Education Podcast","guest":"Magdalena Rogl","title":"Emotionale vs. künstliche Intelligenz im Job","insight":"Rogl diskutiert, was KI für uns als Menschen im Berufsleben bedeutet und warum emotionale Intelligenz und menschliche Fähigkeiten neben KI an Wert gewinnen.","source":"OMR Education Podcast · Magdalena Rogl","url":"https://www.youtube.com/watch?v=7AyRTQCVqOk","keywords":"AI KI Künstliche Intelligenz Arbeit Job emotionale Intelligenz Rogl OMR","date":""},{"topic":"Schlaf","pod":"Huberman Lab","guest":"Dr. Matthew Walker","title":"QQRT: Die vier Säulen guten Schlafs","insight":"Optimaler Schlaf beruht auf vier Faktoren – Qualität, Quantität, Regelmäßigkeit und Timing (QQRT). Besonders Regelmäßigkeit der Schlafenszeiten ist ein eigenständiger Prädiktor für Gesundheit und Langlebigkeit.","source":"Huberman Lab · Dr. Matthew Walker","url":"https://www.hubermanlab.com/episode/guest-series-dr-matthew-walker-the-biology-of-sleep-your-unique-sleep-needs","keywords":"Sleep Schlaf Schlafqualität Regelmäßigkeit Chronotyp QQRT Erholung","date":""},{"topic":"Schlaf","pod":"Huberman Lab","guest":"Dr. Matthew Walker","title":"REM-Schlaf verarbeitet Emotionen","insight":"REM-Schlaf ist entscheidend für die nächtliche Verarbeitung emotionaler Erinnerungen. Schlafmangel führt zu Reizbarkeit, Impulsivität und überschießenden emotionalen Reaktionen.","source":"Huberman Lab · Dr. Matthew Walker","url":"https://www.hubermanlab.com/episode/guest-series-dr-matt-walker-improve-sleep-to-boost-mood-emotional-regulation","keywords":"REM Sleep Schlaf Emotionen Stimmung mood Gehirn","date":""},{"topic":"Schlaf","pod":"Huberman Lab","guest":"Dr. Matthew Walker","title":"Schlaf vor und nach dem Lernen stärkt Gedächtnis","insight":"Schlaf vor einer Lerneinheit bereitet das Gehirn auf die Aufnahme vor, Schlaf danach festigt das Gelernte. Beides verbessert Gedächtnis und motorische Fähigkeiten messbar.","source":"Huberman Lab · Dr. Matthew Walker","url":"https://www.hubermanlab.com/episode/guest-series-dr-matt-walker-using-sleep-to-improve-learning-creativity-memory","keywords":"Sleep Schlaf Lernen learning Gedächtnis memory Kreativität","date":""},{"topic":"Schlaf","pod":"Diary of a CEO","guest":"Dr. Michael Breus","title":"Dein Chronotyp bestimmt den idealen Tagesrhythmus","insight":"Die vier Chronotypen (Löwe, Bär, Wolf, Delfin) bestimmen, wann Energie, Fokus und Schlafbedürfnis am höchsten sind. Die Kernkörpertemperatur spielt für guten Schlaf eine größere Rolle als oft angenommen.","source":"Diary of a CEO · Dr. Michael Breus","url":"https://open.spotify.com/episode/0pkbyAlu7ebjD3ox0BTfiZ","keywords":"Sleep Schlaf chronotype Chronotyp Insomnie Schlafapnoe circadian Rhythmus","date":"2026-02"},{"topic":"Longevity","pod":"The Peter Attia Drive","guest":"Peter Attia","title":"Vier Trainingssäulen fürs Centenarian-Decathlon","insight":"Wer mit 100 noch selbstständig leben will, sollte heute in vier Bereichen trainieren: Zone 2, VO2max (Zone 5), Stabilität und Kraft. Attia nennt dies das Centenarian Decathlon mit der entscheidenden 'marginalen Dekade'.","source":"The Peter Attia Drive · Peter Attia","url":"https://open.spotify.com/episode/32n415RDigeSzDkiNsQg1Y","keywords":"Longevity Langlebigkeit Zone 2 VO2max Kraft strength Stabilität centenarian","date":""},{"topic":"Fitness","pod":"The Peter Attia Drive","guest":"Peter Attia","title":"VO2max ist starker Prädiktor für Lebenserwartung","insight":"Ein hoher VO2max korreliert stark mit niedriger Sterblichkeit – der Sprung vom niedrigsten ins höhere Fitnessniveau senkt das Sterberisiko erheblich. Gezieltes Intervalltraining steigert diesen Marker effektiv.","source":"The Peter Attia Drive · Peter Attia","url":"https://podcasts.apple.com/us/podcast/vo2-max-wearables-eliminating-heart-disease-risk-peter/id1246494475?i=1000736939855","keywords":"VO2max Fitness Ausdauer cardio Herzgesundheit Sterblichkeit mortality longevity","date":"2025"},{"topic":"Fitness","pod":"The Peter Attia Drive","guest":"Gabrielle Lyon, Jeff Cavaliere, Mike Boyle","title":"Muskelmasse ist Schutzfaktor im Alter","insight":"Eine Experten-Roundtable betont, dass der Erhalt von Muskelmasse zentral für Langlebigkeit, metabolische Resilienz und Verletzungsprävention ist. Krafttraining wird zur Pflicht statt zur Option im Älterwerden.","source":"The Peter Attia Drive · Strength Roundtable","url":"https://peterattiamd.com/podcast/","keywords":"Kraft strength Muskel muscle Krafttraining resistance Longevity metabolische Resilienz","date":"2025-09"},{"topic":"Gesundheit","pod":"The Peter Attia Drive","guest":"Peter Attia","title":"Alzheimer-Risiko früh aktiv senken","insight":"APOE-Genvarianten beeinflussen das Alzheimer-Risiko, doch Lebensstil zählt: Bewegung, Lipidmanagement, Schlaf, Sauna, Mund- und Hörgesundheit sind beeinflussbare Hebel zur Hirngesundheit.","source":"The Peter Attia Drive · AMA #46","url":"https://peterattiamd.com/ama46/","keywords":"Alzheimer dementia Demenz Gehirn brain APOE Prävention prevention","date":""},{"topic":"Ernährung","pod":"ZOE Science & Nutrition","guest":"Tim Spector","title":"Mehr Ballaststoffe, Polyphenole und Fermentiertes","insight":"Wer mehr Ballaststoffe, Polyphenole und fermentierte Lebensmittel isst, verbessert sein Mikrobiom innerhalb von drei bis sechs Monaten – über 80 Prozent steigerten ihre Gesundheitswerte.","source":"ZOE Science & Nutrition · Tim Spector","url":"https://zoe.com/learn/podcast-what-gut-microbiome-testing-can-reveal","keywords":"Ernährung Nutrition Ballaststoffe fiber Mikrobiom microbiome Polyphenole fermentiert Darm","date":""},{"topic":"Ernährung","pod":"ZOE Science & Nutrition","guest":"Tim Spector","title":"Fermentierte Lebensmittel senken Entzündung","insight":"Fermentierte Lebensmittel können Immunsystem und Darmmikrobiom dramatisch beeinflussen und Entzündungsmarker reduzieren. Regelmäßiger Konsum kleiner Mengen wirkt sich positiv aus.","source":"ZOE Science & Nutrition · Tim Spector","url":"https://zoe.com/learn/ferment-tim-spector-episode","keywords":"fermentiert fermented Entzündung inflammation Immunsystem Darm gut microbiome Ernährung","date":""},{"topic":"Ernährung","pod":"ZOE Science & Nutrition","guest":"Tim Spector & Gin Stephens","title":"Intervallfasten: Was die Evidenz wirklich sagt","insight":"Intervallfasten kann beim Gewicht und Stoffwechsel helfen, doch die Evidenz ist nuancierter als der Hype. Entscheidend bleibt vor allem die Qualität dessen, was im Essensfenster gegessen wird.","source":"ZOE Science & Nutrition · Tim Spector","url":"https://podcasts.apple.com/au/podcast/recap-what-the-science-says-about-intermittent/id1611216298?i=1000693460485","keywords":"Intervallfasten intermittent fasting Fasten Ernährung Stoffwechsel Gewicht","date":"2025-02"},{"topic":"Ernährung","pod":"ZOE Science & Nutrition","guest":"Jonathan Wolf","title":"Ultra-verarbeitete Kost isst man 50% schneller","insight":"Industrielle Verarbeitung verändert die Lebensmittelmatrix so, dass ultra-verarbeitete Produkte rund 50 Prozent schneller gegessen werden – gezielt auf 'Craveability' designt, was Überessen fördert.","source":"ZOE Science & Nutrition · Jonathan Wolf","url":"https://zoe.com/learn/category/podcasts","keywords":"ultra-processed ultra-verarbeitet UPF Ernährung Nutrition Übergewicht","date":""},{"topic":"Longevity","pod":"Rich Roll Podcast","guest":"Dr. Valter Longo","title":"Fasten-imitierende Diät für längeres Leben","insight":"Die Fasting-Mimicking-Diät kann laut Longo Zellregeneration anstoßen und Krankheitsrisiken senken. Periodisches Fasten gilt als Werkzeug zur Verlängerung der gesunden Lebensspanne.","source":"Rich Roll Podcast · Dr. Valter Longo","url":"https://www.richroll.com/podcast/valter-longo-889/","keywords":"Fasten fasting Longevity Langlebigkeit Healthspan Lebensspanne Longo","date":"2025-02"},{"topic":"Fitness","pod":"Found My Fitness","guest":"Dr. Rhonda Patrick","title":"90 Min Krafttraining pro Woche senkt Sterblichkeit","insight":"In einer langjährigen Studie zeigte sich, dass 90 Minuten oder mehr Krafttraining pro Woche am stärksten mit niedrigerer Gesamtsterblichkeit verbunden sind.","source":"Found My Fitness · Dr. Rhonda Patrick","url":"https://www.foundmyfitness.com/episodes/strength-training-cardio-rhonda-patrick","keywords":"Krafttraining strength resistance training Fitness Sterblichkeit mortality Muskel longevity","date":"2025"},{"topic":"Longevity","pod":"Found My Fitness","guest":"Dr. Rhonda Patrick","title":"Sauna als Trainings-Mimetikum für Herz und Hirn","insight":"Häufige Saunanutzung ist mit geringerem Risiko für Herz-Kreislauf-Tod, Schlaganfall, Demenz und Alzheimer verbunden. In Kombination mit Sport reduziert sie die Gesamtsterblichkeit zusätzlich.","source":"Found My Fitness · Dr. Rhonda Patrick","url":"https://www.foundmyfitness.com/episodes/ultimate-guide-saunas-heat-exposure","keywords":"Sauna heat exposure Hitze Herz cardiovascular Demenz dementia Longevity BDNF","date":""},{"topic":"Fitness","pod":"Found My Fitness","guest":"Dr. Darren Candow","title":"Kreatin für Muskeln, Gehirn und Longevity","insight":"Kreatin verbessert nicht nur Kraft und Muskelleistung, sondern zeigt auch Vorteile für Gehirnfunktion und gesundes Altern. Es zählt zu den am besten belegten Supplementen.","source":"Found My Fitness · Dr. Darren Candow","url":"https://www.foundmyfitness.com/episodes/darren-candow","keywords":"Kreatin creatine Muskel muscle Gehirn brain Supplement Kraft strength Longevity","date":"2025-03"},{"topic":"Gesundheit","pod":"Found My Fitness","guest":"Dr. Rhonda Patrick","title":"Magnesiummangel als unterschätztes Risiko","insight":"Magnesium ist ein kritischer, oft unterschätzter Mineralstoff. Ein chronisch niedriger Magnesiumspiegel ist mit zahlreichen negativen Gesundheitsfolgen verbunden.","source":"Found My Fitness · Dr. Rhonda Patrick","url":"https://www.foundmyfitness.com/episodes/magnesium","keywords":"Magnesium mineral Mineralstoff Gesundheit health Mangel Supplement","date":""},{"topic":"Longevity","pod":"Mel Robbins Podcast","guest":"Dr. Eric Topol","title":"Drei Gewohnheiten für 10 Jahre mehr Leben","insight":"Kardiologe und Longevity-Forscher Eric Topol erklärt, wie einfache, belegte Lebensstiländerungen das Risiko für Krebs, Herzkrankheit und Demenz senken und potenziell ein Jahrzehnt Lebenszeit gewinnen.","source":"Mel Robbins Podcast · Dr. Eric Topol","url":"https://www.melrobbins.com/episode/episode-285/","keywords":"Longevity Langlebigkeit Topol healthspan Prävention prevention Lebensstil Krebs Demenz","date":"2025-05"},{"topic":"Fitness","pod":"Mel Robbins Podcast","guest":"Dr. Vonda Wright","title":"Wir altern, weil wir aufhören uns zu bewegen","insight":"Orthopädin Vonda Wright betont, dass Inaktivität – nicht das Alter selbst – Muskelabbau und Gebrechlichkeit treibt. Krafttraining zwei Mal pro Woche kann Alterungseffekte messbar umkehren.","source":"Mel Robbins Podcast · Dr. Vonda Wright","url":"https://www.melrobbins.com/podcasts/episode-269","keywords":"Vonda Wright Muskel muscle Krafttraining strength Altern aging Knochen Mobilität Fitness","date":"2025-03"},{"topic":"Fitness","pod":"Diary of a CEO","guest":"Dr. Stacy Sims","title":"Frauen sind keine kleinen Männer","insight":"Stacy Sims erklärt, dass Frauen mehr Protein als Männer brauchen, ihren Zyklus fürs Training nutzen können und Kreatin auch ihnen nützt. Empfehlungen für Männer lassen sich nicht 1:1 übertragen.","source":"Diary of a CEO · Dr. Stacy Sims","url":"https://open.spotify.com/episode/37HUAmld0cYeKak4NOCBVW","keywords":"Stacy Sims Frauen women Zyklus Menopause Protein Kreatin Fitness female","date":"2025-01"},{"topic":"Gesundheit","pod":"Diary of a CEO","guest":"Vonda Wright, Mary Claire Haver, Stacy Sims","title":"Protein, Muskel und Hormone im Longevity-Debate","insight":"Der Longevity-Debate betont steigenden Proteinbedarf mit dem Alter sowie die Rolle von Muskelmasse für Knochendichte und Hirnfunktion. Endokrine Disruptoren wie BPA können das reproduktive Altern beschleunigen.","source":"Diary of a CEO · Longevity Debate","url":"https://podcasts.apple.com/us/podcast/longevity-debate-the-truth-about-weight-loss-muscle/id1291423644?i=1000733650168","keywords":"Longevity Protein Muskel muscle Frailty Hormone Menopause BPA Frauengesundheit","date":"2025-10"},{"topic":"Fitness","pod":"Huberman Lab","guest":"Andrew Huberman","title":"Periodisierung: zwischen schwer und moderat wechseln","insight":"Für Kraft und Hypertrophie empfiehlt Huberman, monatlich zwischen Schema A (4-8 schwere Wiederholungen) und Schema B (8-15 moderate Wiederholungen) zu wechseln und pro Muskel je eine verkürzte und eine gedehnte Position zu trainieren.","source":"Huberman Lab · Fitness Toolkit","url":"https://www.hubermanlab.com/episode/fitness-toolkit-protocol-and-tools-to-optimize-physical-health","keywords":"Krafttraining strength Hypertrophie hypertrophy Periodisierung Fitness Muskel Protokoll","date":""},{"topic":"Business","pod":"My First Million","guest":"Alex Hormozi","title":"A-Player-Talent als Wachstums-Schneeball","insight":"Hormozi stellt auf allgemeine Intelligenz statt auf Erfahrung ein und betont, schnell zu feuern. Talent zieht Talent an und wird so zum selbstverstärkenden Wachstumsmotor.","source":"My First Million · Alex Hormozi","url":"https://podcasts.apple.com/is/podcast/how-alex-hormozi-gets-other-people-to-build-his-%24100m-empire/id1469759170?i=1000736742031","keywords":"Hiring Talent Einstellen Recruiting Wachstum Scaling Business Unternehmen","date":"2025-11"},{"topic":"Geld","pod":"Diary of a CEO","guest":"Morgan Housel","title":"Post-Traumatic Broke Syndrome blockiert Wohlstand","insight":"Housel erklärt, dass frühe Geldängste viele Menschen auch im Reichtum noch lähmen. Geld verstärkt nur, wer man ohnehin schon ist, statt den Charakter zu verändern.","source":"Diary of a CEO · Morgan Housel","url":"https://open.spotify.com/episode/0cZasUHmMcekuuJtJH1HDq","keywords":"Money Geld Psychology Psychologie Wealth Vermögen Spending Ausgeben","date":"2025-10"},{"topic":"Geld","pod":"Diary of a CEO","guest":"Morgan Housel","title":"Die Kunst, Geld auszugeben","insight":"Viele sparen zu viel oder geben zu viel aus, weil sie nie gelernt haben, bewusst zu konsumieren. Wahre Freiheit liegt darin, Geld auf das auszurichten, was wirklich Freude bringt.","source":"Diary of a CEO · Morgan Housel","url":"https://podcastnotes.org/the-diary-of-a-ceo-with-steven-bartlett/morgan-housel-the-art-of-spending-money-the-diary-of-a-ceo-with-steven-bartlett/","keywords":"Spending Ausgeben Geld Money Happiness Glück Freiheit Wealth","date":"2025-10"},{"topic":"Business","pod":"Young and Profiting","guest":"Codie Sanchez","title":"Reich werden mit langweiligen Firmen","insight":"Sanchez zeigt, dass die Reichsten oft unscheinbare Betriebe wie Waschsalons kaufen statt Tech-Startups zu gründen. Cashflow aus bestehenden Firmen schlägt riskante Neugründungen.","source":"Young and Profiting · Codie Sanchez","url":"https://open.spotify.com/episode/6Wg3hbJQ3ccgzlZiORJFLi","keywords":"Boring Business Langweilige Firmen Acquisition Kaufen Cashflow Wealth Vermögen","date":"2025"},{"topic":"Business","pod":"The Knowledge Project","guest":"Codie Sanchez","title":"Bauplan zur finanziellen Freiheit","insight":"Sanchez verließ nach 20 Jahren die Wall Street, weil echter Wohlstand in stetigen Alltagsgeschäften liegt. Kleine Übernahmen mit wenig Eigenkapital sind ihr Weg zur Unabhängigkeit.","source":"The Knowledge Project · Codie Sanchez","url":"https://podcasts.apple.com/us/podcast/codie-sanchez-your-blueprint-to-financial-freedom/id990149481?i=1000683028804","keywords":"Financial Freedom Finanzielle Freiheit Business Firmen Kaufen Wealth Geld","date":"2025"},{"topic":"Geld","pod":"All-In Podcast","guest":"Chamath Palihapitiya","title":"KI-Trade hat 500 Tage Bewährungsfrist","insight":"Chamath warnt, dass Firmen bald beweisen müssen, dass massive KI-Ausgaben echten Umsatz bringen. Der Markt preise noch Zukunftsfantasie ein, die sich erst materialisieren müsse.","source":"All-In Podcast · Chamath Palihapitiya","url":"https://open.spotify.com/episode/3Z2FzPRtyYCwgDtvSnGm6A","keywords":"AI KI Investing Investieren Markets Märkte ROI Rendite Tech","date":"2025"},{"topic":"Geld","pod":"I Will Teach You To Be Rich","guest":"Ramit Sethi","title":"Rich Life statt blindes Sparen","insight":"Sethi rät, bei den Dingen, die man liebt, großzügig auszugeben und beim Rest gnadenlos zu kürzen. Money Dials helfen, Geld bewusst auf persönliche Werte auszurichten.","source":"I Will Teach You To Be Rich · Ramit Sethi","url":"https://podcasts.apple.com/us/podcast/how-to-design-a-rich-life-at-any-income-with-ramit-sethi/id1560751222?i=1000717495998","keywords":"Rich Life Money Dials Geld Spending Budget Vermögen Wealth","date":"2025"},{"topic":"Geld","pod":"The Naval Podcast","guest":"Naval Ravikant","title":"Spezifisches Wissen plus Hebel","insight":"Naval betont, dass Reichtum aus spezifischem Wissen, Verantwortung und Hebel entsteht. Code und Medien sind die neuen, erlaubnisfreien Hebel des digitalen Zeitalters.","source":"The Naval Podcast · Naval Ravikant","url":"https://podcasts.apple.com/us/podcast/563-how-to-get-rich-naval-ravikants-24-rule-framework/id1679411542?i=1000709882086","keywords":"Wealth Vermögen Leverage Hebel Specific Knowledge Spezifisches Wissen Geld Rich","date":"2025"},{"topic":"Geld","pod":"The Prof G Pod","guest":"Scott Galloway","title":"Die Algebra des Wohlstands","insight":"Galloways Formel lautet Fokus mal Stoizismus, Zeit und Diversifikation. Früh investieren und unter den Verhältnissen leben lässt den Zinseszins für einen arbeiten.","source":"The Prof G Pod · Scott Galloway","url":"https://podcasts.apple.com/us/podcast/the-prof-g-pod-with-scott-galloway/id1498802610","keywords":"Wealth Vermögen Compounding Zinseszins Investing Investieren Geld Diversification","date":"2025"},{"topic":"Business","pod":"20VC","guest":"Harry Stebbings","title":"Distribution schlägt Produkt","insight":"Stebbings beobachtet, dass Distribution heute die größte Hürde für Consumer-Tech ist. Der Vorsprung liegt zunehmend im Verteilen, nicht im Bauen des Produkts.","source":"20VC · Harry Stebbings","url":"https://podcasts.apple.com/us/podcast/the-twenty-minute-vc-20vc-venture-capital-startup/id958230465","keywords":"Venture Capital Startups Distribution Vertrieb Growth Wachstum Business Founder","date":"2025"},{"topic":"Produktivität","pod":"Lenny's Podcast","guest":"Lenny Rachitsky","title":"Agency entscheidet über Erfolg","insight":"Nicht Skills, sondern Agency trennt jene, die aufblühen, von denen, die zurückfallen. Wer eigenständig handelt und Probleme angeht, gewinnt im KI-Zeitalter.","source":"Lenny's Podcast · Lenny Rachitsky","url":"https://podcasts.apple.com/us/podcast/lennys-podcast-product-career-growth/id1627920305","keywords":"Agency Initiative Career Karriere Product Produkt Growth Produktivität Skills","date":"2025"},{"topic":"Produktivität","pod":"Lenny's Podcast","guest":"Lenny Rachitsky","title":"Die ersten 10 Prozent sind gratis","insight":"Durch KI ist der Start jedes Projekts heute praktisch kostenlos. Die Softwaremenge explodiert, doch die Qualität bleibt zurück und genau diese Lücke schafft Chancen.","source":"Lenny's Podcast · Lenny Rachitsky","url":"https://www.lennysnewsletter.com/podcast","keywords":"AI KI Product Produkt Software Quality Qualität Opportunity Produktivität","date":"2025"},{"topic":"Produktivität","pod":"The Tim Ferriss Show","guest":"Tim Ferriss","title":"Mentale Gesundheit als beste Investition","insight":"Ferriss bezeichnet Investitionen in mentale Gesundheit als seine produktivsten Ausgaben von Zeit und Energie. Erfüllung entstehe durch wenige enge Beziehungen statt durch oberflächliche Netzwerke.","source":"The Tim Ferriss Show · Tim Ferriss","url":"https://ritholtz.com/2025/08/transcript-tim-ferriss/","keywords":"Productivity Produktivität Mental Health Gesundheit Habits Focus Fokus","date":"2025-08"},{"topic":"Business","pod":"Acquired","guest":"Ben Gilbert & David Rosenthal","title":"Costco: Niedrigpreis und reiche Kunden","insight":"Costco hat die niedrigsten Preise und zugleich die wohlhabendste Kundschaft. Es zahlt 30 Prozent über Branchenniveau und ist trotzdem fast dreimal profitabler pro Mitarbeiter als Walmart.","source":"Acquired · Costco","url":"https://www.acquired.fm/","keywords":"Costco Strategy Strategie Business Retail Handel Membership Profit Marge","date":"2025"},{"topic":"Geld","pod":"We Study Billionaires","guest":"Kyle Grieve","title":"Venture-Lektionen für Value-Investoren","insight":"Grieve überträgt Power Laws und Netzwerkeffekte aus dem Venture-Bereich aufs Value-Investing. Gewinner-Positionen lange zu halten ist wichtiger als jede Einzelentscheidung zu optimieren.","source":"We Study Billionaires · Kyle Grieve","url":"https://podcasts.apple.com/us/podcast/we-study-billionaires-the-investors-podcast-network/id928933489","keywords":"Value Investing Investieren Power Law Compounding Aktien Stocks Geld","date":"2025"},{"topic":"Geld","pod":"The Ramsey Show","guest":"Dave Ramsey","title":"Die 7 Baby Steps zur Freiheit","insight":"Ramsey rät, erst einen Notgroschen aufzubauen, dann per Schneeball alle Schulden zu tilgen und schließlich 15 Prozent fürs Alter zu investieren. Disziplin und Reihenfolge schlagen Komplexität.","source":"The Ramsey Show · Dave Ramsey","url":"https://www.ramseysolutions.com/dave-ramsey-7-baby-steps","keywords":"Debt Schulden Baby Steps Emergency Fund Notgroschen Investing Geld Budget","date":"2025"},{"topic":"Geld","pod":"BiggerPockets Real Estate","guest":"Dave Meyer","title":"Upside-Immobilien im Markt 2025","insight":"Meyer rät, gezielt nach Objekten mit mehreren Wertsteigerungs-Hebeln zu suchen. Antizyklisch im schwachen Markt gekaufte Immobilien könnten sich als beste Investments erweisen.","source":"BiggerPockets · Dave Meyer","url":"https://podcasts.apple.com/us/podcast/how-to-capture-the-upside-in-the-2025-housing-market/id594419649?i=1000689239778","keywords":"Real Estate Immobilien Investing Investieren Cashflow Rental Vermietung Wealth Geld","date":"2025"},{"topic":"Business","pod":"20VC","guest":"Sam Altman","title":"Hohe Velocity in kleinen Teams","insight":"Altman betont, Produktentwicklung mit hoher Geschwindigkeit auch im Wachstum zu halten. Kleine, befähigte Teams, die laufend ausliefern, sichern Tempo und Schlagkraft.","source":"20VC · Sam Altman","url":"https://open.spotify.com/episode/6mvT6nqdjXEGQ83dRrWIKp","keywords":"Startups AI KI Velocity Tempo Teams Product Produkt Leadership Business","date":"2025"},{"topic":"Business","pod":"20VC","guest":"Daniel Ek","title":"Vom Gründer zum CEO werden","insight":"Ek beschreibt den schwierigen Übergang vom Gründer zum CEO und wie strukturierte Lernprozesse Entscheidungen verbessern. Bessere Entscheidungsqualität ist der eigentliche Skalierungs-Hebel.","source":"20VC · Daniel Ek","url":"https://open.spotify.com/episode/6lZuRakBXNg1RVBkOQyNrN","keywords":"Founder Gründer CEO Decision Making Entscheidungen Learning Lernen Scaling Business","date":"2025"},{"topic":"Business","pod":"The Game (Hormozi)","guest":"Alex Hormozi","title":"Preise höher testen als gedacht","insight":"Hormozi rät, Preise vier- bis fünfmal höher anzusetzen als man sich traut, und Anker im Hochpreis-Segment zu setzen. Weniger Kunden zu höheren Preisen ist oft das einfachere Geschäft.","source":"The Game · Alex Hormozi","url":"https://open.spotify.com/episode/3I5nkMu3yJuHrc1H1Exeg3","keywords":"Pricing Preise Offers Angebote Money Models Margin Marge Business Geld","date":"2025-08"},{"topic":"Business","pod":"The Game (Hormozi)","guest":"Alex Hormozi","title":"Jeder Kunde finanziert zwei neue","insight":"Hormozis Money Model sorgt dafür, dass die Ausgaben jedes Kunden die Akquise von zwei weiteren decken. So entsteht ein sich selbst tragender Wachstumskreislauf.","source":"The Game · Alex Hormozi","url":"https://open.spotify.com/episode/0YlrR1s39LjEdpyJ0UeIXB","keywords":"Money Model CAC Akquise Growth Wachstum Cashflow Business Profit Geld","date":"2025-09"},{"topic":"Geld","pod":"Invest Like the Best","guest":"Paul Tudor Jones","title":"Trading ist Risikomanagement und Geduld","insight":"Tudor Jones beschreibt Trading als ständigen Kampf zwischen Risikomanagement und Geduld. Schon kleinste Akte der Freundlichkeit könnten sich wie Renditen über die Zeit summieren.","source":"Invest Like the Best · Paul Tudor Jones","url":"https://podcasts.apple.com/us/podcast/invest-like-the-best-with-patrick-oshaughnessy/id1154105909","keywords":"Trading Macro Risk Risiko Patience Geduld Investing Investieren Geld","date":"2025"},{"topic":"Business","pod":"20VC","guest":"Sam Altman","title":"Zwei Strategien für KI-Startups","insight":"Altman skizziert, dass KI-Startups entweder davon ausgehen sollten, dass Modelle nicht besser werden, oder dass sie es massiv tun. Beide Annahmen führen zu völlig unterschiedlichen Geschäftsstrategien.","source":"20VC · Sam Altman","url":"https://www.startuparchive.org/p/sam-altman-explains-the-two-strategies-for-startups-building-on-ai","keywords":"AI KI Startups Strategy Strategie Foundation Models Business OpenAI Founder","date":"2025"},{"topic":"Mindset","pod":"Modern Wisdom","guest":"Robert Greene","title":"12 rohe Wahrheiten über Macht und Respekt","insight":"Robert Greene erklärt, dass echtes Selbstvertrauen, Selbstbeherrschung und das Verstehen menschlicher Natur die Grundlage für Macht und Respekt bilden – nicht Manipulation, sondern strategische Selbstkenntnis.","source":"Modern Wisdom · Robert Greene","url":"https://podcasts.apple.com/nz/podcast/839-robert-greene-12-raw-truths-about-gaining-power-respect/id1347973549?i=1000669656695","keywords":"Power Macht Psychology Psychologie Mindset Selbstvertrauen Confidence","date":"2024-09"},{"topic":"Psychologie","pod":"Diary of a CEO","guest":"Gabor Maté","title":"Dein Trauma steuert dich heimlich","insight":"Gabor Maté zeigt, dass Trauma nicht nur dramatische Ereignisse umfasst, sondern auch unerfüllte emotionale Bedürfnisse in der Kindheit – diese unbewussten Wunden prägen still unser Erwachsenenverhalten, lassen sich aber durch Bewusstheit heilen.","source":"Diary of a CEO · Gabor Maté","url":"https://open.spotify.com/episode/74y1BjfIPznM3DCiq2K9gt","keywords":"Trauma Psychology Psychologie Childhood Kindheit Healing Heilung Stress Emotions","date":"2025-04"},{"topic":"Beziehungen","pod":"Where Should We Begin?","guest":"Esther Perel","title":"Was 2025 uns über Liebe lehrte","insight":"Esther Perel reflektiert über relationale Ambivalenz und Konfliktlösung – die meistgehörten Themen zeigen, dass Paare zunehmend mit Unentschiedenheit und dem Aushalten von Spannung ringen.","source":"Where Should We Begin? · Esther Perel","url":"https://podcasts.apple.com/us/podcast/what-2025-taught-us-about-love-and-esthers/id1237931798?i=1000741739756","keywords":"Relationships Beziehungen Love Liebe Conflict Konflikt Intimacy Esther Perel","date":"2025-12"},{"topic":"Beziehungen","pod":"We Can Do Hard Things","guest":"Esther Perel","title":"Wenn Stress die Beziehung aushöhlt","insight":"Esther Perel erklärt, wie Stress und Trauma Beziehungen ihre Lebendigkeit und Begehren entziehen – Groll wächst, wenn das Leben nur noch aus Pflicht und Effizienz besteht.","source":"We Can Do Hard Things · Esther Perel","url":"https://wecandohardthingspodcast.com/","keywords":"Relationships Beziehungen Stress Resentment Groll Desire Begehren Connection","date":"2025"},{"topic":"Psychologie","pod":"Huberman Lab","guest":"Lisa Feldman Barrett","title":"Emotionen werden vom Gehirn konstruiert","insight":"Lisa Feldman Barrett widerlegt die Idee fester, angeborener Emotionen: Das Gehirn konstruiert Gefühle vorhersagend aus Körpersignalen und Sprache – präzisere Begriffe für Emotionen verbessern deren Regulation.","source":"Huberman Lab · Lisa Feldman Barrett","url":"https://www.youtube.com/watch?v=FeRgqJVALMQ","keywords":"Emotions Emotionen Psychology Psychologie Brain Gehirn Feelings Gefühle Regulation","date":"2023-10"},{"topic":"Mindset","pod":"The Mel Robbins Podcast","guest":"Mel Robbins","title":"Die Let-Them-Theorie für inneren Frieden","insight":"Mel Robbins lehrt, mit 'Let Them' das Bedürfnis loszulassen, andere kontrollieren zu wollen, und mit 'Let Me' Verantwortung für die eigenen Reaktionen zu übernehmen – das reduziert Angst vor Ungewissheit.","source":"The Mel Robbins Podcast · Mel Robbins","url":"https://podcasts.apple.com/us/podcast/the-let-them-theory-how-to-take-back-your-peace-and-power/id1646101002?i=1000727247529","keywords":"Let Them Mindset Anxiety Angst Control Kontrolle Stoicism Verantwortung Peace","date":"2025-08"},{"topic":"Beziehungen","pod":"The School of Greatness","guest":"Brené Brown","title":"Wahre Zugehörigkeit statt Anpassung","insight":"Brené Brown zeigt, dass die Suche nach Akzeptanz oft dazu führt, sich selbst zu verleugnen – echte Zugehörigkeit verlangt Authentizität und Verletzlichkeit, besonders bei Männern, die gesunde Gefühlsäußerung lernen müssen.","source":"The School of Greatness · Brené Brown","url":"https://lewishowes.com/sogpodcast/","keywords":"Belonging Zugehörigkeit Vulnerability Verletzlichkeit Authenticity Shame Scham Brené Brown","date":"2025"},{"topic":"Mindset","pod":"Hidden Brain","guest":"Emily Falk","title":"Warum unser Gehirn Kritik abwehrt","insight":"Neurowissenschaftlerin Emily Falk erklärt, dass das Gehirn 'Ich' automatisch mit 'gut' verknüpft – daher die Abwehr gegen Feedback. Sich vorzustellen, einem Freund Rat zu geben, senkt diese defensive Reaktion.","source":"Hidden Brain · Emily Falk","url":"https://www.hiddenbrain.org/","keywords":"Feedback Defensiveness Abwehr Psychology Psychologie Self-improvement Growth Mindset Brain","date":"2025-09"},{"topic":"Mindset","pod":"Modern Wisdom","guest":"Mark Manson","title":"19 rohe Lektionen fürs Leben","insight":"Mark Manson betont, dass echte Selbstdarstellung kompatible Partner anzieht und Vertrauen schafft, während das Streben nach einem perfekten Image Verbindungen schadet – Freude liegt in gewöhnlichen Momenten.","source":"Modern Wisdom · Mark Manson","url":"https://www.shortform.com/podcast/episode/modern-wisdom-2025-06-30-episode-summary-961-mark-manson-19-raw-lessons-to-not-mess-up-your-life","keywords":"Happiness Glück Authenticity Authentizität Mindset Relationships Perfectionism Mark Manson","date":"2025-06"},{"topic":"Beziehungen","pod":"Diary of a CEO","guest":"Jordan Peterson","title":"Liebe als tägliche Verantwortung","insight":"Jordan Peterson argumentiert, dass Liebe zwar als Geschenk beginnt, aber als Verantwortung praktiziert werden muss, um zu bestehen – moderne Einsamkeit entsteht durch den Verlust von Sinn und gemeinschaftlichen Werten.","source":"Diary of a CEO · Jordan Peterson","url":"https://podcasts.apple.com/au/podcast/jordan-b-peterson-you-need-to-listen-to-your-wife-weve/id1291423644?i=1000683738903","keywords":"Relationships Beziehungen Responsibility Verantwortung Meaning Sinn Loneliness Einsamkeit Jordan Peterson","date":"2025-01"},{"topic":"Psychologie","pod":"Modern Wisdom","guest":"Dr. Julie Smith","title":"Die Wissenschaft emotionaler Intelligenz","insight":"Dr. Julie Smith erklärt, warum wir oft Ja sagen, obwohl wir Nein meinen, wie man Eltern vergibt und warum es schwerfällt, mit sich selbst allein zu sein – Selbstverständnis ist der Schlüssel zu emotionaler Reife.","source":"Modern Wisdom · Dr. Julie Smith","url":"https://www.youtube.com/watch?v=1uq9REVmXD8","keywords":"Emotional Intelligence Emotionale Intelligenz Psychology Psychologie Boundaries Grenzen Dr Julie Smith","date":"2025-03"},{"topic":"Psychologie","pod":"Huberman Lab","guest":"Robert Sapolsky","title":"Stress, Testosteron und freier Wille","insight":"Robert Sapolsky erklärt, dass unser Gefühl von Kontrolle über Stressbewältigung die Gesundheitsfolgen bestimmt und Testosteron bestehende Tendenzen verstärkt, statt Aggression selbst zu erzeugen.","source":"Huberman Lab · Robert Sapolsky","url":"https://www.hubermanlab.com/episode/dr-robert-sapolsky-science-of-stress-testosterone-and-free-will","keywords":"Stress Testosterone Testosteron Free Will Freier Wille Psychology Aggression Control","date":"2021-08"},{"topic":"Beziehungen","pod":"On Purpose (Jay Shetty)","guest":"Jay Shetty","title":"Selbstwert nach Herzschmerz neu aufbauen","insight":"Jay Shetty zeigt, wie man aufhört, sich mit weniger zufriedenzugeben, toxische Beziehungsmuster durchbricht und Kompatibilität über Chemie stellt – statt den Selbstwert an andere auszulagern.","source":"On Purpose · Jay Shetty","url":"https://podcasts.apple.com/us/podcast/on-purpose-with-jay-shetty/id1450994021","keywords":"Relationships Beziehungen Self-worth Selbstwert Heartbreak Herzschmerz Dating Jay Shetty","date":"2025"},{"topic":"Beziehungen","pod":"On Purpose (Jay Shetty)","guest":"Jay Shetty","title":"Die drei Bindungsstile in Beziehungen","insight":"Jay Shetty erläutert die drei Bindungsstile – sicher, ängstlich und vermeidend – und wie man durch Achtsamkeit, Emotionsregulation und offene Kommunikation eine sichere Bindung entwickelt.","source":"On Purpose · Jay Shetty","url":"https://podfollow.com/1450994021/episode/1a76c6bc10e6c667ff07077b324f33f549f4c31f/view","keywords":"Attachment Bindung Relationships Beziehungen Secure Anxious Avoidant Jay Shetty","date":""},{"topic":"Mindset","pod":"The Mel Robbins Podcast","guest":"Anna Lembke","title":"Dopamin-Protokoll für echte Motivation","insight":"Dr. Anna Lembke erklärt, dass das moderne Leben das Gehirn auf ständige Dopamin-Kicks trainiert hat – deshalb fallen Motivation und Fokus schwerer. Sie zeigt ein Protokoll, um Willenskraft auch ohne Lust aufzubauen.","source":"The Mel Robbins Podcast · Anna Lembke","url":"https://podcasts.apple.com/us/podcast/how-to-get-motivated-1-dopamine-experts-protocol-to/id1646101002?i=1000746065146","keywords":"Dopamine Dopamin Motivation Focus Fokus Willpower Willenskraft Mindset Anna Lembke","date":"2026-01"},{"topic":"Mindset","pod":"Modern Wisdom","guest":"Chris Williamson","title":"23 Lektionen aus dem Jahr 2025","insight":"Chris Williamson destilliert Erkenntnisse zu Selbstwahrnehmung und Beziehungsdynamik – darunter der 'Eltern-Attributionsfehler' und Warnsignale wie wiederholtes Entschuldigen ohne Verhaltensänderung.","source":"Modern Wisdom · Chris Williamson","url":"https://www.youtube.com/watch?v=2NjN6W8cnIg","keywords":"Self-awareness Selbstwahrnehmung Mindset Relationships Beziehungen Red Flags Growth Chris Williamson","date":"2025-12"},{"topic":"Psychologie","pod":"Huberman Lab","guest":"Jonathan Haidt","title":"Smartphones und die Angst-Generation","insight":"Jonathan Haidt erklärt, wie das Ersetzen der spielbasierten Kindheit durch Smartphones, Social Media und Videospiele mit dem dramatischen Anstieg von Depression, Angst und Suizid bei Jugendlichen zusammenhängt.","source":"Huberman Lab · Jonathan Haidt","url":"https://www.hubermanlab.com/episode/dr-jonathan-haidt-how-smartphones-social-media-impact-mental-health-the-realistic-solutions","keywords":"Smartphones Social Media Mental Health Mentale Gesundheit Anxiety Angst Depression Jonathan Haidt","date":""},{"topic":"Psychologie","pod":"10% Happier (Dan Harris)","guest":"Dan Harris","title":"Den inneren Kritiker durch Meditation beruhigen","insight":"Dan Harris teilt, wie Selbstkritik nach hinten losgeht und chronisches Unterdrücken Emotionen verstärkt – Meditation half ihm, von Stressmanagement zur Akzeptanz der Unausweichlichkeit von Ungewissheit zu gelangen.","source":"10% Happier · Dan Harris","url":"https://www.npr.org/2025/12/05/nx-s1-5620801/how-one-skeptic-found-solace-through-meditation-and-how-you-can-too","keywords":"Meditation Anxiety Angst Self-criticism Selbstkritik Mindfulness Achtsamkeit Dan Harris","date":"2025-12"},{"topic":"Beziehungen","pod":"We Can Do Hard Things","guest":"Nedra Glover Tawwab","title":"Grenzen als Anleitung zum Lieben","insight":"Therapeutin Nedra Glover Tawwab definiert Grenzen nicht als Mauern, sondern als Anleitung, wie man lieben und geliebt werden kann, ohne zu verschwinden – ein Gegenmittel gegen Groll und People-Pleasing.","source":"We Can Do Hard Things · Nedra Glover Tawwab","url":"https://podscripts.co/podcasts/we-can-do-hard-things-with-glennon-doyle/boundaries-are-too-few-or-too-many-why-we-stay-stuck","keywords":"Boundaries Grenzen Relationships Beziehungen People-pleasing Resentment Groll Nedra Glover Tawwab","date":""},{"topic":"Psychologie","pod":"Huberman Lab","guest":"Nick Epley","title":"Kleine Gespräche mit Fremden steigern Wohlbefinden","insight":"Verhaltensforscher Nick Epley zeigt, dass kurze tägliche Interaktionen mit Fremden mentale und körperliche Gesundheit messbar verbessern – wir unterschätzen systematisch, wie positiv andere darauf reagieren.","source":"Huberman Lab · Nick Epley","url":"https://www.hubermanlab.com/topics/mental-health","keywords":"Social Connection Soziale Verbindung Psychology Psychologie Wellbeing Wohlbefinden Strangers Nick Epley","date":"2025"},{"topic":"Psychologie","pod":"Diary of a CEO","guest":"Dr. Julie Smith","title":"Alle Emotionen annehmen lernen","insight":"Dr. Julie Smith erklärt, dass Therapie die Werkzeuge liefert, Emotionen schrittweise zu konfrontieren und das eigene Handeln ohne Urteil zu verstehen – emotionale Harmonie entsteht durch Annehmen statt Vermeiden.","source":"Diary of a CEO · Dr. Julie Smith","url":"https://creators.spotify.com/pod/profile/thediaryofaceo/episodes/E122-World-Leading-Psychologist-How-To-Detach-From-Overthinking--Anxiety-Dr-Julie-Smith-e1fmnsm","keywords":"Emotions Emotionen Overthinking Grübeln Anxiety Angst Psychology Dr Julie Smith","date":""},{"topic":"Mindset","pod":"On Purpose (Jay Shetty)","guest":"Mel Robbins","title":"Die Macht über andere zurückgeben","insight":"Mel Robbins erklärt, dass das Problem nicht man selbst ist, sondern die Macht, die man anderen über die eigene Stimmung gibt – wer aufhört, andere zu kontrollieren, gewinnt Kontrolle über sich selbst.","source":"On Purpose · Mel Robbins","url":"https://www.jayshetty.me/podcast/mel-robbins-how-to-use-the-let-them-theory-a-life-changing-mindset-hack-that-15-million-people-cant-stop-talking-about","keywords":"Let Them Mindset Control Kontrolle Self-mastery Anxiety Angst Mel Robbins","date":"2025-01"},{"topic":"Gesellschaft","pod":"Alles gesagt?","guest":"Scott Galloway","title":"Ozempic verändert mehr als KI","insight":"Galloway argumentiert, dass Medikamente wie Ozempic die Gesellschaft tiefgreifender umformen könnten als Künstliche Intelligenz, und kritisiert die sozialen Schäden digitaler Plattformen.","source":"Alles gesagt? · Scott Galloway","url":"https://open.spotify.com/show/6YMJMAh8zJcCwHwe5kSmjT","keywords":"Ozempic GLP-1 AI Risiko platform Kapitalismus Gesellschaft","date":"2025"},{"topic":"Psychologie","pod":"Betreutes Fühlen","guest":"Leon Windscheid & Atze Schröder","title":"Maslows Pyramide ist wissenschaftlich falsch","insight":"Die berühmte Bedürfnispyramide stammt so gar nicht von Maslow und ist als starre Hierarchie wissenschaftlich kaum haltbar. Menschen müssen nicht erst 'unten' alles erfüllen, um zu wachsen.","source":"Betreutes Fühlen · Die falsche Pyramide","url":"https://betreutesfuehlen.podigee.io/333-die-falsche-pyramide-welche-bedurfnisse-steuern-unser-leben","keywords":"Maslow Bedürfnispyramide needs motivation Psychologie Mythos","date":"2025"},{"topic":"Beziehungen","pod":"Betreutes Fühlen","guest":"Leon Windscheid & Atze Schröder","title":"Kontaktabbruch kann gesunde Nähe sein","insight":"Familiärer Kontaktabbruch ist häufiger als gedacht und oft kein Versagen, sondern Selbstschutz. Distanz kann manchmal die gesündeste Form von Nähe sein.","source":"Betreutes Fühlen · Kontaktabbrüche","url":"https://betreutesfuehlen.podigee.io/episodes","keywords":"estrangement Kontaktabbruch family Familie boundaries Grenzen toxic","date":"2025"},{"topic":"Business","pod":"OMR Podcast","guest":"Oliver Blume (Porsche & VW)","title":"Doppel-CEO arbeitet 12 Stunden täglich","insight":"Als gleichzeitiger CEO von Porsche und Volkswagen schildert Blume eine extreme Arbeitsstruktur von rund zwölf Stunden werktags und erklärt, wann autonomes Fahren in Deutschland realistisch wird.","source":"OMR Podcast · Oliver Blume","url":"https://omr.podigee.io/876-oliver-blume","keywords":"Oliver Blume Porsche Volkswagen autonomous autonomes Fahren CEO Arbeitsstruktur","date":"2025-09"},{"topic":"KI","pod":"Handelsblatt Disrupt","guest":"Philipp Klöckner","title":"Denken an KI auslagern lässt Gehirn verkümmern","insight":"Klöckner warnt, dass unsere Fähigkeit zum kritischen Denken nachlässt, wenn wir kognitive Arbeit dauerhaft an KI auslagern, und prophezeit zugleich das 'Ende der Experten'.","source":"Handelsblatt Disrupt · Philipp Klöckner","url":"https://www.handelsblatt.com/audio/disrupt-podcast/disrupt-wenn-wir-unser-denken-an-die-ki-auslagern-verkuemmert-unser-gehirn/100158145.html","keywords":"AI KI kritisches Denken cognitive offloading Gehirn Klöckner Experten","date":"2025-09"},{"topic":"KI","pod":"Doppelgänger Tech Talk","guest":"Pip Klöckner & Philipp Glöckler","title":"Michael Burry wettet gegen die KI-Blase","insight":"Star-Investor Michael Burry eröffnet Short-Positionen gegen Nvidia und Palantir; die Doppelgänger diskutieren, ob die enormen KI-Bewertungen eine Blase sind.","source":"Doppelgänger Tech Talk · Folge 507","url":"https://doppelgaenger.ai/podcast/2025-11-05_Forward_Deploye","keywords":"AI KI Michael Burry Blase bubble Nvidia Palantir short Investing","date":"2025-11"},{"topic":"Geld","pod":"Finanzfluss","guest":"Thomas Kehl","title":"480 Euro vom Staat fürs Altersvorsorgedepot","insight":"Das geplante staatlich geförderte Altersvorsorgedepot soll Riester ablösen und private ETF-Vorsorge mit Zuschüssen kombinieren. Die Folge rechnet vor, für wen sich das Modell lohnt.","source":"Finanzfluss · Altersvorsorgedepot","url":"https://open.spotify.com/episode/3Ar1Si6DN8NqU1XxQngVkv","keywords":"Altersvorsorgedepot retirement ETF Riester Zuschuss Rente Vorsorge Geld","date":"2025-12"},{"topic":"Geld","pod":"Finanzfluss","guest":"Thomas Kehl","title":"Vier Fehler ruinieren deine ETF-Rente","insight":"Auch wer früh in ETFs investiert, kann die Auszahlphase im Alter durch typische Fehler gefährden. Die Folge zeigt, wie man das Depot im Ruhestand richtig entspart.","source":"Finanzfluss · ETFs im Alter","url":"https://open.spotify.com/episode/1JAFT9T6gIBSIwnl5iZYKc","keywords":"ETF Entnahmephase decumulation retirement Rente Ruhestand Geld","date":"2025"},{"topic":"Gesellschaft","pod":"Hotel Matze","guest":"Sahra Wagenknecht","title":"Wer profitiert von der Angst?","insight":"Wagenknecht spricht über Macht von Fraktionen, schwindendes Medienvertrauen und die Frage, wer politisch und gesellschaftlich von kollektiver Angst profitiert.","source":"Hotel Matze · Sahra Wagenknecht","url":"https://open.spotify.com/episode/0FaPDTXgacPEFmEdcB4fC8","keywords":"Wagenknecht BSW Angst fear Medienvertrauen Macht Politik Gesellschaft","date":"2025"},{"topic":"Mindset","pod":"Hotel Matze","guest":"Boris Becker","title":"Wie fühlt sich ganz unten an?","insight":"Der Tennis-Star spricht offen über die härteste Zeit seines Lebens, den Kampf mit sich selbst, Familie und Glauben – und warum am Ende doch alles gut wurde.","source":"Hotel Matze · Boris Becker","url":"https://hotelmatze.podigee.io/487-boris-becker","keywords":"Boris Becker rock bottom ganz unten Resilienz comeback Glaube Mindset","date":"2025"},{"topic":"Mindset","pod":"Hotel Matze","guest":"Robert Habeck","title":"Wie kommst du zur Ruhe?","insight":"Habeck reflektiert über Innehalten und mentale Ruhe inmitten von politischem Dauerdruck und öffentlicher Dauerbeobachtung.","source":"Hotel Matze · Robert Habeck","url":"https://mitvergnuegen.com/hotelmatze/robert-habeck/","keywords":"Habeck Ruhe calm Druck pressure Politik mental Mindset","date":"2025"},{"topic":"Gesundheit","pod":"Aha! Alltags-Wissen","guest":"Prof. Peter Berlit","title":"Gürtelrose-Impfung senkt Demenzrisiko","insight":"Mehrere Studien deuten darauf hin, dass eine Impfung gegen Gürtelrose das Demenzrisiko senken kann, weil Viren wie Varizella-Zoster das Gehirn belasten – ein überraschend großer Präventionseffekt.","source":"Aha! · Gürtelrose & Demenz","url":"https://zehnminutenalltagswissen.podigee.io/episodes","keywords":"shingles Gürtelrose Impfung dementia Demenz vaccine Prävention Gesundheit","date":"2025"},{"topic":"Gesundheit","pod":"Quarks Daily","guest":"Quarks Redaktion","title":"Schlafmangel macht dick, dumm und krank","insight":"Chronischer Schlafmangel beeinträchtigt Gewicht, kognitive Leistung und Langzeitgesundheit messbar – die Folge fasst zusammen, wie folgenreich zu wenig Schlaf wirklich ist.","source":"Quarks Daily Spezial · Schlafmangel","url":"https://www.quarks.de/podcast/quarks-daily-spezial-folge-82-schlafmangel-macht-er-uns-dick-dumm-und-krank/","keywords":"sleep deprivation Schlafmangel Gesundheit cognition Gewicht Schlaf","date":"2025"},{"topic":"Produktivität","pod":"Quarks Daily","guest":"Quarks Redaktion","title":"So wirst du eine High-Energy-Person","insight":"Statt auf kurzfristige Tricks zu setzen, zeigt die Folge wissenschaftlich, welche Alltagsgewohnheiten dauerhaft für mehr Energie und Leistungsfähigkeit sorgen.","source":"Quarks Daily Spezial · Mehr Energie","url":"https://www.quarks.de/podcast/mehr-energie-im-alltag-high-energy-person-quarks-daily-spezial/","keywords":"energy Energie productivity Produktivität habits Gewohnheiten","date":"2025"},{"topic":"Gesundheit","pod":"Quarks Daily","guest":"Quarks Redaktion","title":"Raus aus dem Dauerstress","insight":"Dauerstress ist kein unvermeidliches Schicksal: Die Folge erklärt die körperlichen Mechanismen und konkrete, evidenzbasierte Auswege aus chronischer Überlastung.","source":"Quarks Daily Spezial · Dauerstress","url":"https://www.quarks.de/podcast/stress-vermeiden-auswege-hilfe/","keywords":"stress Stress chronic Dauerstress burnout Entspannung coping Gesundheit","date":"2025"},{"topic":"Geld","pod":"ungeskriptet","guest":"Marc Friedrich","title":"Deutschland am Ende? Friedrichs Krisenthesen","insight":"Bestseller-Autor Marc Friedrich vertritt polarisierende Thesen zu Inflation, Krisen und Bitcoin und argumentiert, warum er den deutschen Wirtschaftsstandort für strukturell gefährdet hält.","source":"ungeskriptet · Marc Friedrich","url":"https://creators.spotify.com/pod/show/benjamin-berndt/episodes/100-Deutschland-ist-am-Ende----Marc-Friedrich-ungeskriptet-e2iiero","keywords":"Marc Friedrich Inflation Bitcoin Krise crisis Wirtschaft Deutschland Geld","date":"2025"},{"topic":"Gesellschaft","pod":"Lanz & Precht","guest":"Markus Lanz & Richard David Precht","title":"Männlichkeitskrise treibt Rechtspopulismus","insight":"Lanz und Precht argumentieren, dass verunsicherte Männer und eine 'Krise der Männlichkeit' weltweit zu Treibern des Rechtspopulismus werden – beobachtet etwa in der US-amerikanischen 'Manosphere'.","source":"Lanz & Precht · Männlichkeit","url":"https://open.spotify.com/show/4bGWMQA1ANGTgcysDo14aX","keywords":"masculinity Männlichkeit manosphere Rechtspopulismus gender Geschlecht Gesellschaft","date":"2025"},{"topic":"Psychologie","pod":"Der achtsame Narzisst","guest":"Dr. Bärbel Wardetzki","title":"Keine Abkürzung beim Aufbau von Selbstwert","insight":"Wardetzki betont, dass echter Selbstwert nur durch konsequente innere Arbeit wächst – mit Techniken gegen Selbstentwertung und narzisstische Muster, statt schneller Affirmationstricks.","source":"Der achtsame Narzisst · Bärbel Wardetzki","url":"https://baerbel-wardetzki.de/podcasts","keywords":"narcissism Narzissmus self-worth Selbstwert Wardetzki Muster Psychologie","date":"2025"},{"topic":"KI","pod":"Doppelgänger Tech Talk","guest":"Pip Klöckner & Philipp Glöckler","title":"Anthropic-IPO vor OpenAI als Strategie","insight":"Die Doppelgänger analysieren, warum Anthropic mit einer Bewertung um 900 Mrd. USD früher an die Börse drängt als OpenAI – und warum OpenAIs 140-fache Umsatzbewertung viele Risiken birgt.","source":"Doppelgänger Tech Talk · Anthropic-IPO","url":"https://www.doppelgaenger.io/us-regierung-stoppt-fable-5-welche-folgen-fuer-anthropic-ipo-openai-gewinnt-vs-xai-571/","keywords":"AI KI Anthropic IPO OpenAI valuation Bewertung Börsengang","date":"2026"},{"topic":"Business","pod":"OMR Podcast","guest":"Philipp Westermeyer","title":"Vom Marketing-Event zum Medienhaus","insight":"Westermeyer beschreibt, wie sich OMR vom reinen Marketing-Festival zu einem breiten Medien- und Software-Ökosystem entwickelt hat, und welche Geschäftsbereiche das Wachstum heute tragen.","source":"OMR Podcast · Philipp Westermeyer","url":"https://omr.com/de/podcast","keywords":"OMR Westermeyer Medienhaus media ecosystem marketing Business","date":"2025"},{"topic":"Mindset","pod":"Huberman Lab","guest":"Andrew Huberman","title":"Dopamin steuern statt jagen","insight":"Hohe Dopamin-Peaks durch ständige Reize senken die Baseline und rauben Motivation. Wer lernt, Dopamin aus der Anstrengung selbst zu ziehen statt nur aus der Belohnung, bleibt nachhaltig motiviert.","source":"Huberman Lab · Fokus & Dopamin","url":"https://www.hubermanlab.com/episode/controlling-your-dopamine-for-motivation-focus-and-satisfaction","keywords":"Dopamine Dopamin Motivation Fokus Focus Belohnung Reward Baseline Antrieb","date":"2021-09"},{"topic":"Produktivität","pod":"Huberman Lab","guest":"Andrew Huberman","title":"Werkzeugkasten für besseren Fokus","insight":"Konkrete Hebel wie Koffein, Kältereize, binaurale Beats und gezielte Ernährung erhöhen Dopamin, Adrenalin und Acetylcholin für einen fokussierten Zustand. Fokus ist trainierbar und nicht reine Willenssache.","source":"Huberman Lab · Focus Toolkit","url":"https://www.hubermanlab.com/episode/focus-toolkit-tools-to-improve-your-focus-and-concentration","keywords":"Focus Fokus Konzentration Toolkit Koffein Caffeine Kälte Produktivität","date":"2022-09"},{"topic":"Mindset","pod":"Huberman Lab","guest":"Andrew Huberman","title":"Fokus verändert dein Gehirn","insight":"Neuroplastizität wird durch fokussierte Aufmerksamkeit ausgelöst, doch das eigentliche Umverdrahten der Neuronen passiert im Schlaf und in Tiefenruhe (NSDR). Wer schlecht schläft, kann kaum tief fokussieren.","source":"Huberman Lab · Neuroplastizität","url":"https://www.hubermanlab.com/episode/how-to-focus-to-change-your-brain","keywords":"Neuroplasticity Neuroplastizität Lernen Schlaf Sleep NSDR Fokus Focus Gedächtnis","date":"2021-01"},{"topic":"Gesundheit","pod":"Huberman Lab","guest":"Andrew Huberman","title":"Schlaf als Lernverstärker","insight":"Studien zeigen 20-40% schlechtere Gedächtnisbildung bei Schlafmangel. Kurze 10-Sekunden-Pausen beim Lernen und 20-minütige NSDR-Einheiten danach festigen die neuronalen Schaltkreise.","source":"Huberman Lab · Schlaf & Gedächtnis","url":"https://www.hubermanlab.com/episode/using-science-to-optimize-sleep-learning-and-metabolism","keywords":"Sleep Schlaf Memory Gedächtnis Learning Lernen NSDR Erholung Gesundheit","date":"2021-02"},{"topic":"Produktivität","pod":"Deep Questions with Cal Newport","guest":"Cal Newport","title":"Ist Deep Work 2026 noch möglich?","insight":"Zehn Jahre nach Deep Work überprüft Newport seine vier Regeln und passt sie an die Ablenkungswelt von heute an. Tiefe, ablenkungsfreie Arbeit bleibt der entscheidende Wettbewerbsvorteil.","source":"Deep Questions · Deep Work 2026","url":"https://podcasts.apple.com/us/podcast/ep-399-is-deep-work-still-possible-in-2026/id1515786216?i=1000759514749","keywords":"Deep Work Tiefarbeit Fokus Focus Ablenkung Distraction Produktivität Konzentration","date":"2026-01"},{"topic":"Produktivität","pod":"Deep Questions with Cal Newport","guest":"Cal Newport","title":"Deep Work im Zeitalter der KI","insight":"KI-Tools wie ChatGPT verändern Wissensarbeit, ersetzen aber nicht die Notwendigkeit tiefer Konzentration. Aktives Erinnern und projektbezogene Notizsysteme bleiben zentrale Lernhebel.","source":"Deep Questions · Deep Work & KI","url":"https://www.thedeeplife.com/podcasts/episodes/ep-370-deep-work-in-the-age-of-ai/","keywords":"Deep Work AI KI ChatGPT Active Recall Lernen Produktivität Fokus","date":"2025-04"},{"topic":"Produktivität","pod":"Deep Questions with Cal Newport","guest":"Cal Newport","title":"Angriff auf die Geschäftigkeit","insight":"Geschäftigkeit ist nicht gleich Produktivität. Newport zeigt taktische Wege, oberflächliche Beschäftigung zu reduzieren und Energie auf wenige hochwertige Aufgaben zu bündeln.","source":"Deep Questions · Busyness","url":"https://podpulse.ai/podcast/deep-questions-with-cal-newport/deep-questions-with-cal-newport-ep-294-a-tactical-assault-on-busyness","keywords":"Busyness Geschäftigkeit Produktivität Fokus Focus Prioritäten Deep Work","date":""},{"topic":"Mindset","pod":"The Tim Ferriss Show","guest":"James Clear","title":"Identität schlägt Ziele","insight":"Dauerhafte Gewohnheiten entstehen aus Identität, nicht aus Zielen: Nicht 'ich will laufen', sondern 'ich bin ein Läufer'. Konsistenz statt Intensität macht den Unterschied.","source":"The Tim Ferriss Show · James Clear","url":"https://tim.blog/2023/01/06/james-clear-atomic-habits/","keywords":"Habits Gewohnheiten Atomic Habits Identität Identity Konsistenz Mindset Verhalten","date":"2023-01"},{"topic":"Mindset","pod":"Rethinking with Adam Grant","guest":"James Clear","title":"Architekt der eigenen Gewohnheiten","insight":"Wir sind nicht Opfer unserer Gewohnheiten, sondern können sie bewusst designen. Schlaf ist eine Keystone-Gewohnheit, die fast jede andere Routine verbessert.","source":"Rethinking · James Clear","url":"https://www.ted.com/podcasts/rethinking-with-adam-grant/building-atomic-habits-with-james-clear-transcript","keywords":"Habits Gewohnheiten Keystone Schlaf Identity Identität Verhalten Mindset","date":""},{"topic":"Mindset","pod":"The Tim Ferriss Show","guest":"Naval Ravikant","title":"Beschäftigt sein tötet Produktivität","insight":"Naval warnt, dass Geschäftigkeit der Tod von Produktivität und Glück ist. Statt Zeit zu vermieten, sollte man Hebelwirkung und Eigentum aufbauen und Anspannung gezielt reduzieren.","source":"The Tim Ferriss Show · Naval Ravikant","url":"https://tim.blog/2020/10/14/naval/","keywords":"Naval Produktivität Leverage Hebel Glück Happiness Angst Fokus Mindset","date":"2020-10"},{"topic":"Mindset","pod":"Diary of a CEO","guest":"Andrew Huberman","title":"Warum du ständig erschöpft bist","insight":"Dopamin, Epinephrin und Norepinephrin erzeugen gemeinsam Motivation. Nach starken Reizen folgen 'Täler', in denen Antrieb fehlt - NSDR, guter Schlaf und Reizreduktion stabilisieren das System.","source":"Diary of a CEO · Andrew Huberman","url":"https://www.youtube.com/watch?v=jSqCL7Npln0","keywords":"Dopamine Dopamin Motivation Burnout Erschöpfung NSDR Schlaf Mindset Gesundheit","date":"2023"},{"topic":"Produktivität","pod":"Deep Dive with Ali Abdaal","guest":"Ali Abdaal","title":"Feel-Good Productivity statt Zwang","insight":"Das Geheimnis von Produktivität ist nicht Disziplin, sondern Freude. Die drei Energizer Play, Power und People sowie Filter wie 'Hell Yeah or No' machen Arbeit leichter und nachhaltiger.","source":"Deep Dive · Feel-Good Productivity","url":"https://open.spotify.com/episode/2pQ0QSXfhcq0gny3DzcCiY","keywords":"Productivity Produktivität Feel-Good Joy Freude Energie Play Hell Yeah Fokus","date":"2024"},{"topic":"Mindset","pod":"The Knowledge Project","guest":"Shane Parrish","title":"Bessere Entscheidungen durch Denkmodelle","insight":"Wer mehrere mentale Modelle aus verschiedenen Disziplinen kombiniert, trifft bessere Entscheidungen. Reflektierende Fragen über die eigenen Erfahrungen schärfen das Urteilsvermögen.","source":"The Knowledge Project · Mentale Modelle","url":"https://fs.blog/knowledge-project-podcast/","keywords":"Mental Models Denkmodelle Decision Entscheidungen Mindset Reflexion Lernen","date":""},{"topic":"Mindset","pod":"The Knowledge Project","guest":"Adam Grant","title":"Die Freude am Irrtum","insight":"Grant plädiert fürs Umdenken: Die Fähigkeit, eigene Überzeugungen zu hinterfragen und gerne falsch zu liegen, ist eine Lern- und Wachstumssuperkraft.","source":"The Knowledge Project · Adam Grant","url":"https://fs.blog/knowledge-project-podcast/adam-grant2/","keywords":"Rethinking Umdenken Learning Lernen Growth Mindset Irrtum Reflexion","date":""},{"topic":"Produktivität","pod":"Rethinking with Adam Grant","guest":"Gloria Mark","title":"Warum wir uns so leicht ablenken","insight":"Informatikerin Gloria Mark erklärt, wie Multitasking und Unterbrechungen den Fokus zerstören - und wie man das Gehirn trainiert, Aufmerksamkeit gezielt zurückzugewinnen.","source":"Rethinking · Gloria Mark","url":"https://adamgrant.net/podcasts/rethinking/","keywords":"Focus Fokus Attention Aufmerksamkeit Multitasking Ablenkung Produktivität Konzentration","date":""},{"topic":"Mindset","pod":"The Jordan Harbinger Show","guest":"BJ Fogg","title":"Tiny Habits: klein anfangen, feiern","insight":"Neue Gewohnheiten gelingen, wenn man sie winzig macht, an bestehende Routinen knüpft und durch sofortiges Feiern positive Emotionen auslöst. Emotionen verdrahten Verhalten, nicht Wiederholung allein.","source":"Jordan Harbinger · BJ Fogg","url":"https://www.jordanharbinger.com/bj-fogg-tiny-habits-that-change-everything/","keywords":"Tiny Habits Gewohnheiten Behavior Verhalten Celebration Feiern Anker Mindset","date":""},{"topic":"Produktivität","pod":"The Tim Ferriss Show","guest":"James Clear","title":"Umgebung gestalten statt Willenskraft","insight":"Statt sich auf Willenskraft zu verlassen, sollte man die Umgebung so gestalten, dass gute Gewohnheiten naheliegen und schlechte schwerfallen. Verhalten folgt dem Umfeld.","source":"The Tim Ferriss Show · James Clear","url":"https://tim.blog/2023/01/06/james-clear-atomic-habits-transcript/","keywords":"Habits Gewohnheiten Environment Umgebung Willenskraft Verhalten Produktivität","date":"2023-01"},{"topic":"Psychologie","pod":"Chase Hughes (Diary of a CEO)","guest":"Chase Hughes","title":"Das FATE-Modell der Beeinflussung","insight":"Der Kern von Hughes' Arbeit: Focus, Authority, Tribe, Emotion - die vier Urinstinkte, über die menschliches Verhalten gesteuert und beeinflusst wird.","source":"Diary of a CEO · Chase Hughes","url":"https://open.spotify.com/episode/2a9tzPFa7joujBQOUbQlej","keywords":"Behavior Verhalten Beeinflussung influence FATE Persuasion Körpersprache Chase Hughes","date":"2024-12"},{"topic":"Psychologie","pod":"Chase Hughes (Diary of a CEO)","guest":"Chase Hughes","title":"Authority strahlt man aus","insight":"Wahrgenommene Autorität entsteht aus fünf Qualitäten: Dominanz, Disziplin, Leadership, Dankbarkeit und Spaß. Ein ruhiges, gelassenes Auftreten signalisiert Status.","source":"Diary of a CEO · Chase Hughes","url":"https://open.spotify.com/episode/2a9tzPFa7joujBQOUbQlej","keywords":"Authority Autorität Status Dominanz Leadership Beeinflussung Chase Hughes","date":"2024-12"},{"topic":"Psychologie","pod":"Chase Hughes (Diary of a CEO)","guest":"Chase Hughes","title":"Identität ist der #1 Hebel der Persuasion","insight":"Identität ist das Wichtigste bei Beeinflussung: Menschen handeln im Einklang mit dem, wer sie glauben zu sein. Wer Identität adressiert, verändert Verhalten.","source":"Diary of a CEO · Chase Hughes","url":"https://open.spotify.com/episode/2a9tzPFa7joujBQOUbQlej","keywords":"Identity Identität Persuasion Beeinflussung influence Verhalten Chase Hughes","date":"2024-12"},{"topic":"Psychologie","pod":"Chase Hughes (Diary of a CEO)","guest":"Chase Hughes","title":"Die Blinzelrate verrät Stress","insight":"Vermehrtes Blinzeln signalisiert verborgenen Stress. Steigt es, sobald ein neues Thema aufkommt, ist dieses Thema für die Person heikel.","source":"Diary of a CEO · Chase Hughes","url":"https://open.spotify.com/episode/2a9tzPFa7joujBQOUbQlej","keywords":"Body Language Körpersprache Blinzeln Stress Täuschung deception Chase Hughes","date":"2024-12"},{"topic":"Psychologie","pod":"Chase Hughes (Diary of a CEO)","guest":"Chase Hughes","title":"Elicitation: Aussagen statt Fragen","insight":"Statt zu fragen, stellt man Behauptungen auf. Der menschliche Drang, eine falsche Aussage zu korrigieren, lockt Informationen hervor - ohne Misstrauen zu wecken.","source":"Diary of a CEO · Chase Hughes","url":"https://open.spotify.com/episode/2a9tzPFa7joujBQOUbQlej","keywords":"Elicitation Gesprächstaktik Information Manipulation Beeinflussung Chase Hughes","date":"2024-12"},{"topic":"Psychologie","pod":"Chase Hughes (Diary of a CEO)","guest":"Chase Hughes","title":"Spiegeln nach der 3er-Regel","insight":"Drei Gesten oder Bewegungen spiegeln, die vierte bewusst auslassen - und das wiederholen, bis man die Körpersprache des Gegenübers sogar führen kann.","source":"Diary of a CEO · Chase Hughes","url":"https://open.spotify.com/episode/2a9tzPFa7joujBQOUbQlej","keywords":"Rapport Spiegeln mirroring Körpersprache Body Language Verbindung Chase Hughes","date":"2024-12"},{"topic":"Mindset","pod":"Chase Hughes (Diary of a CEO)","guest":"Chase Hughes","title":"Disziplin = das Zukunfts-Ich priorisieren","insight":"Disziplin heißt, die Bedürfnisse des zukünftigen Ich über die des gegenwärtigen zu stellen. Sie startet mit Mikro-Gewohnheiten, die zu Routinen wachsen.","source":"Diary of a CEO · Chase Hughes","url":"https://open.spotify.com/episode/2a9tzPFa7joujBQOUbQlej","keywords":"Discipline Disziplin Gewohnheiten Habits Selbstkontrolle Mindset Chase Hughes","date":"2024-12"},{"topic":"Gesprächsführung","pod":"{ungeskriptet}","guest":"Ben Berndt","title":"Echte Gespräche statt Schnitt","insight":"Ben Berndt schneidet seine Folgen bewusst nicht. Gäste können nicht aus dem Kontext gerissen werden - das erzeugt eine Authentizität, die geschnittene Formate selten erreichen.","source":"{ungeskriptet} · Ben Berndt","url":"https://www.youtube.com/@ben_ungeskriptet","keywords":"Gespräch conversation Authentizität ungeskriptet Interview Ben Berndt","date":""},{"topic":"Gesprächsführung","pod":"{ungeskriptet}","guest":"Ben Berndt","title":"Neugier ist der Antrieb","insight":"Ben führt seine Gespräche primär, um zu verstehen, was er noch nicht weiß. Nicht das Rechthaben, sondern das Lernen steht im Zentrum jeder Folge.","source":"{ungeskriptet} · Ben Berndt","url":"https://www.youtube.com/@ben_ungeskriptet","keywords":"Neugier curiosity Lernen learning Haltung ungeskriptet Ben Berndt","date":""},{"topic":"Gesprächsführung","pod":"{ungeskriptet}","guest":"Ben Berndt","title":"Zuhören, um zu verstehen","insight":"Auch bei polarisierenden Gästen steht echtes Zuhören und Interesse im Vordergrund, nicht Konfrontation. Verstehen kommt vor Bewerten.","source":"{ungeskriptet} · Ben Berndt","url":"https://www.youtube.com/@ben_ungeskriptet","keywords":"Zuhören listening verstehen Empathie ungeskriptet Ben Berndt","date":""},{"topic":"Mindset","pod":"{ungeskriptet}","guest":"Ben Berndt","title":"Lernen von Menschen außerhalb der Norm","insight":"Was kann ich von einem Menschen lernen, der nicht der Norm entspricht? Gerade kontroverse Gäste fordern den eigenen Horizont am stärksten heraus.","source":"{ungeskriptet} · Ben Berndt","url":"https://www.youtube.com/@ben_ungeskriptet","keywords":"Perspektive perspective Horizont Kontroverse ungeskriptet Mindset Ben Berndt","date":""}];
 
-const SOURCES = [
-  {key:"Alle", label:"Alle Quellen", color:"#9aa0ab"},
-  {key:"Diary of a CEO", label:"Diary of a CEO", color:"var(--doac)"},
-  {key:"{ungeskriptet}", label:"{ungeskriptet}", color:"var(--unge)"},
-  {key:"Chase Hughes", label:"Chase Hughes", color:"var(--chase)"}
-];
-let activeSrc="Alle", query="";
+const TOPICS = ["KI", "Mindset", "Psychologie", "Geld", "Business", "Produktivität", "Beziehungen", "Fitness", "Gesundheit", "Schlaf", "Longevity", "Ernährung", "Gesellschaft", "Gesprächsführung"];
+let activeTopic="Alle", query="";
 const grid=document.getElementById("grid"), filters=document.getElementById("filters"),
       countEl=document.getElementById("count"), emptyEl=document.getElementById("empty"),
-      searchEl=document.getElementById("search");
-SOURCES.forEach(s=>{
+      searchEl=document.getElementById("search"), btn=document.getElementById("searchBtn"),
+      clearBtn=document.getElementById("clearBtn");
+["Alle",...TOPICS].forEach(t=>{
   const chip=document.createElement("div");
-  chip.className="chip"+(s.key==="Alle"?" active":""); chip.dataset.src=s.key;
-  const dot=document.createElement("span"); dot.className="dot"; dot.style.background=s.color;
-  chip.appendChild(dot); chip.appendChild(document.createTextNode(s.label));
-  chip.onclick=()=>{ activeSrc=s.key; document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active")); chip.classList.add("active"); render(); };
+  chip.className="chip"+(t==="Alle"?" active":""); chip.textContent=t==="Alle"?"Alle Themen":t;
+  chip.onclick=()=>{ activeTopic=t; document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active")); chip.classList.add("active"); render(); };
   filters.appendChild(chip);
 });
 function escapeHtml(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
 function highlight(t,q){const safe=escapeHtml(t); if(!q) return safe; const re=new RegExp("("+q.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+")","gi"); return safe.replace(re,"<mark>$1</mark>");}
+function doSearch(){ query=searchEl.value; render(); }
 function render(){
   const q=query.trim().toLowerCase();
   const items=DATA.filter(d=>{
-    const srcOk=activeSrc==="Alle"||d.pod===activeSrc;
-    const text=(d.title+" "+d.insight+" "+d.source+" "+d.theme+" "+d.pod).toLowerCase();
-    return srcOk&&(!q||text.includes(q));
+    const topicOk=activeTopic==="Alle"||d.topic===activeTopic;
+    const text=(d.title+" "+d.insight+" "+d.source+" "+d.topic+" "+d.pod+" "+d.guest+" "+d.keywords+" "+d.date).toLowerCase();
+    return topicOk&&(!q||text.includes(q));
   });
-  countEl.textContent=items.length+(items.length===1?" Learning":" Learnings");
+  countEl.textContent=items.length+(items.length===1?" Insight":" Insights");
   grid.innerHTML=items.map(d=>`
-    <div class="card" data-src="${escapeHtml(d.pod)}">
-      <div class="badges"><span class="badge pod">${escapeHtml(d.pod)}</span><span class="badge theme">${escapeHtml(d.theme)}</span></div>
+    <div class="card">
+      <div class="badges">
+        <span class="badge topic">${escapeHtml(d.topic)}</span>
+        <span class="badge pod">${escapeHtml(d.pod)}</span>
+        ${d.date?`<span class="badge date">${escapeHtml(d.date)}</span>`:""}
+      </div>
       <h3>${highlight(d.title,q)}</h3>
       <p>${highlight(d.insight,q)}</p>
-      <div class="src">Quelle: ${highlight(d.source,q)}</div>
+      <div class="src">
+        <span class="who">${highlight(d.source,q)}</span>
+        <a href="${encodeURI(d.url)}" target="_blank" rel="noopener">Quelle ansehen &rarr;</a>
+      </div>
     </div>`).join("");
   emptyEl.style.display=items.length?"none":"block";
 }
-searchEl.addEventListener("input",e=>{query=e.target.value; render();});
+btn.addEventListener("click",doSearch);
+clearBtn.addEventListener("click",()=>{ searchEl.value=""; query=""; render(); searchEl.focus(); });
+searchEl.addEventListener("keydown",e=>{ if(e.key==="Enter"){ doSearch(); }});
+searchEl.addEventListener("input",doSearch);
 render();
 
 </script>
