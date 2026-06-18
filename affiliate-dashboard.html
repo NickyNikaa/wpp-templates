@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="de"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Affiliate Cockpit – WPP Media</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--bg:#f5f6f8;--card:#fff;--ink:#1a1f2e;--muted:#6b7280;--line:#e5e7eb;--accent:#2c5282;--accent-soft:#ebf2fb;--green:#16a34a;--red:#dc2626;--amber:#d97706;--shadow:0 1px 3px rgba(0,0,0,.04),0 4px 12px rgba(0,0,0,.04);}
+*{box-sizing:border-box;}html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;font-size:15px;line-height:1.5;}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 22px 80px;}
+header.top{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:24px;}
+header.top h1{margin:0;font-size:23px;font-weight:700;letter-spacing:-.01em;}
+header.top .sub{font-size:13px;color:var(--muted);margin-top:5px;}
+.brandbar{height:4px;border-radius:4px;background:linear-gradient(90deg,#2c5282,#3b82f6,#06b6d4);margin-bottom:18px;}
+h2.sec{font-size:15px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin:34px 0 14px;display:flex;align-items:center;gap:8px;}
+.grid{display:grid;gap:14px;}
+.kpis{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:16px 18px;}
+.kpi .lbl{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;}
+.kpi .val{font-size:24px;font-weight:700;margin-top:4px;letter-spacing:-.02em;}
+.kpi .dl{font-size:12px;margin-top:5px;font-weight:600;}
+.up{color:var(--green);}.down{color:var(--red);}.flat{color:var(--muted);}
+.progs{grid-template-columns:repeat(auto-fit,minmax(330px,1fr));}
+.prog h3{margin:0 0 2px;font-size:17px;font-weight:700;display:flex;align-items:center;gap:8px;}
+.prog .ids{font-size:11px;color:var(--muted);margin-bottom:12px;}
+.minigrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px 12px;margin-bottom:10px;}
+.minigrid .m .l{font-size:11px;color:var(--muted);}
+.minigrid .m .v{font-size:16px;font-weight:700;}
+.minigrid .m .d{font-size:11px;font-weight:600;}
+table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px;}
+th,td{text-align:right;padding:5px 6px;border-bottom:1px solid var(--line);}
+th:first-child,td:first-child{text-align:left;}
+th{color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.03em;}
+td.pub{max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.alert{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:10px;margin-bottom:9px;border:1px solid var(--line);background:var(--card);}
+.alert.high{border-left:4px solid var(--red);}
+.alert.med{border-left:4px solid var(--amber);}
+.alert .dot{font-size:18px;line-height:1;}
+.alert .t{font-weight:700;font-size:13px;}
+.alert .d{font-size:13px;color:#374151;margin-top:2px;}
+.alert .pg{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;}
+.scale{border-left:4px solid var(--green);}
+.news .item{padding:12px 0;border-bottom:1px solid var(--line);}
+.news .item:last-child{border-bottom:0;}
+.news .tag{display:inline-block;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:6px;margin-right:8px;}
+.news a.tt{font-weight:700;font-size:14px;color:var(--ink);text-decoration:none;}
+.news a.tt:hover{color:var(--accent);text-decoration:underline;}
+.news .bd{font-size:13px;color:#374151;margin-top:4px;}
+.chartbox{height:150px;margin-top:8px;}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:760px){.two{grid-template-columns:1fr;}}
+details.method{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px 18px;box-shadow:var(--shadow);}
+details.method summary{cursor:pointer;font-weight:700;padding:12px 0;color:var(--accent);}
+details.method td{text-align:left;}
+.foot{margin-top:36px;font-size:12px;color:var(--muted);text-align:center;}
+.tabs{display:inline-flex;background:var(--card);border:1px solid var(--line);border-radius:8px;overflow:hidden;box-shadow:var(--shadow);}
+.tabs button{background:transparent;border:0;padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer;color:var(--muted);font-family:inherit;}
+.tabs button.active{background:var(--accent);color:#fff;}
+.empty{font-size:13px;color:var(--muted);font-style:italic;padding:8px 0;}
+</style></head>
+<body><div class="wrap">
+<div class="brandbar"></div>
+<header class="top">
+ <div><h1>Affiliate Cockpit · WPP Media</h1>
+ <div class="sub">Mein Schiff · Hapag-Lloyd Cruises · Meßmer · Tempur — Daten via AWIN-API</div></div>
+ <div style="text-align:right"><div class="sub">Daten-Stand</div><div style="font-weight:700;font-size:14px" id="genstamp"></div></div>
+</header>
+
+<h2 class="sec">📊 Portfolio-Überblick <span class="tabs" style="margin-left:auto"><button data-w="30" class="active" onclick="setWin(30)">30 Tage</button><button data-w="7" onclick="setWin(7)">7 Tage</button></span></h2>
+<div class="grid kpis" id="portfolio"></div>
+
+<h2 class="sec">🚨 Tracking-Alarm & Auffälligkeiten</h2>
+<div id="alerts"></div>
+
+<h2 class="sec">🚀 Skalierungs-Chancen</h2>
+<div id="scaling"></div>
+
+<h2 class="sec">🏷️ Kunden im Detail</h2>
+<div class="grid progs" id="progs"></div>
+
+<div class="two">
+<div>
+<h2 class="sec">📰 Affiliate- & Marketing-Radar</h2>
+<div class="card news" id="news"></div>
+</div>
+<div>
+<h2 class="sec">📈 Umsatz-Verteilung (30T)</h2>
+<div class="card"><div class="chartbox" style="height:280px"><canvas id="mixChart"></canvas></div></div>
+</div>
+</div>
+
+<h2 class="sec">📖 KPI-Logik & Methodik</h2>
+<details class="method"><summary>Welche KPIs zählen im Affiliate – und wie das Cockpit Alarme & Chancen erkennt</summary>
+<table>
+<tr><th>KPI</th><th>Definition</th><th>Warum relevant</th></tr>
+<tr><td><b>Umsatz / AOV</b></td><td>Sale-Volumen; AOV = Umsatz ÷ Sales</td><td>Kreuzfahrt = sehr hoher AOV, lange Journey → wenige, große Sales</td></tr>
+<tr><td><b>CR</b></td><td>Sales ÷ Klicks</td><td>Effizienz des Traffics; bei Cruise systembedingt niedrig, bei Cashback/Voucher hoch</td></tr>
+<tr><td><b>EPC</b></td><td>Provision ÷ Klicks</td><td>Wert je Klick — beste Kennzahl, um Publisher-Qualität & Skalierbarkeit zu vergleichen</td></tr>
+<tr><td><b>Stornoquote</b></td><td>Declined ÷ (Confirmed + Declined)</td><td>Qualität & Validierung; Spikes = Publisher-/Tracking-Problem</td></tr>
+<tr><td><b>Klick-Trend</b></td><td>7T vs. Vorwoche / 30T vs. Vorperiode</td><td>Früherkennung von Tracking-Einbrüchen & Saisonalität</td></tr>
+</table>
+<p style="font-size:13px;color:#374151"><b>Alarm-Logik:</b> Klick-Einbruch ≥35% WoW (Programm), Sales-Einbruch ≥40% bei stabilen Klicks (Tracking-Verdacht), Publisher-Versiegen (≥30 Klicks Vorwoche → ≤15% jetzt), 0 Sales trotz Klicks, Stornoquote ≥35%. <b>Skalierung:</b> WoW-Momentum (Klicks +≥40% & steigende Sales) sowie Effizienz-Reserven (überdurchschnittliche CR bei noch geringer Reichweite). Payback (PubID 426667/469409) ist bei Mein Schiff bewusst herausgerechnet.</p>
+</details>
+
+<div class="foot">Automatisch generiert für WPP Media · AWIN-Daten + Web-Radar · letzte Aktualisierung <span id="genstamp2"></span><br>Vertraulich – nur für internen Gebrauch.</div>
+</div>
+<script>
+const P = {"data": {"generated": "2026-06-18T22:11:38", "today": "2026-06-18", "programs": {"Messmer": {"label": "Meßmer", "key": "Messmer", "ids": [55091], "excluded_payback": [], "w": {"last7": {"clicks": 6901.0, "impr": 653556.0, "sales": 77.0, "conf": 0.0, "decl": 0.0, "pend": 77.0, "val": 2937.68, "confval": 0.0, "comm": 323.1, "confcomm": 0.0}, "prev7": {"clicks": 7174.0, "impr": 643815.0, "sales": 68.0, "conf": 32.0, "decl": 0.0, "pend": 36.0, "val": 2516.5499999999993, "confval": 1240.21, "comm": 273.64, "confcomm": 136.39999999999998}, "last30": {"clicks": 29225.0, "impr": 3103371.0, "sales": 342.0, "conf": 229.0, "decl": 5.0, "pend": 113.0, "val": 13716.359999999999, "confval": 9502.34, "comm": 1511.4300000000003, "confcomm": 1051.09}, "prev30": {"clicks": 27936.0, "impr": 2800641.0, "sales": 366.0, "conf": 365.0, "decl": 6.0, "pend": 0.0, "val": 15604.210000000001, "confval": 15604.210000000001, "comm": 2032.54, "confcomm": 1803.54}}, "kpi30": {"cr": 1.1702309666381523, "epc": 0.051717023096663824, "aov": 40.10631578947368, "storno": 2.1367521367521367}, "kpi7": {"cr": 1.1157803216925082, "epc": 0.04681930155049993, "aov": 38.15168831168831, "storno": 0}, "delta7": {"clicks": -3.805408419291887, "sales": 13.23529411764706, "val": 16.73441815183488, "comm": 18.074842859231122}, "delta30": {"clicks": 4.614117983963345, "sales": -6.557377049180328, "val": -12.098337564029208, "comm": -25.638363820638197}, "cr30_delta": -0.13990649040652126, "storno30": 2.1367521367521367, "epc30": 0.051717023096663824, "aov30": 40.10631578947368, "top_publishers": [{"name": "media.ventive GmbH - Performance Channel - Retargeting", "clicks": 686.0, "sales": 61.0, "val": 2706.92, "comm": 297.77, "conf": 42.0, "decl": 1.0, "impr": 248782.0, "cr": 8.892128279883382, "epc": 0.434067055393586, "aov": 44.37573770491803, "storno": 2.3255813953488373}, {"name": "TIKATO S.R.L (Europa)", "clicks": 70.0, "sales": 42.0, "val": 1510.3, "comm": 166.1, "conf": 27.0, "decl": 0.0, "impr": 0.0, "cr": 60.0, "epc": 2.3728571428571428, "aov": 35.95952380952381, "storno": 0.0}, {"name": "Nordlicht Haus Vision GmbH", "clicks": 9715.0, "sales": 35.0, "val": 1433.51, "comm": 157.7, "conf": 15.0, "decl": 2.0, "impr": 0.0, "cr": 0.3602676273803397, "epc": 0.016232629953679877, "aov": 40.95742857142857, "storno": 11.76470588235294}, {"name": "COUPONS4U GmbH", "clicks": 79.0, "sales": 26.0, "val": 1215.52, "comm": 146.64, "conf": 20.0, "decl": 0.0, "impr": 0.0, "cr": 32.91139240506329, "epc": 1.8562025316455695, "aov": 46.75076923076923, "storno": 0.0}, {"name": "Atolls DE (Shoop)", "clicks": 34.0, "sales": 12.0, "val": 1061.14, "comm": 116.72, "conf": 5.0, "decl": 0.0, "impr": 0.0, "cr": 35.294117647058826, "epc": 3.4329411764705884, "aov": 88.42833333333334, "storno": 0.0}, {"name": "Purplee Corp", "clicks": 14660.0, "sales": 33.0, "val": 976.14, "comm": 107.35, "conf": 22.0, "decl": 1.0, "impr": 0.0, "cr": 0.22510231923601637, "epc": 0.007322646657571623, "aov": 29.58, "storno": 4.3478260869565215}, {"name": "vatago.de GmbH", "clicks": 52.0, "sales": 20.0, "val": 885.25, "comm": 97.38, "conf": 16.0, "decl": 1.0, "impr": 0.0, "cr": 38.46153846153847, "epc": 1.8726923076923077, "aov": 44.2625, "storno": 5.88235294117647}, {"name": "TrustDeals", "clicks": 43.0, "sales": 17.0, "val": 744.58, "comm": 81.88, "conf": 13.0, "decl": 0.0, "impr": 0.0, "cr": 39.53488372093023, "epc": 1.9041860465116278, "aov": 43.79882352941177, "storno": 0.0}]}, "Tempur": {"label": "Tempur", "key": "Tempur", "ids": [16657, 41158, 41186, 27423, 39222], "excluded_payback": [], "w": {"last7": {"clicks": 4883.0, "impr": 80966.0, "sales": 43.0, "conf": 3.0, "decl": 0.0, "pend": 40.0, "val": 13279.559999999998, "confval": 4913.45, "comm": 1441.9699999999998, "confcomm": 595.28}, "prev7": {"clicks": 3022.0, "impr": 116806.0, "sales": 43.0, "conf": 0.0, "decl": 0.0, "pend": 43.0, "val": 15467.980000000003, "confval": 0.0, "comm": 1569.5900000000001, "confcomm": 0.0}, "last30": {"clicks": 18085.0, "impr": 356552.0, "sales": 156.0, "conf": 4.0, "decl": 0.0, "pend": 152.0, "val": 50753.92, "confval": 5294.71, "comm": 5251.519999999999, "confcomm": 633.4100000000001}, "prev30": {"clicks": 16540.0, "impr": 206307.0, "sales": 116.0, "conf": 54.0, "decl": 15.0, "pend": 62.0, "val": 37060.72000000001, "confval": 15570.59, "comm": 3792.969999999999, "confcomm": 1610.32}}, "kpi30": {"cr": 0.8625933093724081, "epc": 0.2903798728227812, "aov": 325.345641025641, "storno": 0.0}, "kpi7": {"cr": 0.8806061847225066, "epc": 0.2953041163219332, "aov": 308.82697674418597, "storno": 0.0}, "delta7": {"clicks": 61.58173395102581, "sales": 0.0, "val": -14.148065875440782, "comm": -8.130785746596265}, "delta30": {"clicks": 9.340991535671101, "sales": 34.48275862068966, "val": 36.94801396195213, "comm": 38.45403470103903}, "cr30_delta": 0.16126320054532217, "storno30": 0.0, "epc30": 0.2903798728227812, "aov30": 325.345641025641, "top_publishers": [{"name": "OrangeBuddies Media - IT", "clicks": 2772.0, "sales": 4.0, "val": 7174.6, "comm": 717.46, "conf": 0.0, "decl": 0.0, "impr": 0.0, "cr": 0.1443001443001443, "epc": 0.25882395382395385, "aov": 1793.65, "storno": 0}, {"name": "PAYBACK GmbH", "clicks": 130.0, "sales": 20.0, "val": 6295.28, "comm": 629.53, "conf": 1.0, "decl": 0.0, "impr": 0.0, "cr": 15.384615384615385, "epc": 4.842538461538461, "aov": 314.764, "storno": 0.0}, {"name": "Miles & More GmbH", "clicks": 34.0, "sales": 5.0, "val": 5133.9, "comm": 513.4, "conf": 0.0, "decl": 0.0, "impr": 0.0, "cr": 14.705882352941178, "epc": 15.1, "aov": 1026.78, "storno": 0}, {"name": "Top Cashback GmbH", "clicks": 10.0, "sales": 6.0, "val": 4457.31, "comm": 445.74, "conf": 0.0, "decl": 0.0, "impr": 0.0, "cr": 60.0, "epc": 44.574, "aov": 742.8850000000001, "storno": 0}, {"name": "idealo internet GmbH – DE", "clicks": 885.0, "sales": 41.0, "val": 3607.21, "comm": 432.88, "conf": 0.0, "decl": 0.0, "impr": 0.0, "cr": 4.632768361581921, "epc": 0.48912994350282485, "aov": 87.98073170731708, "storno": 0}, {"name": "Prezzi-online.com", "clicks": 218.0, "sales": 8.0, "val": 3608.55, "comm": 360.86, "conf": 0.0, "decl": 0.0, "impr": 0.0, "cr": 3.669724770642202, "epc": 1.6553211009174313, "aov": 451.06875, "storno": 0}, {"name": "COUPONS4U GmbH", "clicks": 122.0, "sales": 3.0, "val": 2225.73, "comm": 326.51, "conf": 1.0, "decl": 0.0, "impr": 0.0, "cr": 2.459016393442623, "epc": 2.676311475409836, "aov": 741.91, "storno": 0.0}, {"name": "TIKATO S.R.L (Europa)", "clicks": 116.0, "sales": 9.0, "val": 2902.47, "comm": 290.25, "conf": 0.0, "decl": 0.0, "impr": 0.0, "cr": 7.758620689655173, "epc": 2.502155172413793, "aov": 322.49666666666667, "storno": 0}]}, "MeinSchiff_DACH": {"label": "Mein Schiff DACH", "key": "MeinSchiff_DACH", "ids": [9127], "excluded_payback": [426667, 469409], "w": {"last7": {"clicks": 61971.0, "impr": 161191.0, "sales": 76.0, "conf": 0.0, "decl": 0.0, "pend": 76.0, "val": 328544.38000000006, "confval": 0.0, "comm": 25441.879999999997, "confcomm": 0.0}, "prev7": {"clicks": 67604.0, "impr": 84076.0, "sales": 80.0, "conf": 0.0, "decl": 0.0, "pend": 80.0, "val": 316467.2, "confval": 0.0, "comm": 23559.689999999995, "confcomm": 0.0}, "last30": {"clicks": 251946.0, "impr": 408438.0, "sales": 321.0, "conf": 0.0, "decl": 0.0, "pend": 320.0, "val": 1465331.9599999995, "confval": 0.0, "comm": 109549.73, "confcomm": 0.0}, "prev30": {"clicks": 218993.0, "impr": 317856.0, "sales": 290.0, "conf": 7.0, "decl": 11.0, "pend": 280.0, "val": 1690498.35, "confval": 87659.85, "comm": 115430.61999999997, "confcomm": 6536.570000000001}}, "kpi30": {"cr": 0.12740825414969875, "epc": 0.4348143252919276, "aov": 4564.8970716510885, "storno": 0}, "kpi7": {"cr": 0.12263800810056316, "epc": 0.4105449323070468, "aov": 4322.9523684210535, "storno": 0}, "delta7": {"clicks": -8.332347198390627, "sales": -5.0, "val": 3.8162501516745024, "comm": 7.989027020304608}, "delta30": {"clicks": 15.047512934203377, "sales": 10.689655172413794, "val": -13.319527345294397, "comm": -5.094740026519802}, "cr30_delta": -0.00501606991545403, "storno30": 0, "epc30": 0.4348143252919276, "aov30": 4564.8970716510885, "top_publishers": [{"name": "Checkout Charlie GmbH (MAIN ACCOUNT)", "clicks": 1547.0, "sales": 36.0, "val": 213639.0, "comm": 18244.9, "conf": 0.0, "decl": 0.0, "impr": 0.0, "cr": 2.3270846800258567, "epc": 11.793729799612153, "aov": 5934.416666666667, "storno": 0}, {"name": "Savoo DE", "clicks": 3667.0, "sales": 70.0, "val": 300918.38, "comm": 17045.83, "conf": 0.0, "decl": 0.0, "impr": 0.0, "cr": 1.9089173711480774, "epc": 4.648440141805291, "aov": 4298.834, "storno": 0}, {"name": "Urlaubstracker GmbH", "clicks": 3431.0, "sales": 40.0, "val": 195362.2, "comm": 16845.66, "conf": 0.0, "decl": 0.0, "impr": 0.0, "cr": 1.1658408627222383, "epc": 4.909839696881376, "aov": 4884.055, "storno": 0}, {"name": "Webravo S.R.L. / Bravogutschein.de", "clicks": 440.0, "sales": 20.0, "val": 138261.2, "comm": 14418.44, "conf": 0.0, "decl": 0.0, "impr": 0.0, "cr": 4.545454545454546, "epc": 32.76918181818182, "aov": 6913.06, "storno": 0}, {"name": "Atolls DE (Shoop)", "clicks": 336.0, "sales": 41.0, "val": 133037.4, "comm": 12109.04, "conf": 0.0, "decl": 0.0, "impr": 0.0, "cr": 12.202380952380953, "epc": 36.038809523809526, "aov": 3244.814634146341, "storno": 0}, {"name": "The Groupon Reach Network -  Germany (New account)", "clicks": 2600.0, "sales": 27.0, "val": 101140.4, "comm": 5812.0, "conf": 0.0, "decl": 0.0, "impr": 0.0, "cr": 1.0384615384615385, "epc": 2.2353846153846155, "aov": 3745.9407407407407, "storno": 0}, {"name": "Holidaypirates GmbH", "clicks": 109048.0, "sales": 17.0, "val": 62539.2, "comm": 5037.08, "conf": 0.0, "decl": 0.0, "impr": 0.0, "cr": 0.01558946518964126, "epc": 0.04619140195143423, "aov": 3678.776470588235, "storno": 0}, {"name": "familien-parks.de / Frank Zinn", "clicks": 2145.0, "sales": 7.0, "val": 29873.2, "comm": 2539.22, "conf": 0.0, "decl": 0.0, "impr": 0.0, "cr": 0.32634032634032634, "epc": 1.1837855477855477, "aov": 4267.6, "storno": 0}]}, "MeinSchiff_Int": {"label": "Mein Schiff International", "key": "MeinSchiff_Int", "ids": [104581], "excluded_payback": [], "w": {"last7": {"clicks": 61.0, "impr": 258.0, "sales": 0.0, "conf": 0.0, "decl": 0.0, "pend": 0.0, "val": 0.0, "confval": 0.0, "comm": 0.0, "confcomm": 0.0}, "prev7": {"clicks": 199.0, "impr": 410.0, "sales": 0.0, "conf": 0.0, "decl": 0.0, "pend": 0.0, "val": 0.0, "confval": 0.0, "comm": 0.0, "confcomm": 0.0}, "last30": {"clicks": 344.0, "impr": 1302.0, "sales": 0.0, "conf": 0.0, "decl": 0.0, "pend": 0.0, "val": 0.0, "confval": 0.0, "comm": 0.0, "confcomm": 0.0}, "prev30": {"clicks": 623.0, "impr": 853.0, "sales": 2.0, "conf": 0.0, "decl": 0.0, "pend": 2.0, "val": 7259.65, "confval": 0.0, "comm": 362.98, "confcomm": 0.0}}, "kpi30": {"cr": 0.0, "epc": 0.0, "aov": 0, "storno": 0}, "kpi7": {"cr": 0.0, "epc": 0.0, "aov": 0, "storno": 0}, "delta7": {"clicks": -69.34673366834171, "sales": null, "val": null, "comm": null}, "delta30": {"clicks": -44.78330658105939, "sales": -100.0, "val": -100.0, "comm": -100.0}, "cr30_delta": -0.32102728731942215, "storno30": 0, "epc30": 0.0, "aov30": 0, "top_publishers": [{"name": "digidip EU - Content and Incentivized", "clicks": 135.0, "sales": 0.0, "val": 0.0, "comm": 0.0, "conf": 0.0, "decl": 0.0, "impr": 0.0, "cr": 0.0, "epc": 0.0, "aov": 0, "storno": 0}, {"name": "Lkmstore Sub Network", "clicks": 6.0, "sales": 0.0, "val": 0.0, "comm": 0.0, "conf": 0.0, "decl": 0.0, "impr": 0.0, "cr": 0.0, "epc": 0.0, "aov": 0, "storno": 0}, {"name": "DREAM Vacation Super Saver Offers", "clicks": 4.0, "sales": 0.0, "val": 0.0, "comm": 0.0, "conf": 0.0, "decl": 0.0, "impr": 0.0, "cr": 0.0, "epc": 0.0, "aov": 0, "storno": 0}, {"name": "Opulence Travel Group", "clicks": 1.0, "sales": 0.0, "val": 0.0, "comm": 0.0, "conf": 0.0, "decl": 0.0, "impr": 0.0, "cr": 0.0, "epc": 0.0, "aov": 0, "storno": 0}, {"name": "Takeads FZ-LLC", "clicks": 56.0, "sales": 0.0, "val": 0.0, "comm": 0.0, "conf": 0.0, "decl": 0.0, "impr": 0.0, "cr": 0.0, "epc": 0.0, "aov": 0, "storno": 0}, {"name": "Rocco", "clicks": 23.0, "sales": 0.0, "val": 0.0, "comm": 0.0, "conf": 0.0, "decl": 0.0, "impr": 1.0, "cr": 0.0, "epc": 0.0, "aov": 0, "storno": 0}, {"name": "Nico van Dijk Media", "clicks": 7.0, "sales": 0.0, "val": 0.0, "comm": 0.0, "conf": 0.0, "decl": 0.0, "impr": 0.0, "cr": 0.0, "epc": 0.0, "aov": 0, "storno": 0}, {"name": "Example Publisher", "clicks": 1.0, "sales": 0.0, "val": 0.0, "comm": 0.0, "conf": 0.0, "decl": 0.0, "impr": 0.0, "cr": 0.0, "epc": 0.0, "aov": 0, "storno": 0}]}, "HLC": {"label": "Hapag-Lloyd Cruises", "key": "HLC", "ids": [87095, 104583], "excluded_payback": [], "w": {"last7": {"clicks": 801.0, "impr": 46953.0, "sales": 0.0, "conf": 0.0, "decl": 0.0, "pend": 0.0, "val": 0.0, "confval": 0.0, "comm": 0.0, "confcomm": 0.0}, "prev7": {"clicks": 659.0, "impr": 1121.0, "sales": 1.0, "conf": 0.0, "decl": 0.0, "pend": 1.0, "val": 19760.0, "confval": 0.0, "comm": 691.6, "confcomm": 0.0}, "last30": {"clicks": 2461.0, "impr": 50322.0, "sales": 1.0, "conf": 0.0, "decl": 0.0, "pend": 1.0, "val": 19760.0, "confval": 0.0, "comm": 691.6, "confcomm": 0.0}, "prev30": {"clicks": 1727.0, "impr": 5849.0, "sales": 0.0, "conf": 0.0, "decl": 0.0, "pend": 0.0, "val": 0.0, "confval": 0.0, "comm": 0.0, "confcomm": 0.0}}, "kpi30": {"cr": 0.04063388866314506, "epc": 0.2810239739943113, "aov": 19760.0, "storno": 0}, "kpi7": {"cr": 0.0, "epc": 0.0, "aov": 0, "storno": 0}, "delta7": {"clicks": 21.547799696509866, "sales": -100.0, "val": -100.0, "comm": -100.0}, "delta30": {"clicks": 42.501447596989, "sales": null, "val": null, "comm": null}, "cr30_delta": 0.04063388866314506, "storno30": 0, "epc30": 0.2810239739943113, "aov30": 19760.0, "top_publishers": [{"name": "YIELDKIT GmbH - Content sites", "clicks": 603.0, "sales": 1.0, "val": 19760.0, "comm": 691.6, "conf": 0.0, "decl": 0.0, "impr": 0.0, "cr": 0.16583747927031509, "epc": 1.1469320066334991, "aov": 19760.0, "storno": 0}, {"name": "Cruise & Ahoi", "clicks": 1.0, "sales": 0.0, "val": 0.0, "comm": 0.0, "conf": 0.0, "decl": 0.0, "impr": 9.0, "cr": 0.0, "epc": 0.0, "aov": 0, "storno": 0}, {"name": "Meck-SEO.de", "clicks": 42.0, "sales": 0.0, "val": 0.0, "comm": 0.0, "conf": 0.0, "decl": 0.0, "impr": 0.0, "cr": 0.0, "epc": 0.0, "aov": 0, "storno": 0}, {"name": "Kreuzfahrtwelle", "clicks": 10.0, "sales": 0.0, "val": 0.0, "comm": 0.0, "conf": 0.0, "decl": 0.0, "impr": 0.0, "cr": 0.0, "epc": 0.0, "aov": 0, "storno": 0}, {"name": "Cursus Media Verlags GmbH", "clicks": 5.0, "sales": 0.0, "val": 0.0, "comm": 0.0, "conf": 0.0, "decl": 0.0, "impr": 0.0, "cr": 0.0, "epc": 0.0, "aov": 0, "storno": 0}, {"name": "The Essential Cruise Shop Blog", "clicks": 5.0, "sales": 0.0, "val": 0.0, "comm": 0.0, "conf": 0.0, "decl": 0.0, "impr": 104.0, "cr": 0.0, "epc": 0.0, "aov": 0, "storno": 0}, {"name": "digidip EU - Content and Incentivized", "clicks": 531.0, "sales": 0.0, "val": 0.0, "comm": 0.0, "conf": 0.0, "decl": 0.0, "impr": 0.0, "cr": 0.0, "epc": 0.0, "aov": 0, "storno": 0}, {"name": "travelandgrind", "clicks": 1.0, "sales": 0.0, "val": 0.0, "comm": 0.0, "conf": 0.0, "decl": 0.0, "impr": 0.0, "cr": 0.0, "epc": 0.0, "aov": 0, "storno": 0}]}}, "portfolio": {"k30": {"clicks": 302061.0, "sales": 820.0, "val": 1549562.2399999995, "comm": 117004.28, "cr": 0.2714683457977031, "epc": 0.3873531505225766, "aov": 1889.710048780487, "storno": 2.100840336134454}, "k7": {"clicks": 74617.0, "sales": 196.0, "val": 344761.62000000005, "comm": 27206.949999999997, "cr": 0.2626747255987241, "epc": 0.36462133294021465, "aov": 1758.9878571428574, "storno": 0.0}, "delta30": {"clicks": 13.634089361558052, "sales": 5.943152454780361, "val": -11.474980506568228, "comm": -3.7944941382978046}, "delta7": {"clicks": -5.137430394874012, "sales": 2.083333333333333, "val": -2.6679268922008834, "comm": 4.263078991297806}}, "alerts": [{"prog": "Meßmer", "sev": "high", "type": "Publisher-Tracking-Einbruch", "detail": "TakeAds GmbH (ID 101248): Klicks 2 vs. 464 Vorwoche — fast versiegt", "metric": -100}, {"prog": "Mein Schiff DACH", "sev": "high", "type": "Publisher-Tracking-Einbruch", "detail": "Ströer Digital Publishing GmbH (ID 637233): Klicks 120 vs. 960 Vorwoche — fast versiegt", "metric": -100}, {"prog": "Mein Schiff DACH", "sev": "high", "type": "Publisher-Tracking-Einbruch", "detail": "FUNKE Digital GmbH (ID 696167): Klicks 555 vs. 6372 Vorwoche — fast versiegt", "metric": -100}, {"prog": "Mein Schiff International", "sev": "high", "type": "Klick-Einbruch", "detail": "Klicks 7T 61 vs. 199 (-69%) — Tracking prüfen", "metric": -69.34673366834171}, {"prog": "Mein Schiff International", "sev": "high", "type": "Publisher-Tracking-Einbruch", "detail": "digidip EU - Content and Incentivized (ID 269979): Klicks 1 vs. 134 Vorwoche — fast versiegt", "metric": -100}], "scaling": [{"prog": "Tempur", "type": "Effizienz-Reserve", "pid": 637873, "detail": "Top Cashback GmbH: CR 60.0% bei nur 10 Klicks/30T — überdurchschnittlich effizient, Reichweite ausbauen", "score": 60.0}, {"prog": "Meßmer", "type": "Effizienz-Reserve", "pid": 333891, "detail": "AVS Abrechnungs- und Verwaltungs- Systeme GmbH: CR 40.0% bei nur 10 Klicks/30T — überdurchschnittlich effizient, Reichweite ausbauen", "score": 40.0}, {"prog": "Meßmer", "type": "Effizienz-Reserve", "pid": 657465, "detail": "TrustDeals: CR 39.5% bei nur 43 Klicks/30T — überdurchschnittlich effizient, Reichweite ausbauen", "score": 39.53488372093023}, {"prog": "Meßmer", "type": "Effizienz-Reserve", "pid": 320119, "detail": "Atolls DE (Shoop): CR 35.3% bei nur 34 Klicks/30T — überdurchschnittlich effizient, Reichweite ausbauen", "score": 35.294117647058826}, {"prog": "Tempur", "type": "Effizienz-Reserve", "pid": 320119, "detail": "Atolls DE (Shoop): CR 16.1% bei nur 31 Klicks/30T — überdurchschnittlich effizient, Reichweite ausbauen", "score": 16.129032258064516}, {"prog": "Tempur", "type": "Effizienz-Reserve", "pid": 426667, "detail": "PAYBACK GmbH: CR 15.4% bei nur 130 Klicks/30T — überdurchschnittlich effizient, Reichweite ausbauen", "score": 15.384615384615385}, {"prog": "Tempur", "type": "Effizienz-Reserve", "pid": 329243, "detail": "Miles & More GmbH: CR 14.7% bei nur 34 Klicks/30T — überdurchschnittlich effizient, Reichweite ausbauen", "score": 14.705882352941178}, {"prog": "Mein Schiff DACH", "type": "Effizienz-Reserve", "pid": 320119, "detail": "Atolls DE (Shoop): CR 12.2% bei nur 336 Klicks/30T — überdurchschnittlich effizient, Reichweite ausbauen", "score": 12.202380952380953}, {"prog": "Tempur", "type": "Effizienz-Reserve", "pid": 332683, "detail": "idealo internet GmbH - IT: CR 10.8% bei nur 37 Klicks/30T — überdurchschnittlich effizient, Reichweite ausbauen", "score": 10.81081081081081}, {"prog": "Tempur", "type": "Effizienz-Reserve", "pid": 473572, "detail": "VR Marketing Ltd: CR 10.1% bei nur 89 Klicks/30T — überdurchschnittlich effizient, Reichweite ausbauen", "score": 10.112359550561797}, {"prog": "Mein Schiff DACH", "type": "Effizienz-Reserve", "pid": 333891, "detail": "AVS Abrechnungs- und Verwaltungs- Systeme GmbH: CR 10.0% bei nur 30 Klicks/30T — überdurchschnittlich effizient, Reichweite ausbauen", "score": 10.0}, {"prog": "Mein Schiff DACH", "type": "Effizienz-Reserve", "pid": 333587, "detail": "Atolls DE (iGraal): CR 5.3% bei nur 133 Klicks/30T — überdurchschnittlich effizient, Reichweite ausbauen", "score": 5.263157894736842}]}, "news": [{"date": "2026-06", "tag": "Awin", "title": "Conversion Protection Initiative (CPI) verändert die Branche", "body": "Awin-CEO Adam Ross: Die CPI schützt Conversions gegen Tracking-Verluste und ist wenige Monate nach Launch bereits ein Industrie-Hebel. Relevant fürs Tracking-Monitoring all unserer Programme.", "url": "https://www.awin.com/gb/news-and-events/awin-news"}, {"date": "2026", "tag": "Awin Release", "title": "Awin Winter Release: schnellere & smartere Plattform", "body": "Neue Funktionen für Partnership-Wachstum und Reporting. Lohnt zu prüfen, ob neue Reporting-Features unsere Monthly-Insights beschleunigen.", "url": "https://www.awin.com/gb/product-releases"}, {"date": "2026", "tag": "Trend", "title": "Influencer × Affiliate verschmelzen – Micro-Creator gewinnen", "body": "Creator <5.000 Follower liefern laut Magic Numbers 18:1 ROI vs. 5:1 bei >160k. Für Mein Schiff / HLC: Micro-Reise-Creator als skalierbares Publisher-Segment testen.", "url": "https://www.awin.com/gb/sector-insights/affiliate-marketing-trends-2026"}, {"date": "2026", "tag": "Trend", "title": "GEO löst SEO an – generative Suche verändert Traffic", "body": "eMarketer: Rolle von SEO im Affiliate sinkt, GEO (Generative Engine Optimization) wird zentral. Content-Publisher mit KI-Sichtbarkeit bevorzugt screenen.", "url": "https://www.awin.com/gb/sector-insights/affiliate-marketing-trends-2026"}, {"date": "2026", "tag": "DACH", "title": "Affiliate-Budgets steigen trotz schrumpfender Werbeetats", "body": "Xpose360: 27% der deutschen Marketer erhöhen Affiliate-Spend. Cashback bleibt mit 55% stärkstes Modell, Influencer-Modelle steigen von 28% auf 43%.", "url": "https://www.affiliateblog.de/affiliate-marketing-trend-report-2026/"}, {"date": "2026", "tag": "DACH", "title": "Hybride Modelle (CPO + WKZ + Fix) endgültig Mainstream", "body": "ADZINE/APMC: Kombinationen aus CPO, WKZ, Fixbeträgen & garantierten Platzierungen sind 2026 Standard. Passt zu unserer WKZ-Steuerung bei TUIC.", "url": "https://www.adzine.de/2026/02/affiliate-marketing-2026-stabilitaet-trifft-auf-ki-transformation/"}, {"date": "2026", "tag": "Markt", "title": "Zunehmende Marktkonzentration bei Publishern", "body": "33% der Advertiser sehen wachsende Konzentration auf große Plattformen/Tech-Tools. Publisher-Diversifikation aktiv steuern, Klumpenrisiko beobachten.", "url": "https://www.tradedoubler.com/de/post/apmc-report-2026-affiliate-marketing-als-effizienzkanal"}], "order": ["MeinSchiff_DACH", "MeinSchiff_Int", "HLC", "Messmer", "Tempur"], "icon": {"MeinSchiff_DACH": "🚢", "MeinSchiff_Int": "🌍", "HLC": "⚓", "Messmer": "🍵", "Tempur": "🛏️"}, "gen": "18.06.2026, 22:11 Uhr", "today": "2026-06-18"};
+const D = P.data, NEWS = P.news, ORDER = P.order, ICON = P.icon;
+document.getElementById('genstamp').textContent = P.gen;
+document.getElementById('genstamp2').textContent = P.gen;
+const eur=v=>'€'+Math.round(v).toLocaleString('de-DE');
+const eur2=v=>'€'+v.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2});
+const intf=v=>Math.round(v).toLocaleString('de-DE');
+const pctf=v=>(v>=0?'+':'')+v.toFixed(1)+'%';
+function arrow(v){if(v===null||v===undefined)return '<span class="flat">– neu</span>';const c=v>1?'up':(v<-1?'down':'flat');const g=v>1?'▲':(v<-1?'▼':'■');return '<span class="'+c+'">'+g+' '+pctf(v)+'</span>';}
+
+let WIN=30;
+function setWin(w){WIN=w;document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('active',+b.dataset.w===w));renderPortfolio();}
+
+function renderPortfolio(){
+ const k = WIN===30?D.portfolio.k30:D.portfolio.k7;
+ const d = WIN===30?D.portfolio.delta30:D.portfolio.delta7;
+ const cards=[
+  ['Umsatz',eur(k.val),d.val],['Provision',eur(k.comm),d.comm],
+  ['Sales',intf(k.sales),d.sales],['Klicks',intf(k.clicks),d.clicks],
+  ['CR',k.cr.toFixed(2)+'%',null],['EPC',eur2(k.epc),null],
+  ['AOV',eur(k.aov),null],['Stornoquote',k.storno.toFixed(1)+'%',null]
+ ];
+ document.getElementById('portfolio').innerHTML=cards.map(c=>
+  '<div class="card kpi"><div class="lbl">'+c[0]+'</div><div class="val">'+c[1]+'</div><div class="dl">'+(c[2]!==null?arrow(c[2])+' <span class="flat">vs. Vorper.</span>':'<span class="flat">'+WIN+'-Tage-Schnitt</span>')+'</div></div>'
+ ).join('');
+}
+
+function renderAlerts(){
+ const box=document.getElementById('alerts');
+ if(!D.alerts.length){box.innerHTML='<div class="card"><span class="empty">✓ Keine Auffälligkeiten erkannt – Tracking läuft stabil.</span></div>';return;}
+ box.innerHTML=D.alerts.map(a=>
+  '<div class="alert '+a.sev+'"><div class="dot">'+(a.sev==='high'?'🔴':'🟠')+'</div><div><div class="pg">'+a.prog+'</div><div class="t">'+a.type+'</div><div class="d">'+a.detail+'</div></div></div>'
+ ).join('');
+}
+
+function renderScaling(){
+ const box=document.getElementById('scaling');
+ if(!D.scaling.length){box.innerHTML='<div class="card"><span class="empty">Aktuell keine eindeutigen Skalierungs-Signale.</span></div>';return;}
+ box.innerHTML=D.scaling.map(x=>
+  '<div class="alert scale"><div class="dot">'+(x.type==='Momentum'?'⚡':'🎯')+'</div><div><div class="pg">'+x.prog+' · '+x.type+'</div><div class="d">'+x.detail+'</div></div></div>'
+ ).join('');
+}
+
+function renderProgs(){
+ const box=document.getElementById('progs');
+ box.innerHTML=ORDER.filter(k=>D.programs[k]).map(key=>{
+  const p=D.programs[key];const k30=p.kpi30;const w=p.w;
+  const rows=(p.top_publishers||[]).slice(0,6).map(e=>
+   '<tr><td class="pub" title="'+e.name+'">'+e.name+'</td><td>'+intf(e.clicks)+'</td><td>'+intf(e.sales)+'</td><td>'+eur(e.comm)+'</td><td>'+e.cr.toFixed(2)+'%</td></tr>').join('');
+  const mini=(lbl,val,d)=>'<div class="m"><div class="l">'+lbl+'</div><div class="v">'+val+'</div><div class="d">'+(d!==null&&d!==undefined?arrow(d):'')+'</div></div>';
+  return '<div class="card prog"><h3>'+(ICON[key]||'')+' '+p.label+'</h3>'+
+   '<div class="ids">AWIN-ID '+p.ids.join(', ')+(p.excluded_payback&&p.excluded_payback.length?' · Payback exkl.':'')+'</div>'+
+   '<div class="minigrid">'+
+     mini('Umsatz 30T',eur(w.last30.val),p.delta30.val)+
+     mini('Provision 30T',eur(w.last30.comm),p.delta30.comm)+
+     mini('Sales 30T',intf(w.last30.sales),p.delta30.sales)+
+     mini('Klicks 30T',intf(w.last30.clicks),p.delta30.clicks)+
+     mini('CR',k30.cr.toFixed(2)+'%',null)+
+     mini('EPC',eur2(k30.epc),null)+
+   '</div>'+
+   (rows?'<table><tr><th>Top-Publisher (30T)</th><th>Klicks</th><th>Sales</th><th>Prov.</th><th>CR</th></tr>'+rows+'</table>':'<span class="empty">Keine Publisher-Sales im Zeitraum.</span>')+
+   '</div>';
+ }).join('');
+}
+
+function renderNews(){
+ document.getElementById('news').innerHTML=NEWS.map(n=>
+  '<div class="item"><div><span class="tag">'+n.tag+'</span><a class="tt" href="'+n.url+'" target="_blank" rel="noopener">'+n.title+'</a></div><div class="bd">'+n.body+'</div></div>'
+ ).join('');
+}
+
+function renderMix(){
+ const labels=[],vals=[],cols=['#2c5282','#3b82f6','#06b6d4','#16a34a','#d97706'];
+ ORDER.filter(k=>D.programs[k]).forEach((k,i)=>{labels.push(D.programs[k].label);vals.push(Math.round(D.programs[k].w.last30.val));});
+ new Chart(document.getElementById('mixChart'),{type:'doughnut',
+  data:{labels:labels,datasets:[{data:vals,backgroundColor:cols,borderWidth:2,borderColor:'#fff'}]},
+  options:{plugins:{legend:{position:'bottom',labels:{boxWidth:12,font:{size:12}}},
+   tooltip:{callbacks:{label:c=>c.label+': €'+c.raw.toLocaleString('de-DE')}}},cutout:'58%'}});
+}
+
+renderPortfolio();renderAlerts();renderScaling();renderProgs();renderNews();renderMix();
+</script>
+</body></html>
