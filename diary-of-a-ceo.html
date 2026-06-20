@@ -31,7 +31,13 @@
   .empty { max-width:1100px; margin:40px auto; padding:0 24px; text-align:center; color:var(--muted); }
   footer { max-width:1100px; margin:50px auto 0; padding:24px; text-align:center; color:var(--muted); font-size:12px; border-top:1px solid var(--border); }
   footer a { color:var(--accent); }
-  mark { background:var(--accent); color:#1a1d24; padding:0 2px; border-radius:3px; }
+    .topnav{max-width:1100px;margin:18px auto 0;padding:0 24px;display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+  .navbtn{display:inline-flex;align-items:center;gap:7px;padding:11px 18px;border-radius:11px;font-size:14.5px;font-weight:600;text-decoration:none;border:1px solid var(--border);background:var(--card);color:var(--muted);transition:all .15s}
+  .navbtn:hover{background:var(--card-hover);color:var(--text)}
+  .navbtn.active{border-color:#3a4150;color:var(--text)}
+  .navbtn.cta{background:var(--accent);color:#1a1d24;border-color:var(--accent)}
+  .navbtn.cta:hover{filter:brightness(1.08);background:var(--accent);color:#1a1d24}
+mark { background:var(--accent); color:#1a1d24; padding:0 2px; border-radius:3px; }
 </style>
 </head>
 <body>
@@ -40,6 +46,11 @@
   <h1>Learnings &amp; Insights</h1>
   <p>Die wiederkehrenden Erkenntnisse aus dem Podcast &mdash; nach Themen geclustert, durchsuchbar und mit Quelle pro Karte. Tippe ein Stichwort oder filtere nach Thema &mdash; die Treffer erscheinen sofort.</p>
 </header>
+<nav class="topnav">
+  <a class="navbtn cta" href="podcast-learnings.html">&larr; Zur Wissensbibliothek</a>
+  <a class="navbtn" href="checkliste.html">&#9989; Lebensqualität-Checkliste</a>
+  <a class="navbtn active" href="diary-of-a-ceo.html">&#128212; Diary of a CEO</a>
+</nav>
 <div class="controls">
   <input id="search" type="text" placeholder="Suche nach Stichwort, Gast oder Thema… (z. B. Schlaf, Trauma, Index-Fonds)" autocomplete="off">
   <div class="filters" id="filters"></div>

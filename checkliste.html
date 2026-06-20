@@ -53,6 +53,12 @@
   footer{max-width:1000px;margin:46px auto 0;padding:22px 24px;text-align:center;color:var(--muted);font-size:12px;border-top:1px solid var(--border)}
   footer a{color:var(--accent)}
   .disc{max-width:1000px;margin:24px auto 0;padding:14px 18px;background:rgba(226,160,75,.08);border:1px solid rgba(226,160,75,.25);border-radius:11px;color:#cdb18a;font-size:12.5px}
+  .topnav{max-width:1000px;margin:18px auto 0;padding:0 24px;display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+  .navbtn{display:inline-flex;align-items:center;gap:7px;padding:11px 18px;border-radius:11px;font-size:14.5px;font-weight:600;text-decoration:none;border:1px solid var(--border);background:var(--card);color:var(--muted);transition:all .15s}
+  .navbtn:hover{background:var(--card-hover);color:var(--text)}
+  .navbtn.active{border-color:#3a4150;color:var(--text)}
+  .navbtn.cta{background:var(--accent);color:#1a1d24;border-color:var(--accent)}
+  .navbtn.cta:hover{filter:brightness(1.08);background:var(--accent);color:#1a1d24}
   mark{background:var(--accent);color:#1a1d24;padding:0 2px;border-radius:3px}
 </style>
 </head>
@@ -62,6 +68,11 @@
   <h1>Lebensqualität-Checkliste</h1>
   <p>Runtergebrochene, im Alltag sofort umsetzbare Schritte — nach Bereichen sortiert. Hak ab, was du umsetzt; dein Fortschritt wird im Browser gespeichert. Jede Karte verlinkt zur Quelle.</p>
 </header>
+<nav class="topnav">
+  <a class="navbtn cta" href="podcast-learnings.html">&larr; Zur Wissensbibliothek</a>
+  <a class="navbtn active" href="checkliste.html">&#9989; Lebensqualität-Checkliste</a>
+  <a class="navbtn" href="diary-of-a-ceo.html">&#128212; Diary of a CEO</a>
+</nav>
 <div class="bar"><div class="barin">
   <div class="progwrap"><div class="prog" id="prog"></div></div>
   <span class="progtxt" id="progtxt">0 erledigt</span>
