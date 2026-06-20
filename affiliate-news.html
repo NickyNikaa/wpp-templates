@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Affiliate Daily – WPP Media</title>
+<style>
+  :root {
+    --bg: #f5f6f8;
+    --card: #ffffff;
+    --ink: #1a1f2e;
+    --muted: #6b7280;
+    --line: #e5e7eb;
+    --accent: #2c5282;
+    --accent-soft: #ebf2fb;
+    --success: #16a34a;
+    --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04);
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg); color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px; line-height: 1.55;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 32px 24px 80px; }
+
+  /* Masthead */
+  .masthead {
+    text-align: center; border-bottom: 3px double var(--ink);
+    padding-bottom: 16px; margin-bottom: 8px;
+  }
+  .masthead .kicker {
+    font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--accent); font-weight: 600;
+  }
+  .masthead h1 {
+    margin: 6px 0 4px; font-size: 44px; font-weight: 800; letter-spacing: -0.02em;
+    font-family: Georgia, "Times New Roman", serif;
+  }
+  .masthead .date {
+    font-size: 13px; color: var(--muted);
+    display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+    border-top: 1px solid var(--line); padding-top: 10px; margin-top: 10px;
+  }
+  .masthead .date b { color: var(--ink); font-weight: 600; }
+
+  .lead {
+    background: var(--accent-soft); border: 1px solid #d7e3f4; border-radius: 10px;
+    padding: 14px 18px; margin: 20px 0 28px; font-size: 14px; color: #25405f;
+  }
+  .lead b { color: var(--accent); }
+
+  /* Section */
+  section { margin-bottom: 34px; }
+  .sec-head {
+    display: flex; align-items: center; gap: 10px;
+    border-bottom: 2px solid var(--ink); padding-bottom: 6px; margin-bottom: 16px;
+  }
+  .sec-head h2 {
+    margin: 0; font-size: 17px; font-weight: 700; letter-spacing: -0.01em;
+    text-transform: uppercase;
+  }
+  .sec-head .emoji { font-size: 18px; }
+  .sec-head .count { margin-left: auto; font-size: 12px; color: var(--muted); }
+
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 720px) { .grid { grid-template-columns: 1fr; } }
+
+  .item {
+    background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+    padding: 16px 18px; box-shadow: var(--shadow);
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .item .tag {
+    align-self: flex-start; font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.04em;
+    padding: 3px 8px; border-radius: 5px; background: var(--accent-soft); color: var(--accent);
+  }
+  .item .tag.tuic { background: #e6f4ff; color: #0369a1; }
+  .item .tag.tempur { background: #ede9fe; color: #6d28d9; }
+  .item .tag.messmer { background: #ecfdf5; color: #047857; }
+  .item .tag.wpp { background: #fef2f2; color: #b91c1c; }
+  .item h3 { margin: 0; font-size: 15.5px; font-weight: 650; line-height: 1.35; }
+  .item p { margin: 0; font-size: 13.5px; color: #374151; }
+  .item .src {
+    margin-top: auto; font-size: 12px; color: var(--muted);
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  }
+  .item .src a { color: var(--accent); text-decoration: none; font-weight: 500; }
+  .item .src a:hover { text-decoration: underline; }
+  .item .src .dot { color: var(--line); }
+
+  /* full width feature item */
+  .item.feature { grid-column: 1 / -1; border-left: 4px solid var(--accent); }
+
+  footer {
+    margin-top: 40px; border-top: 1px solid var(--line); padding-top: 16px;
+    font-size: 12px; color: var(--muted); text-align: center; line-height: 1.7;
+  }
+  footer b { color: var(--ink); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="masthead">
+    <div class="kicker">WPP Media · Commerce / Affiliate Team</div>
+    <h1>Affiliate&nbsp;Daily</h1>
+    <div class="date">
+      <span><b>Samstag, 20. Juni 2026</b></span>
+      <span>Ausgabe Nr. 1</span>
+      <span>Kuratierte Branchen- &amp; Kundennews</span>
+    </div>
+  </div>
+
+  <div class="lead">
+    Guten Morgen ☕ &nbsp;Die wichtigsten öffentlichen News aus Affiliate-Marketing, von unseren Kunden
+    <b>Tempur</b>, <b>Meßmer</b> und <b>TUI Cruises</b> sowie von <b>WPP Media</b> – kurz, kuratiert und mit Quelle.
+    Keine AWIN-Zahlen, nur Kontext für den Tag. <b>Montags</b> deckt die Ausgabe das gesamte Wochenende ab.
+  </div>
+
+  <!-- AFFILIATE -->
+  <section>
+    <div class="sec-head"><span class="emoji">🔗</span><h2>Affiliate-Marketing</h2><span class="count">5 Meldungen</span></div>
+    <div class="grid">
+
+      <div class="item feature">
+        <span class="tag">Marktzahlen</span>
+        <h3>Branche knackt 17 Mrd. $ – Kurs auf 20 Mrd. $ bis Jahresende</h3>
+        <p>Der erste „2026 State of Affiliate Marketing"-Report (AffiliateBooster) sieht die globale Branche über 17 Mrd. $; US-Affiliate-Spendings sollen 2026 rund 13,8 Mrd. $ erreichen. Performance-Partnerschaften wachsen weiter zweistellig.</p>
+        <div class="src"><span>📊 Business Standard / AffiliateBooster</span><span class="dot">·</span><a href="https://www.business-standard.com/amp/content/press-releases-ani/affiliatebooster-com-releases-2026-state-of-affiliate-marketing-report-industry-surpasses-17b-on-track-for-20b-by-year-end-126061900748_1.html" target="_blank" rel="noopener">Zur Quelle →</a></div>
+      </div>
+
+      <div class="item">
+        <span class="tag">Netzwerk</span>
+        <h3>Awin schließt ShareASale-Upgrade ab &amp; expandiert nach Mexiko</h3>
+        <p>Awin führt beide Netzwerke zu einer globalen Plattform zusammen und öffnet mit dem Markteintritt in Mexiko neue Zielgruppen für Partner.</p>
+        <div class="src"><span>🌐 Awin News</span><span class="dot">·</span><a href="https://www.awin.com/us/news-and-events/awin-news" target="_blank" rel="noopener">Zur Quelle →</a></div>
+      </div>
+
+      <div class="item">
+        <span class="tag">Tech / KI</span>
+        <h3>Awin beschleunigt mehrsprachige Inhalte um 57 %</h3>
+        <p>Mit Acclaro &amp; Lokalise verkürzt Awin die Time-to-Localization von vier Wochen auf unter zwölf Tage – relevant für internationale Programme.</p>
+        <div class="src"><span>📰 Yahoo Finance</span><span class="dot">·</span><a href="https://finance.yahoo.com/news/awin-one-world-largest-affiliate-140000032.html" target="_blank" rel="noopener">Zur Quelle →</a></div>
+      </div>
+
+      <div class="item">
+        <span class="tag">DACH</span>
+        <h3>„Eine Branche im Aufbruch" – Kooperationen, Rekorde, Transparenz</h3>
+        <p>Projecter fasst in den Affiliate-News 01/2026 die wichtigsten DACH-Entwicklungen zusammen: neue Kooperationen, Rekordzahlen und den Kampf um mehr Transparenz im Channel.</p>
+        <div class="src"><span>🇩🇪 Projecter</span><span class="dot">·</span><a href="https://www.projecter.de/blog/affiliate-marketing/affiliate-marketing-news-01-2026-eine-branche-im-aufbruch-kooperationen-rekordzahlen-und-der-kampf-um-transparenz/" target="_blank" rel="noopener">Zur Quelle →</a></div>
+      </div>
+
+      <div class="item">
+        <span class="tag">Trend</span>
+        <h3>KI &amp; generative Suche verschieben das Discovery-Spiel</h3>
+        <p>Generative KI-Chatbots verändern, wie Konsument:innen Produkte vergleichen; Creator gewinnen Budget-Anteile, während die Messung den vollen Affiliate-Wert noch schwer abbildet.</p>
+        <div class="src"><span>📈 eMarketer</span><span class="dot">·</span><a href="https://www.emarketer.com/content/faq-on-affiliate-marketing--how-ai-creators-reshaping-channel-2026" target="_blank" rel="noopener">Zur Quelle →</a></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- KUNDEN -->
+  <section>
+    <div class="sec-head"><span class="emoji">⭐</span><h2>Kunden im Fokus</h2><span class="count">TUI Cruises · Tempur · Meßmer</span></div>
+    <div class="grid">
+
+      <div class="item feature">
+        <span class="tag tuic">TUI Cruises · heute</span>
+        <h3>Mein Schiff Flow wird heute in Triest getauft 🚢</h3>
+        <p>Unter dem Motto „Go with the Flow" tauft TUI Cruises das neueste Flottenmitglied mit erstmals drei Taufpatinnen (Julia 20, Annabelle 35, Karin 67). Live-Auftritte von Rea Garvey (19.6.) und Tim Bendzko (20.6.); Livestream der Zeremonie ab 21:45 Uhr.</p>
+        <div class="src"><span>⚓ Kreuzfahrt Aktuelles</span><span class="dot">·</span><a href="https://www.kreuzfahrt-aktuelles.de/news/taufreise-der-mein-schiff-flow-beginnt-in-triest-feierlichkeiten-am-20-06-2026/116167/" target="_blank" rel="noopener">Zur Quelle →</a></div>
+      </div>
+
+      <div class="item">
+        <span class="tag tuic">TUI Cruises</span>
+        <h3>Fincantieri liefert Mein Schiff Flow ab</h3>
+        <p>Das zweite Schiff der InTUItion-Klasse wurde am 12. Juni in Monfalcone übergeben; die erste reguläre Reise startet Ende Juni ab Palma.</p>
+        <div class="src"><span>🛳️ Seatrade Cruise</span><span class="dot">·</span><a href="https://www.seatrade-cruise.com/shipbuilding-equipment/tui-cruises-mein-schiff-flow-begins-shakedown-voyage-in-trieste" target="_blank" rel="noopener">Zur Quelle →</a></div>
+      </div>
+
+      <div class="item">
+        <span class="tag tempur">Tempur</span>
+        <h3>Tempur Sealy: Q1 2026 mit +12 % Umsatz</h3>
+        <p>Der Nettoumsatz stieg auf 1,8 Mrd. $, das adjustierte EBITDA um 20 % – zweistelliges Wachstum trotz schwachem Bettwaren-Markt; auch das internationale Geschäft legte zweistellig zu.</p>
+        <div class="src"><span>🛏️ Harian Basis</span><span class="dot">·</span><a href="https://www.harianbasis.co/en/tempur-sealy-sales-earnings-growth" target="_blank" rel="noopener">Zur Quelle →</a></div>
+      </div>
+
+      <div class="item">
+        <span class="tag tempur">Tempur · Konzern</span>
+        <h3>Mutterkonzern firmiert als Somnigroup</h3>
+        <p>Nach der 5-Mrd.-$-Übernahme von Mattress Firm führt der Konzern Tempur Sealy, Dreams und Mattress Firm seit Februar 2025 als dezentrale Einheiten unter dem Namen Somnigroup.</p>
+        <div class="src"><span>🏢 Retail Dive</span><span class="dot">·</span><a href="https://www.retaildive.com/news/tempur-sealy-mattress-firm-merger-deal-somnigroup/739404/" target="_blank" rel="noopener">Zur Quelle →</a></div>
+      </div>
+
+      <div class="item">
+        <span class="tag messmer">Meßmer</span>
+        <h3>Neu: COLD TEA SPORT Pflaume mit Zink &amp; Eisen</h3>
+        <p>Seit 1. April 2026 als Limited Edition (3,19 €) im Handel, verfügbar bis September – Meßmers Push in funktionale Cold-Tea-Getränke.</p>
+        <div class="src"><span>🍵 about-drinks</span><span class="dot">·</span><a href="https://www.about-drinks.com/messmer-launcht-cold-tea-sport-pflaume-mit-zink-und-eisen/" target="_blank" rel="noopener">Zur Quelle →</a></div>
+      </div>
+
+      <div class="item">
+        <span class="tag messmer">Meßmer · Nachhaltigkeit</span>
+        <h3>28 Tees auf „Fair for Life" umgestellt</h3>
+        <p>Meßmer/OTG zertifiziert 28 Kräuter- und Früchtetees nach Fair-for-Life; bis 2030 sollen ausschließlich nachhaltig zertifizierte Rohwaren eingesetzt werden – starkes Marken-/Story-Asset für Content-Publisher.</p>
+        <div class="src"><span>🌿 Lebensmittelpraxis</span><span class="dot">·</span><a href="https://lebensmittelpraxis.de/industrie-aktuell/46900-nachhaltige-rohwaren-messmer-stellt-tees-auf-fair-for-life-um.html" target="_blank" rel="noopener">Zur Quelle →</a></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- WPP -->
+  <section>
+    <div class="sec-head"><span class="emoji">🏛️</span><h2>WPP Media &amp; Media-Branche</h2><span class="count">3 Meldungen</span></div>
+    <div class="grid">
+
+      <div class="item">
+        <span class="tag wpp">WPP Media</span>
+        <h3>KI als „1,3-Billionen-$-Wachstumsmotor" 2026</h3>
+        <p>WPP Media sieht generative Suche als potenziell schnellsten Werbekanal Richtung 100 Mrd. $ und prognostiziert ein globales Ad-Revenue-Wachstum von 8,9 % bis Jahresende.</p>
+        <div class="src"><span>🤖 PPC Land</span><span class="dot">·</span><a href="https://ppc.land/wpp-media-sees-ai-as-advertisings-1-3-trillion-growth-engine-in-2026/" target="_blank" rel="noopener">Zur Quelle →</a></div>
+      </div>
+
+      <div class="item">
+        <span class="tag wpp">Innovation</span>
+        <h3>Test: Synthetische Zielgruppen aus Spendendaten</h3>
+        <p>Gemeinsam mit Givsly testet WPP Media synthetische Audiences (u. a. auf Basis von Spendendaten) für programmatische Buys – erste Beauty-/Fashion-Kampagnen zeigen +2 % Video-Completion.</p>
+        <div class="src"><span>📺 Digiday</span><span class="dot">·</span><a href="https://digiday.com/media-buying/wpp-media-is-testing-synthetic-audiences-based-on-charity-donations-for-programmatic-buys/" target="_blank" rel="noopener">Zur Quelle →</a></div>
+      </div>
+
+      <div class="item">
+        <span class="tag wpp">Markt</span>
+        <h3>Omnicom überholt WPP im Juni-Ranking</h3>
+        <p>In Nordamerika zieht Omnicom beim Neugeschäft vorbei; WPP steigert sein Net New Business dennoch auf 591,7 Mio. $ – mit Wins wie Wendy's, SC Johnson und Jaguar Land Rover.</p>
+        <div class="src"><span>📊 Campaign US</span><span class="dot">·</span><a href="https://www.campaignlive.com/article/omnicom-overtakes-wpp-june-north-american-media-rankings/1960874" target="_blank" rel="noopener">Zur Quelle →</a></div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    <b>Affiliate Daily</b> · zusammengestellt für das WPP Media Commerce / Affiliate Team<br>
+    Stand: 20. Juni 2026, 08:00 Uhr · Quellen jeweils verlinkt · Keine AWIN-/Performance-Daten – reine öffentliche News<br>
+    Aktualisierung Mo–Fr morgens · Montags inkl. Wochenend-Rückblick
+  </footer>
+
+</div>
+</body>
+</html>
