@@ -58,6 +58,24 @@
   .lead b { color: var(--accent); }
   .lead .we { color: #b45309; font-weight: 700; }
 
+  /* Learning der Woche (bleibt die ganze Woche stehen) */
+  .learning {
+    display: flex; gap: 16px; align-items: flex-start;
+    background: linear-gradient(135deg, #f0fdf4, #ecfeff);
+    border: 1px solid #bbf7d0; border-left: 4px solid #10b981; border-radius: 12px;
+    padding: 18px 20px; margin: 0 0 28px; box-shadow: var(--shadow);
+  }
+  .learning .icon { font-size: 30px; line-height: 1; }
+  .learning .body { flex: 1; }
+  .learning .kw { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #047857; }
+  .learning h3 { margin: 4px 0 6px; font-size: 17px; font-weight: 700; color: #064e3b; }
+  .learning p { margin: 0; font-size: 13.5px; color: #1f3d34; }
+  .learning .takeaway { margin-top: 8px; font-size: 13px; color: #065f46; }
+  .learning .takeaway b { color: #047857; }
+  .learning .src { margin-top: 10px; font-size: 12px; color: #5b7a70; }
+  .learning .src a { color: #047857; font-weight: 500; text-decoration: none; }
+  .learning .src a:hover { text-decoration: underline; }
+
   /* Section */
   section { margin-bottom: 34px; }
   .sec-head {
@@ -153,6 +171,18 @@
     Guten Morgen ☕ &nbsp;<span class="we">Wochenend-Ausgabe:</span> die wichtigsten öffentlichen News von Freitag bis Sonntag –
     aus Affiliate-Marketing, von <b>Awin</b>, unseren Kunden <b>Tempur</b>, <b>Meßmer</b> und <b>TUI Cruises</b>,
     aus dem <b>Publisher-Radar</b> sowie von <b>WPP Media</b>. Kurz, kuratiert, mit Quelle – keine AWIN-Performancedaten.
+  </div>
+
+  <!-- LEARNING DER WOCHE (wechselt nur montags) -->
+  <div class="learning">
+    <div class="icon">🌱</div>
+    <div class="body">
+      <div class="kw">Learning der Woche · KW 26</div>
+      <h3>Incrementality schlägt Last-Click</h3>
+      <p>Last-Click schreibt den Sale dem letzten Touchpoint zu – oft Gutschein-/Cashback-Publishern kurz vor Kaufabschluss. Content- und Creator-Publisher, die Nachfrage überhaupt erst erzeugen, werden dadurch systematisch unterbewertet. Incrementality-Tests (Holdout- oder Geo-Experimente) messen den echten Mehrwert eines Partners: Was wäre OHNE ihn passiert?</p>
+      <div class="takeaway"><b>Take-away:</b> Bei Budget- und Provisionsentscheidungen nicht nur auf Last-Click-Umsatz schauen, sondern fragen, welcher Partner zusätzliche (inkrementelle) Sales bringt.</div>
+      <div class="src">📚 Weiterlesen · <a href="https://www.awin.com/us/market-insights" target="_blank" rel="noopener">Awin Market Insights →</a></div>
+    </div>
   </div>
 
   <!-- AFFILIATE ALLGEMEIN -->
