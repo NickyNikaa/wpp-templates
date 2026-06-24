@@ -3,22 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Mein Schiff DACH (9127) — YoY-Report Generator (indexiert)</title>
+<title>Mein Schiff DACH (9127) — YoY-Report Generator</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 <style>
   :root{--bg:#f5f6f8;--card:#fff;--ink:#1a1f2e;--muted:#6b7280;--line:#e5e7eb;
-    --navy:#0f3a5f;--accent:#2c5282;--blue:#2ea3f2;--pos:#16a34a;--neg:#dc2626;}
+    --navy:#0f3a5f;--prev:#c0c6cf;--cur:#0a4d8c;--blue:#2ea3f2;--pos:#16a34a;--neg:#dc2626;--adj:#2563b0;}
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;font-size:15px;line-height:1.5}
-  .wrap{max-width:900px;margin:0 auto;padding:32px 24px 72px}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;font-size:15px;line-height:1.5}
+  .wrap{max-width:980px;margin:0 auto;padding:30px 24px 72px}
   h1{font-size:22px;margin:0 0 2px;color:var(--navy)}
-  .sub{color:var(--muted);font-size:13px;margin-bottom:8px}
-  .note{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:8px;
-    padding:8px 12px;font-size:12px;margin:14px 0 20px}
-  .controls{display:flex;gap:14px;align-items:flex-end;flex-wrap:wrap;background:var(--card);
-    border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+  .sub{color:var(--muted);font-size:13px;margin-bottom:14px}
+  .controls{display:flex;gap:14px;align-items:flex-end;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
   .controls label{display:block;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px;font-weight:600}
   .controls input[type=date]{font-size:15px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-family:inherit}
   .quick{display:flex;gap:6px;flex-wrap:wrap}
@@ -26,202 +22,256 @@
   .dl{margin-left:auto}
   .dl button{background:var(--navy);color:#fff;border:0;border-radius:8px;padding:11px 18px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
   .dl button.ghost{background:#fff;color:var(--navy);border:1px solid var(--line);margin-right:8px}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
   .kpis{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:20px}
-  .kpi{flex:1;min-width:150px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .kpi{flex:1;min-width:160px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
   .kpi .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;font-weight:600}
-  .kpi .v{font-size:26px;font-weight:700;color:var(--navy);margin-top:3px}
+  .kpi .v{font-size:25px;font-weight:700;color:var(--navy);margin-top:3px}
   .kpi .d{font-size:13px;margin-top:2px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+  .card h2{margin:0 0 2px;font-size:16px;color:var(--navy)}
+  .card .csub{font-size:12px;color:var(--muted);margin:0 0 12px}
   canvas{width:100%!important}
   table{width:100%;border-collapse:collapse;font-size:13px}
-  th,td{padding:8px 10px;text-align:right;border-bottom:1px solid var(--line)}
+  th,td{padding:7px 10px;text-align:right;border-bottom:1px solid var(--line)}
   th:first-child,td:first-child{text-align:left}
   thead th{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.04em;font-weight:600}
   .pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}
   .ytd{background:#ebf2fb;font-weight:600}
-  .foot{color:var(--muted);font-size:12px;margin-top:16px;line-height:1.55}
+  .pacebar{margin:10px 0}
+  .pacebar .top{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px}
+  .pacebar .track{background:#e3e8ee;border-radius:6px;height:16px;overflow:hidden}
+  .pacebar .fill{height:100%;border-radius:6px}
+  .pacebar .cap{font-size:11px;color:var(--muted);margin-top:3px}
+  .verdict{margin-top:12px;padding:10px 12px;background:#f2f5f8;border-radius:8px;font-size:13px}
+  .foot{color:var(--muted);font-size:12px;margin-top:14px;line-height:1.55}
 </style>
 </head>
 <body>
 <div class="wrap">
   <h1>Mein Schiff DACH (9127) — YoY-Report Generator</h1>
   <div class="sub" id="meta"></div>
-  <div class="note">Öffentliche Ansicht: alle Werte sind <strong>indexiert</strong> (Vorjahresperiode = 100) — keine absoluten Umsätze. Exkl. Payback, netto (Stornos rausgerechnet).</div>
 
   <div class="controls">
-    <div>
-      <label>Stichtag (bis einschließlich)</label>
-      <input type="date" id="cut">
-    </div>
-    <div>
-      <label>Schnellauswahl</label>
-      <div class="quick" id="quick"></div>
-    </div>
+    <div><label>Stichtag (bis einschließlich)</label><input type="date" id="cut"></div>
+    <div><label>Schnellauswahl</label><div class="quick" id="quick"></div></div>
     <div class="dl">
-      <button class="ghost" onclick="dlPng()">PNG</button>
+      <button class="ghost" onclick="dlPng()">Charts als PNG</button>
       <button onclick="dlPptx()">PowerPoint herunterladen</button>
     </div>
   </div>
 
   <div class="kpis" id="kpis"></div>
 
-  <div class="card"><canvas id="chart" height="150"></canvas></div>
+  <div class="card">
+    <h2>🎯 Zielpacing (exkl. Payback)</h2>
+    <p class="csub" id="paceSub"></p>
+    <div id="pace"></div>
+    <div class="verdict" id="verdict"></div>
+  </div>
 
   <div class="card">
-    <table><thead><tr><th>Monat</th><th>Index (VJ&nbsp;=&nbsp;100)</th><th>Δ YoY</th></tr></thead>
+    <h2>Monatsumsatz — Vorjahr vs. aktuelles Jahr</h2>
+    <p class="csub">Januar bis Stichtagsmonat · exkl. Payback · laufender Monat taggleich</p>
+    <canvas id="chMonth" height="140"></canvas>
+  </div>
+
+  <div class="card">
+    <h2>Kumulierter Umsatz auf Tagesbasis</h2>
+    <p class="csub" id="dailySub"></p>
+    <canvas id="chDaily" height="140"></canvas>
+  </div>
+
+  <div class="card">
+    <table><thead><tr><th>Monat</th><th id="hPrev">Vorjahr</th><th id="hCur">Aktuell</th><th>Δ YoY</th></tr></thead>
     <tbody id="tb"></tbody></table>
     <div class="foot" id="foot"></div>
   </div>
 </div>
 
 <script>
-const DATA = {"meta":{"label":"Mein Schiff DACH 9127","note":"Indexpunkte (2025-Jahr=1000), exkl. Payback, netto (declined raus)","today":"2026-06-24","generatedAt":"2026-06-24T10:31:12"},"d2025":{"01-01":5.6606,"01-02":1.9222,"01-03":3.9396,"01-04":3.3163,"01-05":4.7248,"01-06":4.7206,"01-07":3.8338,"01-08":2.6747,"01-09":2.6673,"01-10":3.8387,"01-11":2.9212,"01-12":4.8733,"01-13":6.4421,"01-14":4.6993,"01-15":4.0389,"01-16":3.4176,"01-17":2.1169,"01-18":5.1753,"01-19":6.7457,"01-20":3.1846,"01-21":2.2355,"01-22":2.4917,"01-23":4.4264,"01-24":3.9882,"01-25":2.4832,"01-26":4.8393,"01-27":4.5386,"01-28":1.9447,"01-29":5.7595,"01-30":2.7302,"01-31":6.0224,"02-01":2.0887,"02-02":3.2379,"02-03":3.1813,"02-04":2.8819,"02-05":2.8918,"02-06":2.1311,"02-07":2.394,"02-08":2.6145,"02-09":3.1615,"02-10":2.4844,"02-11":1.4658,"02-12":1.2365,"02-13":1.8519,"02-14":2.7053,"02-15":3.7239,"02-16":2.6874,"02-17":3.9653,"02-18":3.7964,"02-19":1.9184,"02-20":0.9087,"02-21":1.5533,"02-22":1.8254,"02-23":3.0377,"02-24":2.219,"02-25":1.9,"02-26":1.0641,"02-27":1.876,"02-28":3.4011,"03-01":2.7313,"03-02":3.1178,"03-03":1.7742,"03-04":1.7208,"03-05":1.9064,"03-06":3.7339,"03-07":1.8657,"03-08":1.7036,"03-09":2.747,"03-10":2.3056,"03-11":2.8623,"03-12":2.5875,"03-13":1.7142,"03-14":2.8085,"03-15":2.0532,"03-16":0.4651,"03-17":3.612,"03-18":2.3814,"03-19":1.1717,"03-20":2.3912,"03-21":1.4055,"03-22":2.9795,"03-23":7.0984,"03-24":2.4987,"03-25":3.7504,"03-26":5.4215,"03-27":1.2133,"03-28":3.0631,"03-29":1.6269,"03-30":4.101,"03-31":2.3042,"04-01":2.5227,"04-02":2.2802,"04-03":1.7231,"04-04":1.267,"04-05":3.6115,"04-06":6.3811,"04-07":2.432,"04-08":1.0944,"04-09":1.5388,"04-10":2.6618,"04-11":2.1183,"04-12":1.7261,"04-13":3.775,"04-14":2.945,"04-15":2.176,"04-16":1.1659,"04-17":2.5337,"04-18":2.4936,"04-19":1.2883,"04-20":3.3783,"04-21":3.9652,"04-22":4.4036,"04-23":2.7806,"04-24":2.6058,"04-25":1.8244,"04-26":1.5061,"04-27":2.8001,"04-28":1.8509,"04-29":2.0597,"04-30":2.3451,"05-01":0.7051,"05-02":3.5691,"05-03":2.7294,"05-04":3.1432,"05-05":2.5856,"05-06":2.3087,"05-07":2.1759,"05-08":2.5618,"05-09":2.429,"05-10":1.8778,"05-11":3.0461,"05-12":4.3554,"05-13":2.08,"05-14":1.9683,"05-15":1.4621,"05-16":2.7248,"05-17":2.0996,"05-18":2.6045,"05-19":2.2473,"05-20":2.075,"05-21":1.3202,"05-22":2.1008,"05-23":1.8256,"05-24":1.5561,"05-25":3.2644,"05-26":1.8715,"05-27":1.7533,"05-28":1.0689,"05-29":2.2725,"05-30":4.2883,"05-31":5.7113,"06-01":2.2981,"06-02":2.4383,"06-03":2.6322,"06-04":2.2302,"06-05":1.1795,"06-06":2.746,"06-07":2.2292,"06-08":0.9482,"06-09":3.6808,"06-10":2.4504,"06-11":1.6129,"06-12":1.5564,"06-13":1.6897,"06-14":1.3687,"06-15":1.2052,"06-16":3.3456,"06-17":0.9788,"06-18":1.983,"06-19":1.2764,"06-20":1.4081,"06-21":2.6676,"06-22":1.6532,"06-23":2.792,"06-24":2.1805,"06-25":1.1041,"06-27":1.0248,"06-28":0.2155,"06-29":2.4638,"06-30":0.9083,"07-01":0.5794,"07-02":0.7633,"07-03":1.0386,"07-04":1.4998,"07-05":2.2087,"07-06":4.1255,"07-07":2.6277,"07-08":1.2277,"07-09":1.9513,"07-10":2.069,"07-11":1.5512,"07-12":1.2605,"07-13":5.3665,"07-14":2.2117,"07-15":2.4056,"07-16":2.5553,"07-17":1.9546,"07-18":1.6087,"07-19":0.9132,"07-20":3.3547,"07-21":2.5356,"07-22":1.9913,"07-23":1.5029,"07-24":1.896,"07-25":1.7467,"07-26":1.5026,"07-27":2.4384,"07-28":1.1867,"07-29":2.1166,"07-30":1.9057,"07-31":2.6366,"08-01":1.9821,"08-02":3.6466,"08-03":3.7776,"08-04":3.1795,"08-05":3.6781,"08-06":1.7871,"08-07":2.2329,"08-08":0.5734,"08-09":1.0374,"08-10":3.7758,"08-11":2.181,"08-12":3.3871,"08-13":2.3927,"08-14":2.3701,"08-15":2.7168,"08-16":1.4301,"08-17":4.7516,"08-18":3.3379,"08-19":3.2512,"08-20":1.6984,"08-21":3.3881,"08-22":1.192,"08-23":2.9192,"08-24":5.5055,"08-25":2.606,"08-26":2.9208,"08-27":1.9449,"08-28":2.7015,"08-29":2.8392,"08-30":1.8502,"08-31":3.4813,"09-01":2.7703,"09-02":3.7664,"09-03":1.0426,"09-04":3.1269,"09-05":2.6166,"09-06":2.5152,"09-07":4.6774,"09-08":6.4772,"09-09":1.9623,"09-10":3.4017,"09-11":1.683,"09-12":3.1096,"09-13":4.1943,"09-14":4.3353,"09-15":2.3962,"09-16":3.4658,"09-17":3.3535,"09-18":2.3821,"09-19":1.816,"09-20":2.4045,"09-21":4.7217,"09-22":3.0103,"09-23":3.8739,"09-24":3.2383,"09-25":2.3912,"09-26":3.0049,"09-27":3.7064,"09-28":8.1388,"09-29":6.5509,"09-30":9.4287,"10-01":0.9346,"10-02":1.297,"10-03":2.16,"10-04":3.1851,"10-05":3.7548,"10-06":3.2321,"10-07":8.5453,"10-08":2.9612,"10-09":1.8156,"10-10":3.4344,"10-11":2.7552,"10-12":3.4322,"10-13":1.6766,"10-14":3.2888,"10-15":2.8684,"10-16":3.6654,"10-17":4.8943,"10-18":2.6321,"10-19":6.3126,"10-20":3.5424,"10-21":2.6576,"10-22":2.7926,"10-23":4.1271,"10-24":2.3542,"10-25":3.3104,"10-26":5.6818,"10-27":2.4858,"10-28":4.8227,"10-29":2.5178,"10-30":2.2663,"10-31":2.3627,"11-01":2.6107,"11-02":6.7358,"11-03":2.3727,"11-04":4.186,"11-05":1.708,"11-06":2.4119,"11-07":1.7115,"11-08":2.9228,"11-09":7.1477,"11-10":3.1359,"11-11":3.1395,"11-12":3.0075,"11-13":1.7622,"11-14":2.5231,"11-15":1.9749,"11-16":4.8761,"11-17":2.9409,"11-18":3.3481,"11-19":6.0995,"11-20":3.9544,"11-21":3.7948,"11-22":1.6791,"11-23":5.5234,"11-24":4.3583,"11-25":5.3838,"11-26":5.1885,"11-27":4.5649,"11-28":4.8982,"11-29":3.3828,"11-30":8.7673,"12-01":2.8131,"12-02":1.3991,"12-03":2.1015,"12-04":1.7066,"12-05":1.113,"12-06":1.9869,"12-07":3.566,"12-08":1.8408,"12-09":0.2451,"12-10":0.4053,"12-11":2.0001,"12-12":0.9643,"12-13":0.4285,"12-14":1.1437,"12-15":2.2346,"12-16":0.8472,"12-17":1.3606,"12-18":0.9702,"12-19":1.7458,"12-20":1.0938,"12-21":2.2814,"12-22":1.5436,"12-23":1.2392,"12-24":0.4602,"12-25":1.3945,"12-26":1.3486,"12-27":2.4978,"12-28":1.7841,"12-29":3.0914,"12-30":1.5505,"12-31":1.1391},"d2026":{"01-01":0.9583,"01-02":2.6448,"01-03":2.7763,"01-04":4.0851,"01-05":2.1951,"01-06":3.3804,"01-07":2.0251,"01-08":2.4175,"01-09":3.3245,"01-10":1.8781,"01-11":4.9792,"01-12":2.2793,"01-13":1.928,"01-14":2.4685,"01-15":0.9157,"01-16":1.5082,"01-17":2.1168,"01-18":4.3523,"01-19":2.2308,"01-20":1.1338,"01-21":1.8456,"01-22":0.7869,"01-23":1.7211,"01-24":1.4509,"01-25":3.6231,"01-26":3.4116,"01-27":2.619,"01-28":2.6493,"01-29":2.303,"01-30":4.5625,"01-31":7.0965,"02-01":2.4729,"02-02":2.6067,"02-03":1.5704,"02-04":2.8524,"02-05":1.0693,"02-06":1.1826,"02-07":3.6045,"02-08":5.4845,"02-09":3.1014,"02-10":1.1194,"02-11":2.0068,"02-12":1.9095,"02-13":1.3508,"02-14":2.6039,"02-15":5.2102,"02-16":2.364,"02-17":2.9982,"02-18":2.3839,"02-19":2.7814,"02-20":3.617,"02-21":2.7745,"02-22":4.9173,"02-23":3.6271,"02-24":1.1349,"02-25":2.389,"02-26":3.8645,"02-27":2.2107,"02-28":3.5194,"03-01":3.8967,"03-02":1.38,"03-03":1.8837,"03-04":1.3611,"03-05":2.829,"03-06":2.1284,"03-07":1.5995,"03-08":4.0334,"03-09":2.5174,"03-10":1.4797,"03-11":0.4252,"03-12":1.9218,"03-13":7.2299,"03-14":7.8385,"03-15":5.0043,"03-16":2.1786,"03-17":1.5671,"03-18":1.8382,"03-19":1.8386,"03-20":0.9751,"03-21":2.1956,"03-22":1.4449,"03-23":1.0662,"03-24":2.6405,"03-25":2.4744,"03-26":1.2254,"03-27":2.8042,"03-28":4.989,"03-29":3.9455,"03-30":0.9622,"03-31":2.9162,"04-01":3.7115,"04-02":2.1137,"04-03":2.5055,"04-04":2.5069,"04-05":1.893,"04-06":4.0125,"04-07":4.176,"04-08":1.5504,"04-09":2.3402,"04-10":1.6313,"04-11":0.8987,"04-12":5.0121,"04-13":1.9104,"04-14":2.9901,"04-15":2.9219,"04-16":1.6487,"04-17":2.4263,"04-18":1.8599,"04-19":2.1237,"04-20":4.0515,"04-21":4.1396,"04-22":1.3715,"04-23":5.6584,"04-24":2.0462,"04-25":1.5939,"04-26":1.9954,"04-27":0.9004,"04-28":0.8757,"04-29":0.875,"04-30":0.5349,"05-01":0.5799,"05-02":1.3521,"05-03":1.3116,"05-04":3.9761,"05-05":3.502,"05-06":1.9894,"05-07":2.4559,"05-08":2.3992,"05-09":0.5637,"05-10":3.7426,"05-11":2.0957,"05-12":1.6475,"05-13":0.1334,"05-14":2.0648,"05-15":1.8509,"05-16":1.5325,"05-17":2.2618,"05-18":1.3474,"05-19":1.4195,"05-20":0.8307,"05-21":1.3368,"05-22":0.5496,"05-23":0.2591,"05-24":1.77,"05-25":1.3997,"05-26":1.4372,"05-27":2.5961,"05-28":1.7703,"05-29":2.2701,"05-30":2.4912,"05-31":5.4082,"06-01":1.6283,"06-02":1.7501,"06-03":2.6701,"06-04":2.0113,"06-05":1.095,"06-06":1.2978,"06-07":2.1289,"06-08":1.9169,"06-09":1.5594,"06-10":1.2968,"06-11":2.0371,"06-12":2.4437,"06-13":0.7077,"06-14":1.7393,"06-15":2.4429,"06-16":1.6105,"06-17":0.9768,"06-18":1.1686,"06-19":1.2562,"06-20":1.0735,"06-21":2.0743,"06-22":2.1809,"06-23":1.5764,"06-24":0.1008}};
-const M=["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"];
+const DATA = {"meta":{"label":"Mein Schiff DACH 9127","today":"2026-06-24","generatedAt":"2026-06-24T10:31:12","note":"Absolute €-Tageswerte, exkl. Payback (426667+469409), netto (Stornos raus)"},"targets":{"2025":24500000,"2026":30700000},"corr":{"amount":1128000,"from":"2026-04-20","full_by":"2026-05-31","note":"Cashback/Voucher-Cluster (Standardlink-Defekt ab 20.04.2026)"},"d2025":{"01-01":156942.2,"01-02":53293.0,"01-03":109227.2,"01-04":91946.6,"01-05":130998.4,"01-06":130880.2,"01-07":106294.2,"01-08":74157.2,"01-09":73951.2,"01-10":106429.2,"01-11":80991.4,"01-12":135115.0,"01-13":178609.2,"01-14":130291.2,"01-15":111981.4,"01-16":94755.0,"01-17":58693.2,"01-18":143488.2,"01-19":187027.0,"01-20":88294.0,"01-21":61979.6,"01-22":69083.2,"01-23":122723.0,"01-24":110576.2,"01-25":68849.0,"01-26":134172.2,"01-27":125834.2,"01-28":53919.0,"01-29":159685.0,"01-30":75697.2,"01-31":166975.4,"02-01":57909.0,"02-02":89771.6,"02-03":88202.1,"02-04":79903.0,"02-05":80177.4,"02-06":59087.2,"02-07":66375.6,"02-08":72489.0,"02-09":87653.0,"02-10":68881.2,"02-11":40639.0,"02-12":34283.0,"02-13":51344.4,"02-14":75005.0,"02-15":103246.0,"02-16":74510.0,"02-17":109940.4,"02-18":105256.8,"02-19":53188.0,"02-20":25193.0,"02-21":43066.2,"02-22":50611.0,"02-23":84221.0,"02-24":61523.2,"02-25":52678.0,"02-26":29502.0,"02-27":52014.2,"02-28":94297.6,"03-01":75727.4,"03-02":86443.0,"03-03":49192.0,"03-04":47711.0,"03-05":52856.0,"03-06":103524.4,"03-07":51727.2,"03-08":47234.0,"03-09":76163.0,"03-10":63924.0,"03-11":79359.2,"03-12":71739.0,"03-13":47526.2,"03-14":77867.56,"03-15":56926.0,"03-16":12896.0,"03-17":100144.0,"03-18":66025.2,"03-19":32486.0,"03-20":66297.0,"03-21":38969.4,"03-22":82607.6,"03-23":196807.0,"03-24":69279.0,"03-25":103982.4,"03-26":150314.3,"03-27":33639.0,"03-28":84927.0,"03-29":45107.2,"03-30":113702.4,"03-31":63884.2,"04-01":69944.0,"04-02":63219.6,"04-03":47774.0,"04-04":35129.0,"04-05":100130.2,"04-06":176918.0,"04-07":67427.85,"04-08":30343.3,"04-09":42665.0,"04-10":73799.4,"04-11":58731.2,"04-12":47856.0,"04-13":104665.15,"04-14":81651.7,"04-15":60331.0,"04-16":32324.0,"04-17":70248.0,"04-18":69135.0,"04-19":35719.0,"04-20":93664.0,"04-21":109937.0,"04-22":122092.2,"04-23":77094.8,"04-24":72248.2,"04-25":50583.3,"04-26":41757.0,"04-27":77634.65,"04-28":51318.0,"04-29":57106.8,"04-30":65018.2,"05-01":19548.2,"05-02":98955.6,"05-03":75675.4,"05-04":87148.0,"05-05":71687.3,"05-06":64009.4,"05-07":60327.0,"05-08":71025.9,"05-09":67346.2,"05-10":52063.3,"05-11":84454.0,"05-12":120756.6,"05-13":57667.8,"05-14":54572.65,"05-15":40537.2,"05-16":75545.2,"05-17":58212.4,"05-18":72212.0,"05-19":62306.4,"05-20":57530.2,"05-21":36602.0,"05-22":58245.3,"05-23":50616.0,"05-24":43143.0,"05-25":90506.1,"05-26":51887.0,"05-27":48612.2,"05-28":29635.2,"05-29":63005.4,"05-30":118895.0,"05-31":158348.0,"06-01":63716.9,"06-02":67604.5,"06-03":72979.85,"06-04":61834.0,"06-05":32702.6,"06-06":76132.99,"06-07":61805.2,"06-08":26288.4,"06-09":102051.2,"06-10":67937.4,"06-11":44719.0,"06-12":43152.2,"06-13":46849.0,"06-14":37948.0,"06-15":33414.0,"06-16":92757.7,"06-17":27138.2,"06-18":54979.0,"06-19":35389.3,"06-20":39040.85,"06-21":73961.65,"06-22":45837.2,"06-23":77410.2,"06-24":60456.2,"06-25":30611.4,"06-27":28413.0,"06-28":5974.0,"06-29":68310.0,"06-30":25182.0,"07-01":16064.0,"07-02":21164.0,"07-03":28796.3,"07-04":41582.0,"07-05":61238.0,"07-06":114382.0,"07-07":72853.0,"07-08":34039.9,"07-09":54100.2,"07-10":57365.2,"07-11":43007.2,"07-12":34949.2,"07-13":148788.0,"07-14":61321.3,"07-15":66695.29,"07-16":70848.2,"07-17":54193.2,"07-18":44602.2,"07-19":25319.2,"07-20":93010.2,"07-21":70301.4,"07-22":55210.5,"07-23":41670.0,"07-24":52568.0,"07-25":48428.0,"07-26":41660.0,"07-27":67606.4,"07-28":32902.2,"07-29":58684.0,"07-30":52837.2,"07-31":73100.2,"08-01":54953.4,"08-02":101103.2,"08-03":104736.2,"08-04":88154.0,"08-05":101977.0,"08-06":49547.0,"08-07":61909.2,"08-08":15897.0,"08-09":28762.0,"08-10":104685.2,"08-11":60468.0,"08-12":93910.2,"08-13":66340.2,"08-14":65711.2,"08-15":75326.0,"08-16":39649.0,"08-17":131739.2,"08-18":92546.2,"08-19":90140.6,"08-20":47088.0,"08-21":93936.6,"08-22":33049.0,"08-23":80935.0,"08-24":152643.6,"08-25":72253.5,"08-26":80979.6,"08-27":53924.0,"08-28":74901.8,"08-29":78718.4,"08-30":51297.0,"08-31":96521.2,"09-01":76808.4,"09-02":104426.2,"09-03":28908.0,"09-04":86695.4,"09-05":72547.4,"09-06":69736.0,"09-07":129683.2,"09-08":179584.0,"09-09":54406.2,"09-10":94315.2,"09-11":46662.4,"09-12":86216.2,"09-13":116288.0,"09-14":120199.4,"09-15":66437.0,"09-16":96090.8,"09-17":92976.4,"09-18":66045.0,"09-19":50350.4,"09-20":66667.0,"09-21":130910.4,"09-22":83461.4,"09-23":107405.4,"09-24":89784.0,"09-25":66296.0,"09-26":83313.4,"09-27":102761.0,"09-28":225652.4,"09-29":181626.6,"09-30":261416.4,"10-01":25912.2,"10-02":35961.0,"10-03":59886.0,"10-04":88309.2,"10-05":104102.4,"10-06":89611.6,"10-07":236922.4,"10-08":82102.0,"10-09":50339.6,"10-10":95221.55,"10-11":76389.2,"10-12":95160.2,"10-13":46484.4,"10-14":91184.2,"10-15":79528.4,"10-16":101626.2,"10-17":135697.4,"10-18":72975.2,"10-19":175021.2,"10-20":98216.0,"10-21":73682.4,"10-22":77425.6,"10-23":114426.0,"10-24":65270.4,"10-25":91783.0,"10-26":157531.2,"10-27":68920.0,"10-28":133713.0,"10-29":69806.6,"10-30":62833.0,"10-31":65507.0,"11-01":72383.1,"11-02":186753.2,"11-03":65783.1,"11-04":116058.6,"11-05":47356.0,"11-06":66870.0,"11-07":47453.0,"11-08":81037.0,"11-09":198173.2,"11-10":86945.4,"11-11":87043.4,"11-12":83384.8,"11-13":48857.2,"11-14":69955.0,"11-15":54754.2,"11-16":135191.2,"11-17":81539.2,"11-18":92827.2,"11-19":169111.2,"11-20":109638.0,"11-21":105211.6,"11-22":46555.0,"11-23":153138.4,"11-24":120837.0,"11-25":149268.6,"11-26":143852.8,"11-27":126563.6,"11-28":135805.2,"11-29":93789.0,"11-30":243078.6,"12-01":77993.3,"12-02":38790.0,"12-03":58264.4,"12-04":47315.0,"12-05":30858.2,"12-06":55088.4,"12-07":98870.0,"12-08":51037.4,"12-09":6795.0,"12-10":11238.0,"12-11":55452.6,"12-12":26736.0,"12-13":11881.0,"12-14":31709.0,"12-15":61956.2,"12-16":23488.0,"12-17":37724.0,"12-18":26898.0,"12-19":48404.0,"12-20":30327.0,"12-21":63254.0,"12-22":42796.0,"12-23":34358.4,"12-24":12760.0,"12-25":38662.4,"12-26":37391.0,"12-27":69253.2,"12-28":49464.0,"12-29":85712.0,"12-30":42988.4,"12-31":31582.0},"d2026":{"01-01":26570.0,"01-02":73328.0,"01-03":76974.6,"01-04":113260.6,"01-05":60859.0,"01-06":93724.0,"01-07":56148.0,"01-08":67026.0,"01-09":92173.4,"01-10":52071.0,"01-11":138050.4,"01-12":63196.0,"01-13":53454.3,"01-14":68440.2,"01-15":25387.2,"01-16":41816.4,"01-17":58688.4,"01-18":120671.0,"01-19":61851.4,"01-20":31434.2,"01-21":51170.0,"01-22":21817.6,"01-23":47718.2,"01-24":40226.0,"01-25":100452.6,"01-26":94589.0,"01-27":72613.6,"01-28":73453.0,"01-29":63851.2,"01-30":126498.0,"01-31":196755.2,"02-01":68562.2,"02-02":72272.6,"02-03":43540.0,"02-04":79084.4,"02-05":29648.0,"02-06":32788.2,"02-07":99936.2,"02-08":152059.8,"02-09":85987.2,"02-10":31035.2,"02-11":55639.6,"02-12":52942.4,"02-13":37451.0,"02-14":72195.4,"02-15":144456.0,"02-16":65543.2,"02-17":83127.2,"02-18":66095.2,"02-19":77115.2,"02-20":100282.6,"02-21":76923.6,"02-22":136335.8,"02-23":100564.2,"02-24":31466.2,"02-25":66236.4,"02-26":107144.2,"02-27":61292.2,"02-28":97576.0,"03-01":108037.2,"03-02":38261.0,"03-03":52226.2,"03-04":37737.0,"03-05":78436.6,"03-06":59010.2,"03-07":44346.4,"03-08":111828.2,"03-09":69797.0,"03-10":41026.2,"03-11":11788.0,"03-12":53284.2,"03-13":200452.65,"03-14":217325.58,"03-15":138747.0,"03-16":60403.0,"03-17":43449.0,"03-18":50966.2,"03-19":50977.0,"03-20":27034.0,"03-21":60875.2,"03-22":40060.0,"03-23":29561.2,"03-24":73209.2,"03-25":68605.0,"03-26":33974.0,"03-27":77748.6,"03-28":138321.75,"03-29":109391.0,"03-30":26677.0,"03-31":80852.0,"04-01":102904.2,"04-02":58604.4,"04-03":69465.0,"04-04":69505.2,"04-05":52485.0,"04-06":111247.6,"04-07":115782.8,"04-08":42986.0,"04-09":64884.0,"04-10":45229.0,"04-11":24917.2,"04-12":138962.4,"04-13":52968.0,"04-14":82902.4,"04-15":81012.1,"04-16":45710.2,"04-17":67271.4,"04-18":51568.0,"04-19":58881.0,"04-20":112331.0,"04-21":114771.75,"04-22":38025.2,"04-23":156881.25,"04-24":56732.0,"04-25":44191.0,"04-26":55323.4,"04-27":24965.0,"04-28":24280.0,"04-29":24259.0,"04-30":14829.0,"05-01":16077.0,"05-02":37487.2,"05-03":36365.4,"05-04":110240.25,"05-05":97093.65,"05-06":55158.25,"05-07":68091.2,"05-08":66520.0,"05-09":15629.0,"05-10":103766.8,"05-11":58104.0,"05-12":45678.2,"05-13":3698.0,"05-14":57247.2,"05-15":51316.4,"05-16":42488.0,"05-17":62710.2,"05-18":37358.0,"05-19":39357.2,"05-20":23032.0,"05-21":37062.2,"05-22":15239.2,"05-23":7185.0,"05-24":49075.0,"05-25":38807.2,"05-26":39847.0,"05-27":71979.4,"05-28":49082.2,"05-29":62940.0,"05-30":69069.4,"05-31":149945.38,"06-01":45145.0,"06-02":48523.0,"06-03":74031.2,"06-04":55764.6,"06-05":30360.0,"06-06":35983.0,"06-07":59026.0,"06-08":53146.4,"06-09":43235.2,"06-10":35954.0,"06-11":56479.78,"06-12":67751.6,"06-13":19621.0,"06-14":48223.2,"06-15":67731.6,"06-16":44652.2,"06-17":27083.0,"06-18":32399.0,"06-19":34830.0,"06-20":29763.0,"06-21":57511.0,"06-22":60466.0,"06-23":43707.2,"06-24":2796.0}};
+const MONTHS=["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"];
 const MF=["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"];
-const today = DATA.meta.today;
-const nf1 = x => x.toLocaleString("de-DE",{minimumFractionDigits:1,maximumFractionDigits:1});
-const pf  = x => (x>0?"+":"−")+Math.abs(x).toLocaleString("de-DE",{minimumFractionDigits:1,maximumFractionDigits:1})+" %";
-const deDate = s => s.slice(8,10)+"."+s.slice(5,7)+"."+s.slice(0,4);
+const today=DATA.meta.today;
+const T25=DATA.targets["2025"], T26=DATA.targets["2026"];
+const eur=v=>v==null?"–":new Intl.NumberFormat("de-DE",{maximumFractionDigits:0}).format(v)+" €";
+const mio=v=>v==null?"–":(v/1e6).toLocaleString("de-DE",{minimumFractionDigits:2,maximumFractionDigits:2})+" Mio €";
+const pf=x=>(x>0?"+":"−")+Math.abs(x).toLocaleString("de-DE",{minimumFractionDigits:1,maximumFractionDigits:1})+" %";
+const ppf=x=>(x>=0?"+":"−")+Math.abs(x).toFixed(1).replace(".",",")+" %-Pkt";
+const deDate=s=>s.slice(8,10)+"."+s.slice(5,7)+"."+s.slice(0,4);
+const dnum=s=>{const[y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d);};
 
-function compute(cut){
-  const cm=+cut.slice(5,7), cd=+cut.slice(8,10);
-  const rows=[]; let ytd25=0, ytd26=0;
-  for(let m=1;m<=cm;m++){
-    const mm=String(m).padStart(2,"0");
-    let s25=0,s26=0;
-    for(const k in DATA.d2025){ if(k.slice(0,2)===mm){ const dd=+k.slice(3,5); if(m<cm||dd<=cd) s25+=DATA.d2025[k]; } }
-    for(const k in DATA.d2026){ if(k.slice(0,2)===mm){ const dd=+k.slice(3,5); if(m<cm||dd<=cd) s26+=DATA.d2026[k]; } }
-    const idx=(s25>0&&s26>0)? s26/s25*100 : null;
-    rows.push({m,label:M[m-1],idx,partial:m===cm});
-    ytd25+=s25; ytd26+=s26;
-  }
-  const ytdIdx = ytd25>0? ytd26/ytd25*100 : null;
-  return {rows,ytdIdx,cm,cd,cut};
+function sumYTD(dd,cm,cd){let s=0;for(const k in dd){const m=+k.slice(0,2),day=+k.slice(3,5);if(m<cm||(m===cm&&day<=cd))s+=dd[k];}return s;}
+
+function realizedCorrection(cut){
+  const c=DATA.corr; if(cut.slice(0,4)!=="2026")return 0;
+  const cutD=dnum(cut),f=dnum(c.from),fb=dnum(c.full_by);
+  if(cutD<=f)return 0; if(cutD>=fb)return c.amount;
+  return c.amount*((cutD-f)/(fb-f));
 }
 
-let chart;
+function monthly(cm,cd){
+  const prev=[],cur=[];
+  for(let m=1;m<=cm;m++){const mm=String(m).padStart(2,"0");let s25=0,s26=0;
+    for(const k in DATA.d2025){if(k.slice(0,2)===mm){const day=+k.slice(3,5);if(m<cm||day<=cd)s25+=DATA.d2025[k];}}
+    for(const k in DATA.d2026){if(k.slice(0,2)===mm){const day=+k.slice(3,5);if(m<cm||day<=cd)s26+=DATA.d2026[k];}}
+    prev.push(s25);cur.push(s26);}
+  return {prev,cur};
+}
+
+function cumulativeDaily(cm,cd){
+  const labels=[],c25=[],c26=[];let a=0,b=0;
+  for(let m=1;m<=cm;m++){const dim=new Date(2026,m,0).getDate();
+    for(let day=1;day<=dim;day++){ if(m===cm&&day>cd)break;
+      const mm=String(m).padStart(2,"0"),dd=String(day).padStart(2,"0"),key=mm+"-"+dd;
+      a+=DATA.d2025[key]||0; b+=DATA.d2026[key]||0;
+      labels.push(dd+"."+mm+"."); c25.push(a); c26.push(b);
+    }}
+  return {labels,c25,c26};
+}
+
+let chM,chD;
 function render(){
-  const cut=document.getElementById("cut").value;
-  if(!cut) return;
-  const R=compute(cut);
-  document.getElementById("meta").textContent =
-    `Vorjahresvergleich Jan–${deDate(cut)} · indexiert (VJ=100) · Datenstand ${deDate(today)}`;
+  const cut=document.getElementById("cut").value; if(!cut)return;
+  const cm=+cut.slice(5,7), cd=+cut.slice(8,10);
+  const M=monthly(cm,cd);
+  const ytd26=sumYTD(DATA.d2026,cm,cd), ytd25=sumYTD(DATA.d2025,cm,cd);
+  const yoy=ytd25?(ytd26-ytd25)/ytd25*100:null;
+  const corr=realizedCorrection(cut);
+  const realPct=ytd26/T26*100, adjPct=(ytd26+corr)/T26*100, prevPct=ytd25/T25*100;
+  const dReal=realPct-prevPct, dAdj=adjPct-prevPct;
+
+  document.getElementById("meta").textContent=`Vorjahresvergleich 01.01.–${deDate(cut)} (taggleich) · exkl. Payback (426667+469409) · Datenstand ${deDate(today)}`;
 
   // KPIs
-  const ytdD = R.ytdIdx!=null? R.ytdIdx-100 : null;
-  const ups = R.rows.filter(r=>r.idx!=null&&r.idx>=100).length;
-  const downs = R.rows.filter(r=>r.idx!=null&&r.idx<100).length;
-  document.getElementById("kpis").innerHTML = `
-    <div class="kpi"><div class="l">YTD Index</div><div class="v">${R.ytdIdx!=null?nf1(R.ytdIdx):"–"}</div>
-      <div class="d ${ytdD>=0?'pos':'neg'}">${ytdD!=null?pf(ytdD):""}</div></div>
-    <div class="kpi"><div class="l">Monate über VJ</div><div class="v">${ups}</div><div class="d" style="color:var(--muted)">von ${R.rows.length}</div></div>
-    <div class="kpi"><div class="l">Monate unter VJ</div><div class="v">${downs}</div><div class="d" style="color:var(--muted)">von ${R.rows.length}</div></div>`;
+  document.getElementById("kpis").innerHTML=`
+    <div class="kpi"><div class="l">YTD 2026</div><div class="v">${eur(ytd26)}</div><div class="d ${yoy>=0?'pos':'neg'}">${yoy!=null?pf(yoy)+" YoY":""}</div></div>
+    <div class="kpi"><div class="l">Vorjahr (2025)</div><div class="v">${eur(ytd25)}</div><div class="d" style="color:var(--muted)">taggleich</div></div>
+    <div class="kpi"><div class="l">Zielerreichung 2026 (bereinigt)</div><div class="v">${adjPct.toLocaleString("de-DE",{maximumFractionDigits:1})} %</div><div class="d ${dAdj>=0?'pos':'neg'}">${ppf(dAdj)} vs. VJ</div></div>`;
+
+  // Pacing
+  document.getElementById("paceSub").textContent=`Zielerreichung zum ${deDate(cut)} · Ziel 2026 ${mio(T26)} · Ziel 2025 ${mio(T25)} · 2026-Ziel liegt ${(((T26/T25)-1)*100).toFixed(0)} % über Vorjahr`;
+  const bar=(lbl,pct,cap,col)=>{const w=Math.max(0,Math.min(100,pct));
+    return `<div class="pacebar"><div class="top"><span style="font-weight:600">${lbl}</span><span style="font-weight:700;color:${col}">${pct.toLocaleString("de-DE",{maximumFractionDigits:1})} %</span></div>
+      <div class="track"><div class="fill" style="width:${w}%;background:${col}"></div></div><div class="cap">${cap}</div></div>`;};
+  document.getElementById("pace").innerHTML=
+    bar("2026 real",realPct,`${mio(ytd26)} von ${mio(T26)}`,"#0a4d8c")+
+    bar("2026 tracking-bereinigt",adjPct,`+${mio(corr)} Korrektur (${DATA.corr.note})`,"#2563b0")+
+    bar("2025 zum gleichen Stichtag",prevPct,`${mio(ytd25)} von ${mio(T25)}`,"#9aa3ad");
+  const vcol=dAdj>=0?"var(--pos)":"var(--neg)";
+  document.getElementById("verdict").innerHTML=`<b>Pace-Fazit:</b> 2026 liegt <b style="color:${vcol}">${ppf(dAdj)}</b> ${dAdj>=0?"vor":"hinter"} Vorjahr (tracking-bereinigt), real ${ppf(dReal)}. Tracking-Korrektur 2026: einmalig bis ${mio(DATA.corr.amount)} (linear 20.04.→31.05., ab Juni keine neuen Verluste).`;
+
+  // Monthly chart
+  const labels=MONTHS.slice(0,cm);
+  if(chM)chM.destroy();
+  chM=new Chart(document.getElementById("chMonth"),{type:"bar",
+    data:{labels,datasets:[
+      {label:"2025",data:M.prev,backgroundColor:"#c0c6cf",borderRadius:3},
+      {label:"2026",data:M.cur,backgroundColor:"#0a4d8c",borderRadius:3}]},
+    options:{responsive:true,plugins:{legend:{position:"bottom"},
+      tooltip:{callbacks:{label:c=>c.dataset.label+": "+eur(c.parsed.y)}}},
+      scales:{x:{grid:{display:false}},y:{ticks:{callback:v=>new Intl.NumberFormat("de-DE",{notation:"compact"}).format(v)+" €"},grid:{color:"#eef1f5"}}}}});
+
+  // Daily cumulative chart
+  const D=cumulativeDaily(cm,cd);
+  document.getElementById("dailySub").textContent=`Kumuliert ab 01.01. bis ${deDate(cut)} · 2025 vs. 2026 (taggleich) · exkl. Payback`;
+  if(chD)chD.destroy();
+  chD=new Chart(document.getElementById("chDaily"),{type:"line",
+    data:{labels:D.labels,datasets:[
+      {label:"2025 kumuliert",data:D.c25,borderColor:"#9aa3ad",backgroundColor:"#9aa3ad",borderWidth:2,pointRadius:0,tension:.15},
+      {label:"2026 kumuliert",data:D.c26,borderColor:"#0a4d8c",backgroundColor:"#0a4d8c",borderWidth:2,pointRadius:0,tension:.15}]},
+    options:{responsive:true,interaction:{mode:"index",intersect:false},
+      plugins:{legend:{position:"bottom"},tooltip:{callbacks:{label:c=>c.dataset.label+": "+eur(c.parsed.y)}}},
+      scales:{x:{ticks:{maxTicksLimit:12,color:"#6b7280"},grid:{display:false}},
+        y:{ticks:{callback:v=>new Intl.NumberFormat("de-DE",{notation:"compact"}).format(v)+" €"},grid:{color:"#eef1f5"}}}}});
 
   // Table
-  const tb=document.getElementById("tb"); tb.innerHTML="";
-  R.rows.forEach(r=>{
-    const d=r.idx!=null?r.idx-100:null;
-    tb.insertAdjacentHTML("beforeend",
-      `<tr><td>${MF[r.m-1]}${r.partial?` (bis ${R.cd}.)`:""}</td>
-       <td>${r.idx!=null?nf1(r.idx):"–"}</td>
-       <td class="${d==null?'':(d>=0?'pos':'neg')}">${d==null?"–":pf(d)}</td></tr>`);
-  });
-  const yd=R.ytdIdx!=null?R.ytdIdx-100:null;
-  tb.insertAdjacentHTML("beforeend",
-    `<tr class="ytd"><td>YTD Jan–${deDate(cut)}</td><td>${R.ytdIdx!=null?nf1(R.ytdIdx):"–"}</td>
-     <td class="${yd>=0?'pos':'neg'}">${yd!=null?pf(yd):"–"}</td></tr>`);
-  document.getElementById("foot").innerHTML =
-    "Index 100 = Umsatz auf Vorjahresniveau (periodengleich). Der laufende Monat wird taggleich gegen das Vorjahr verglichen.";
+  document.getElementById("hPrev").textContent="2025";
+  document.getElementById("hCur").textContent="2026";
+  const tb=document.getElementById("tb");tb.innerHTML="";
+  for(let i=0;i<cm;i++){const a=M.prev[i],b=M.cur[i],d=a?(b-a)/a*100:null,partial=(i+1===cm);
+    tb.insertAdjacentHTML("beforeend",`<tr><td>${MF[i]}${partial?` (bis ${cd}.)`:""}</td><td>${eur(a)}</td><td>${eur(b)}</td><td class="${d==null?'':(d>=0?'pos':'neg')}">${d==null?"–":pf(d)}</td></tr>`);}
+  tb.insertAdjacentHTML("beforeend",`<tr class="ytd"><td>YTD 01.01.–${deDate(cut)}</td><td>${eur(ytd25)}</td><td>${eur(ytd26)}</td><td class="${yoy>=0?'pos':'neg'}">${yoy!=null?pf(yoy):"–"}</td></tr>`);
+  document.getElementById("foot").innerHTML="Umsatz = AWIN-Transaktionen, netto (Stornos rausgerechnet), exkl. Payback DE (426667) + AT (469409). Laufender Monat taggleich gegen Vorjahr.";
 
-  // Chart
-  const labels=R.rows.map(r=>r.label);
-  const vals=R.rows.map(r=>r.idx);
-  const cols=R.rows.map(r=> r.idx==null?"#cbd5e1" : r.partial?"#a9d6f5" : (r.idx>=100?"#16a34a":"#2ea3f2"));
-  if(chart) chart.destroy();
-  chart=new Chart(document.getElementById("chart"),{
-    type:"bar",
-    data:{labels,datasets:[{label:"Index (VJ=100)",data:vals,backgroundColor:cols,borderRadius:4}]},
-    options:{responsive:true,plugins:{legend:{display:false},
-      tooltip:{callbacks:{label:c=>{const r=R.rows[c.dataIndex]; return r.idx==null?"–":"Index "+nf1(r.idx)+"  ("+pf(r.idx-100)+")";}}}},
-      scales:{x:{grid:{display:false},ticks:{color:"#6b7280"}},
-        y:{grid:{color:"#e5e7eb"},ticks:{color:"#6b7280"},title:{display:true,text:"Index (Vorjahr = 100)",color:"#6b7280"}}}},
-    plugins:[{id:"bl",afterDraw(c){const y=c.scales.y.getPixelForValue(100);const{left,right}=c.chartArea,x=c.ctx;
-      x.save();x.strokeStyle="#94a3b8";x.setLineDash([5,4]);x.beginPath();x.moveTo(left,y);x.lineTo(right,y);x.stroke();
-      x.setLineDash([]);x.fillStyle="#94a3b8";x.font="11px sans-serif";x.fillText("100 = Vorjahr",left+6,y-5);x.restore();}}]
-  });
-  window._R=R;
+  window._S={cut,cm,cd,M,D,ytd26,ytd25,yoy,corr,realPct,adjPct,prevPct,dReal,dAdj};
 }
 
-function dlPng(){ if(chart){const a=document.createElement("a");a.href=chart.toBase64Image("image/png",1);a.download="MeinSchiff_9127_YoY_Index.png";a.click();} }
+function dlPng(){ if(chM){const a=document.createElement("a");a.href=chM.toBase64Image("image/png",1);a.download="MeinSchiff_9127_Monatsumsatz.png";a.click();}
+  if(chD){const b=document.createElement("a");b.href=chD.toBase64Image("image/png",1);b.download="MeinSchiff_9127_Tagesbasis.png";setTimeout(()=>b.click(),300);} }
 
 function dlPptx(){
-  const R=window._R; if(!R) return;
-  const NAVY="0F3A5F",ACC="2EA3F2",SLATE="6B7F9E",MUT="5A6B80",POS="16A34A",NEG="DC2626",LINE="E3E9F0";
+  const S=window._S; if(!S)return;
+  const NAVY="0F3A5F",CUR="0A4D8C",PREV="C0C6CF",MUT="5A6B80",POS="16A34A",NEG="DC2626",ADJ="2563B0",LINE="E3E9F0";
   const p=new PptxGenJS(); p.layout="LAYOUT_WIDE"; p.author="WPP Media";
-  const stich=deDate(R.cut);
+  const stich=deDate(S.cut), cmN=MF[S.cm-1];
   // S1 Title
   let s=p.addSlide(); s.background={color:NAVY};
-  s.addShape(p.ShapeType.rect,{x:0,y:0,w:0.35,h:7.5,fill:{color:ACC}});
-  s.addText("AFFILIATE PERFORMANCE · AWIN (INDEXIERT)",{x:0.9,y:1.8,w:11,h:0.4,fontFace:"Trebuchet MS",fontSize:14,color:ACC,charSpacing:3,bold:true});
+  s.addShape(p.ShapeType.rect,{x:0,y:0,w:0.35,h:7.5,fill:{color:"2EA3F2"}});
+  s.addText("AFFILIATE PERFORMANCE · AWIN",{x:0.9,y:1.8,w:11,h:0.4,fontFace:"Trebuchet MS",fontSize:14,color:"2EA3F2",charSpacing:3,bold:true});
   s.addText("Mein Schiff DACH (9127)",{x:0.85,y:2.25,w:11.5,h:1.0,fontFace:"Georgia",fontSize:44,color:"FFFFFF",bold:true});
-  s.addText("Year-over-Year · Vorjahresperiode = 100 · exkl. Payback (netto)",{x:0.9,y:3.35,w:11.5,h:0.6,fontFace:"Calibri",fontSize:22,color:"CADCFC"});
-  s.addText(`Stichtag: Jan–${stich}   ·   Datenstand ${deDate(today)}`,{x:0.9,y:5.9,w:11.5,h:0.5,fontFace:"Calibri",fontSize:13,color:"8FA6C4"});
-  // S2 Chart
+  s.addText("Year-over-Year 2026 vs. 2025 · Umsatz exkl. Payback",{x:0.9,y:3.35,w:11.5,h:0.6,fontFace:"Calibri",fontSize:22,color:"CADCFC"});
+  s.addText(`Stichtag: 01.01.–${stich}   ·   Datenstand ${deDate(today)}`,{x:0.9,y:5.9,w:11.5,h:0.5,fontFace:"Calibri",fontSize:13,color:"8FA6C4"});
+  // S2 Monthly chart + YTD box
   s=p.addSlide(); s.background={color:"FFFFFF"};
-  s.addText(`Index nach Monat (VJ = 100) — Jan–${stich}`,{x:0.6,y:0.45,w:12,h:0.6,fontFace:"Georgia",fontSize:24,color:NAVY,bold:true});
-  const labels=R.rows.map(r=>r.label), vals=R.rows.map(r=>r.idx==null?null:Math.round(r.idx*10)/10);
-  s.addChart(p.ChartType.bar,[{name:"Index (VJ=100)",labels,values:vals}],{
-    x:0.5,y:1.3,w:12.3,h:5.0,barDir:"col",chartColors:[ACC],chartArea:{fill:{color:"FFFFFF"}},
-    catAxisLabelColor:MUT,valAxisLabelColor:MUT,valGridLine:{color:LINE,size:0.5},catGridLine:{style:"none"},
-    showLegend:false,showValue:true,dataLabelPosition:"outEnd",dataLabelColor:"1E293B",dataLabelFontSize:9,
-    valAxisMinVal:0});
-  s.addText("Index 100 = Vorjahresniveau. Laufender Monat taggleich verglichen.",{x:0.6,y:6.55,w:12,h:0.4,fontFace:"Calibri",fontSize:11,italic:true,color:MUT});
-  // S3 Table
-  s=p.addSlide(); s.background={color:"FFFFFF"};
-  s.addText("Monatsdetail (indexiert)",{x:0.6,y:0.45,w:12,h:0.6,fontFace:"Georgia",fontSize:24,color:NAVY,bold:true});
-  const hd=t=>({text:t,options:{fill:{color:NAVY},color:"FFFFFF",bold:true,fontSize:13,align:t==="Monat"?"left":"right",valign:"middle"}});
-  const rows=[[hd("Monat"),hd("Index (VJ=100)"),hd("Δ YoY")]];
-  const cell=(t,a,c,b)=>({text:t,options:{align:a,fontSize:13,color:c||"333333",bold:!!b}});
-  R.rows.forEach(r=>{const d=r.idx!=null?r.idx-100:null;
-    rows.push([cell(MF[r.m-1]+(r.partial?` (bis ${R.cd}.)`:""),"left",NAVY),
-      cell(r.idx!=null?nf1(r.idx):"–","right"),
-      cell(d==null?"–":pf(d),"right",d==null?MUT:(d>=0?POS:NEG),true)]);});
-  const yd=R.ytdIdx!=null?R.ytdIdx-100:null;
-  rows.push([{text:`YTD Jan–${stich}`,options:{align:"left",bold:true,fontSize:13,color:NAVY,fill:{color:"EAF1FB"}}},
-    {text:R.ytdIdx!=null?nf1(R.ytdIdx):"–",options:{align:"right",bold:true,fontSize:13,fill:{color:"EAF1FB"}}},
-    {text:yd!=null?pf(yd):"–",options:{align:"right",bold:true,fontSize:13,color:yd>=0?POS:NEG,fill:{color:"EAF1FB"}}}]);
-  s.addTable(rows,{x:0.6,y:1.3,w:8.5,colW:[3.3,2.8,2.4],rowH:0.45,border:{type:"solid",pt:0.5,color:LINE},valign:"middle",fontFace:"Calibri"});
-  // Take-aways box
-  const valid=R.rows.filter(r=>r.idx!=null);
-  const best=valid.reduce((a,b)=>b.idx>a.idx?b:a,valid[0]);
-  const worst=valid.reduce((a,b)=>b.idx<a.idx?b:a,valid[0]);
-  s.addShape(p.ShapeType.rect,{x:9.4,y:1.3,w:3.3,h:4.4,fill:{color:"F4F7FB"},line:{color:LINE,width:1}});
-  s.addText("Auf einen Blick",{x:9.6,y:1.5,w:3,h:0.4,fontFace:"Trebuchet MS",fontSize:12,color:MUT,charSpacing:2,bold:true});
+  s.addText(`Monatsumsatz — 2025 vs. 2026 (Jan–${cmN})`,{x:0.6,y:0.45,w:9,h:0.6,fontFace:"Georgia",fontSize:24,color:NAVY,bold:true});
+  s.addChart(p.ChartType.bar,[{name:"2025",labels:MONTHS.slice(0,S.cm),values:S.M.prev},{name:"2026",labels:MONTHS.slice(0,S.cm),values:S.M.cur}],
+    {x:0.5,y:1.5,w:8.7,h:5.3,barDir:"col",chartColors:[PREV,CUR],chartArea:{fill:{color:"FFFFFF"}},
+     catAxisLabelColor:MUT,valAxisLabelColor:MUT,valGridLine:{color:LINE,size:0.5},catGridLine:{style:"none"},
+     showLegend:true,legendPos:"b",legendColor:NAVY});
+  s.addShape(p.ShapeType.rect,{x:9.5,y:1.5,w:3.2,h:4.4,fill:{color:"F2F5F8"},line:{color:PREV,width:1}});
+  const yoyTxt=S.yoy!=null?((S.yoy>=0?"+":"−")+Math.abs(S.yoy).toFixed(1).replace(".",",")+" % YoY"):"–";
   s.addText([
-    {text:`YTD: ${yd>=0?"+":"−"}${Math.abs(yd).toFixed(1).replace(".",",")} %`,options:{bold:true,color:yd>=0?POS:NEG,breakLine:true,fontSize:16}},
-    {text:"vs. Vorjahresperiode",options:{color:MUT,breakLine:true,fontSize:12}},
-    {text:" ",options:{breakLine:true,fontSize:8}},
-    {text:`Bester Monat: ${MF[best.m-1]}`,options:{bold:true,color:POS,breakLine:true}},
-    {text:`Index ${nf1(best.idx)}`,options:{color:MUT,breakLine:true,fontSize:12}},
-    {text:" ",options:{breakLine:true,fontSize:8}},
-    {text:`Schwächster: ${MF[worst.m-1]}`,options:{bold:true,color:NEG,breakLine:true}},
-    {text:`Index ${nf1(worst.idx)}`,options:{color:MUT,fontSize:12}},
-  ],{x:9.6,y:2.0,w:3,h:3.4,fontFace:"Calibri",fontSize:14,lineSpacingMultiple:1.05});
-  s.addText("Methodik: AWIN-Transaktionen, netto (Stornos raus), exkl. Payback (426667+469409). Indexiert, keine absoluten Werte.",
-    {x:0.6,y:6.7,w:12,h:0.4,fontFace:"Calibri",fontSize:9,color:"95A3B6"});
+    {text:`YTD 2026 (bis ${stich})`,options:{fontSize:13,bold:true,color:MUT,breakLine:true}},
+    {text:eur(S.ytd26),options:{fontSize:24,bold:true,color:CUR,breakLine:true}},
+    {text:yoyTxt,options:{fontSize:17,bold:true,color:S.yoy>=0?POS:NEG,breakLine:true}},
+    {text:" ",options:{fontSize:8,breakLine:true}},
+    {text:"Vorjahr (2025): "+eur(S.ytd25),options:{fontSize:13,color:MUT,breakLine:true}},
+    {text:"Payback (DE+AT) herausgerechnet.",options:{fontSize:10,color:MUT}},
+  ],{x:9.7,y:1.75,w:2.85,h:3.9,fontFace:"Calibri",valign:"top"});
+  // S3 Daily cumulative line
+  s=p.addSlide(); s.background={color:"FFFFFF"};
+  s.addText(`Kumulierter Umsatz auf Tagesbasis — 2025 vs. 2026 (bis ${stich})`,{x:0.6,y:0.45,w:12,h:0.6,fontFace:"Georgia",fontSize:22,color:NAVY,bold:true});
+  // downsample für PPTX (max ~80 Punkte)
+  const step=Math.max(1,Math.ceil(S.D.labels.length/80));
+  const dl=[],d25=[],d26=[];
+  for(let i=0;i<S.D.labels.length;i+=step){dl.push(S.D.labels[i]);d25.push(Math.round(S.D.c25[i]));d26.push(Math.round(S.D.c26[i]));}
+  s.addChart(p.ChartType.line,[{name:"2025 kumuliert",labels:dl,values:d25},{name:"2026 kumuliert",labels:dl,values:d26}],
+    {x:0.5,y:1.4,w:12.3,h:5.4,chartColors:["9AA3AD",CUR],lineSize:2.5,lineSmooth:true,
+     chartArea:{fill:{color:"FFFFFF"}},catAxisLabelColor:MUT,catAxisLabelFontSize:8,valAxisLabelColor:MUT,
+     valGridLine:{color:LINE,size:0.5},showLegend:true,legendPos:"b",legendColor:NAVY});
+  // S4 Zielpacing
+  s=p.addSlide(); s.background={color:"FFFFFF"};
+  s.addText("Zielpacing (exkl. Payback)",{x:0.6,y:0.45,w:12,h:0.6,fontFace:"Georgia",fontSize:24,color:NAVY,bold:true});
+  s.addText(`Zielerreichung zum ${stich} · Ziel 2026 ${mio(T26)} · Ziel 2025 ${mio(T25)} · 2026-Ziel ${(((T26/T25)-1)*100).toFixed(0)} % über Vorjahr`,
+    {x:0.6,y:1.15,w:12,h:0.4,fontFace:"Calibri",fontSize:13,color:MUT});
+  const pbar=(idx,lbl,pct,cap,col)=>{const y=1.8+idx*1.35;
+    s.addText(lbl,{x:0.6,y,w:6,h:0.4,fontFace:"Calibri",fontSize:15,bold:true,color:NAVY});
+    s.addText(pct.toLocaleString("de-DE",{maximumFractionDigits:1})+" %",{x:10.5,y,w:2.2,h:0.4,fontFace:"Calibri",fontSize:16,bold:true,color:col,align:"right"});
+    s.addShape(p.ShapeType.rect,{x:0.6,y:y+0.45,w:12.1,h:0.32,fill:{color:"E3E8EE"}});
+    s.addShape(p.ShapeType.rect,{x:0.6,y:y+0.45,w:Math.max(0.02,12.1*Math.min(100,pct)/100),h:0.32,fill:{color:col}});
+    s.addText(cap,{x:0.6,y:y+0.82,w:12,h:0.35,fontFace:"Calibri",fontSize:11,color:MUT});};
+  pbar(0,"2026 real",S.realPct,`${mio(S.ytd26)} von ${mio(T26)}`,CUR);
+  pbar(1,"2026 tracking-bereinigt",S.adjPct,`+${mio(S.corr)} Tracking-Korrektur · ${DATA.corr.note}`,ADJ);
+  pbar(2,"2025 zum gleichen Stichtag",S.prevPct,`${mio(S.ytd25)} von ${mio(T25)}`,"9AA3AD");
+  const vcol=S.dAdj>=0?POS:NEG;
+  s.addText([
+    {text:"Pace-Fazit: ",options:{bold:true,color:NAVY}},
+    {text:`2026 liegt ${ppf(S.dAdj)} ${S.dAdj>=0?"vor":"hinter"} Vorjahr (bereinigt), real ${ppf(S.dReal)}.`,options:{color:vcol,bold:true}},
+  ],{x:0.6,y:6.2,w:12,h:0.5,fontFace:"Calibri",fontSize:14});
+  s.addText("Tracking-Korrektur 2026: einmalig bis 1,13 Mio € für dokumentierte Ausfälle (Cashback/Voucher-Cluster, Standardlink-Defekt ab 20.04.). Ab Juni keine neuen Verluste eingeplant. Ziele exkl. Payback.",
+    {x:0.6,y:6.7,w:12,h:0.5,fontFace:"Calibri",fontSize:9,color:"95A3B6"});
 
-  p.writeFile({fileName:`MeinSchiff_9127_YoY_indexiert_bis_${R.cut}.pptx`});
+  p.writeFile({fileName:`MeinSchiff_9127_YoY_bis_${S.cut}.pptx`});
 }
 
-// init
 (function(){
   const cutEl=document.getElementById("cut");
   cutEl.min="2026-01-01"; cutEl.max=today; cutEl.value=today;
   cutEl.addEventListener("change",render);
   const q=[["Ende Q1","2026-03-31"],["Ende Apr","2026-04-30"],["Ende Mai","2026-05-31"],["Heute",today]];
-  document.getElementById("quick").innerHTML="";
-  q.forEach(([lbl,val])=>{ if(val<=today){const b=document.createElement("button");b.textContent=lbl;
-    b.onclick=()=>{cutEl.value=val;render();}; document.getElementById("quick").appendChild(b);} });
+  const qd=document.getElementById("quick");
+  q.forEach(([l,v])=>{if(v<=today){const b=document.createElement("button");b.textContent=l;b.onclick=()=>{cutEl.value=v;render();};qd.appendChild(b);}});
   render();
 })();
 </script>
