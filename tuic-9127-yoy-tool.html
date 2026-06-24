@@ -274,6 +274,28 @@ function dlPptx(){
   s.addText("Tracking-Korrektur 2026: einmalig bis 1,13 Mio € für dokumentierte Ausfälle (Cashback/Voucher-Cluster, Standardlink-Defekt ab 20.04.). Ab Juni keine neuen Verluste eingeplant. Ziele exkl. Payback.",
     {x:0.6,y:6.7,w:12,h:0.5,fontFace:"Calibri",fontSize:9,color:"95A3B6"});
 
+  // S5 Kombi-Übersicht: Monatsdiagramm + Pacing als schmale Spalte
+  s=p.addSlide(); s.background={color:"FFFFFF"};
+  s.addText(`Übersicht — Monatsumsatz & Zielpacing (bis ${stich})`,{x:0.6,y:0.45,w:12,h:0.6,fontFace:"Georgia",fontSize:22,color:NAVY,bold:true});
+  s.addChart(p.ChartType.bar,[{name:"2025",labels:MONTHS,values:S.MC.prev},{name:"2026",labels:MONTHS,values:S.MC.cur.map(v=>v==null?0:v)}],
+    {x:0.4,y:1.55,w:8.2,h:5.1,barDir:"col",chartColors:[PREV,CUR],chartArea:{fill:{color:"FFFFFF"}},
+     catAxisLabelColor:MUT,catAxisLabelFontSize:9,valAxisLabelColor:MUT,valGridLine:{color:LINE,size:0.5},catGridLine:{style:"none"},
+     showLegend:true,legendPos:"b",legendColor:NAVY});
+  s.addShape(p.ShapeType.rect,{x:8.85,y:1.55,w:3.95,h:5.1,fill:{color:"F2F5F8"},line:{color:PREV,width:1}});
+  s.addText("Zielpacing",{x:9.1,y:1.72,w:3.4,h:0.35,fontFace:"Trebuchet MS",fontSize:13,color:MUT,charSpacing:2,bold:true});
+  s.addText(`Ziel 2026 ${mio(T26)} · 2025 ${mio(T25)}`,{x:9.1,y:2.05,w:3.5,h:0.3,fontFace:"Calibri",fontSize:9.5,color:MUT});
+  const mbar=(idx,lbl,pct,col)=>{const y=2.55+idx*1.0;
+    s.addText(lbl,{x:9.1,y,w:2.3,h:0.3,fontFace:"Calibri",fontSize:11,bold:true,color:NAVY});
+    s.addText(pct.toLocaleString("de-DE",{maximumFractionDigits:1})+" %",{x:9.1,y,w:3.45,h:0.3,fontFace:"Calibri",fontSize:13,bold:true,color:col,align:"right"});
+    s.addShape(p.ShapeType.rect,{x:9.1,y:y+0.34,w:3.45,h:0.2,fill:{color:"E3E8EE"}});
+    s.addShape(p.ShapeType.rect,{x:9.1,y:y+0.34,w:Math.max(0.02,3.45*Math.min(100,pct)/100),h:0.2,fill:{color:col}});};
+  mbar(0,"2026 real",S.realPct,CUR);
+  mbar(1,"2026 bereinigt",S.adjPct,ADJ);
+  mbar(2,"2025 z. Stichtag",S.prevPct,"9AA3AD");
+  s.addText([{text:"Fazit: ",options:{bold:true,color:NAVY}},
+    {text:`${ppf(S.dAdj)} ${S.dAdj>=0?"vor":"hinter"} VJ (bereinigt)`,options:{bold:true,color:S.dAdj>=0?POS:NEG}}],
+    {x:9.1,y:5.7,w:3.5,h:0.8,fontFace:"Calibri",fontSize:12,valign:"top"});
+
   p.writeFile({fileName:`MeinSchiff_9127_YoY_bis_${S.cut}.pptx`});
 }
 
