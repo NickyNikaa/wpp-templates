@@ -71,7 +71,7 @@
 
   <div class="card">
     <h2>Monatsumsatz — Vorjahr vs. aktuelles Jahr</h2>
-    <p class="csub">Januar bis Stichtagsmonat · exkl. Payback · laufender Monat taggleich</p>
+    <p class="csub">Januar–Dezember · 2025 komplett, 2026 bis Stichtag (laufender Monat hellblau) · exkl. Payback</p>
     <canvas id="chMonth" height="140"></canvas>
   </div>
 
@@ -110,7 +110,7 @@ function realizedCorrection(cut){
   return c.amount*((cutD-f)/(fb-f));
 }
 
-function monthly(cm,cd){
+function monthly(cm,cd){   // taggleich, Jan..cm — für Tabelle/YTD
   const prev=[],cur=[];
   for(let m=1;m<=cm;m++){const mm=String(m).padStart(2,"0");let s25=0,s26=0;
     for(const k in DATA.d2025){if(k.slice(0,2)===mm){const day=+k.slice(3,5);if(m<cm||day<=cd)s25+=DATA.d2025[k];}}
@@ -119,13 +119,26 @@ function monthly(cm,cd){
   return {prev,cur};
 }
 
-function cumulativeDaily(cm,cd){
+function monthlyChart(cm,cd){   // Jan–Dez: 2025 ganzes Jahr, 2026 bis Stichtag (Folgemonate null)
+  const prev=[],cur=[],partial=[];
+  for(let m=1;m<=12;m++){const mm=String(m).padStart(2,"0");
+    let s25=0; for(const k in DATA.d2025){if(k.slice(0,2)===mm)s25+=DATA.d2025[k];}
+    prev.push(s25);
+    if(m<cm){let s26=0;for(const k in DATA.d2026){if(k.slice(0,2)===mm)s26+=DATA.d2026[k];}cur.push(s26);partial.push(false);}
+    else if(m===cm){let s26=0;for(const k in DATA.d2026){if(k.slice(0,2)===mm){const day=+k.slice(3,5);if(day<=cd)s26+=DATA.d2026[k];}}cur.push(s26);partial.push(true);}
+    else{cur.push(null);partial.push(false);}
+  }
+  return {prev,cur,partial};
+}
+
+function cumulativeDaily(cm,cd){   // ganzes Jahr: 2025 voll, 2026 bis Stichtag dann null
   const labels=[],c25=[],c26=[];let a=0,b=0;
-  for(let m=1;m<=cm;m++){const dim=new Date(2026,m,0).getDate();
-    for(let day=1;day<=dim;day++){ if(m===cm&&day>cd)break;
+  for(let m=1;m<=12;m++){const dim=new Date(2026,m,0).getDate();
+    for(let day=1;day<=dim;day++){
       const mm=String(m).padStart(2,"0"),dd=String(day).padStart(2,"0"),key=mm+"-"+dd;
-      a+=DATA.d2025[key]||0; b+=DATA.d2026[key]||0;
-      labels.push(dd+"."+mm+"."); c25.push(a); c26.push(b);
+      a+=DATA.d2025[key]||0; labels.push(dd+"."+mm+".");
+      c25.push(a);
+      if(m<cm||(m===cm&&day<=cd)){b+=DATA.d2026[key]||0;c26.push(b);}else{c26.push(null);}
     }}
   return {labels,c25,c26};
 }
@@ -161,27 +174,28 @@ function render(){
   const vcol=dAdj>=0?"var(--pos)":"var(--neg)";
   document.getElementById("verdict").innerHTML=`<b>Pace-Fazit:</b> 2026 liegt <b style="color:${vcol}">${ppf(dAdj)}</b> ${dAdj>=0?"vor":"hinter"} Vorjahr (tracking-bereinigt), real ${ppf(dReal)}. Tracking-Korrektur 2026: einmalig bis ${mio(DATA.corr.amount)} (linear 20.04.→31.05., ab Juni keine neuen Verluste).`;
 
-  // Monthly chart
-  const labels=MONTHS.slice(0,cm);
+  // Monthly chart — Jan–Dez: 2025 ganzes Jahr, 2026 bis Stichtag
+  const MC=monthlyChart(cm,cd);
+  const cur26cols=MC.partial.map(pp=>pp?"#7ba7d4":"#0a4d8c");
   if(chM)chM.destroy();
   chM=new Chart(document.getElementById("chMonth"),{type:"bar",
-    data:{labels,datasets:[
-      {label:"2025",data:M.prev,backgroundColor:"#c0c6cf",borderRadius:3},
-      {label:"2026",data:M.cur,backgroundColor:"#0a4d8c",borderRadius:3}]},
+    data:{labels:MONTHS,datasets:[
+      {label:"2025 (Vorjahr)",data:MC.prev,backgroundColor:"#c0c6cf",borderRadius:3},
+      {label:"2026 (bis Stichtag)",data:MC.cur,backgroundColor:cur26cols,borderRadius:3}]},
     options:{responsive:true,plugins:{legend:{position:"bottom"},
-      tooltip:{callbacks:{label:c=>c.dataset.label+": "+eur(c.parsed.y)}}},
+      tooltip:{callbacks:{label:c=>{let t=c.dataset.label.split(" ")[0]+": "+eur(c.parsed.y);if(c.datasetIndex===1&&MC.partial[c.dataIndex])t+=` (bis ${cd}.)`;return t;}}}},
       scales:{x:{grid:{display:false}},y:{ticks:{callback:v=>new Intl.NumberFormat("de-DE",{notation:"compact"}).format(v)+" €"},grid:{color:"#eef1f5"}}}}});
 
-  // Daily cumulative chart
+  // Daily cumulative chart — ganzes Jahr, 2025 voll, 2026-Linie endet am Stichtag
   const D=cumulativeDaily(cm,cd);
-  document.getElementById("dailySub").textContent=`Kumuliert ab 01.01. bis ${deDate(cut)} · 2025 vs. 2026 (taggleich) · exkl. Payback`;
+  document.getElementById("dailySub").textContent=`Kumuliert über das ganze Jahr · 2025 komplett, 2026-Linie endet am Stichtag (${deDate(cut)}) · exkl. Payback`;
   if(chD)chD.destroy();
   chD=new Chart(document.getElementById("chDaily"),{type:"line",
     data:{labels:D.labels,datasets:[
       {label:"2025 kumuliert",data:D.c25,borderColor:"#9aa3ad",backgroundColor:"#9aa3ad",borderWidth:2,pointRadius:0,tension:.15},
-      {label:"2026 kumuliert",data:D.c26,borderColor:"#0a4d8c",backgroundColor:"#0a4d8c",borderWidth:2,pointRadius:0,tension:.15}]},
+      {label:"2026 kumuliert",data:D.c26,borderColor:"#0a4d8c",backgroundColor:"#0a4d8c",borderWidth:2,pointRadius:0,tension:.15,spanGaps:false}]},
     options:{responsive:true,interaction:{mode:"index",intersect:false},
-      plugins:{legend:{position:"bottom"},tooltip:{callbacks:{label:c=>c.dataset.label+": "+eur(c.parsed.y)}}},
+      plugins:{legend:{position:"bottom"},tooltip:{callbacks:{label:c=>c.parsed.y==null?null:c.dataset.label+": "+eur(c.parsed.y)}}},
       scales:{x:{ticks:{maxTicksLimit:12,color:"#6b7280"},grid:{display:false}},
         y:{ticks:{callback:v=>new Intl.NumberFormat("de-DE",{notation:"compact"}).format(v)+" €"},grid:{color:"#eef1f5"}}}}});
 
@@ -194,7 +208,7 @@ function render(){
   tb.insertAdjacentHTML("beforeend",`<tr class="ytd"><td>YTD 01.01.–${deDate(cut)}</td><td>${eur(ytd25)}</td><td>${eur(ytd26)}</td><td class="${yoy>=0?'pos':'neg'}">${yoy!=null?pf(yoy):"–"}</td></tr>`);
   document.getElementById("foot").innerHTML="Umsatz = AWIN-Transaktionen, netto (Stornos rausgerechnet), exkl. Payback DE (426667) + AT (469409). Laufender Monat taggleich gegen Vorjahr.";
 
-  window._S={cut,cm,cd,M,D,ytd26,ytd25,yoy,corr,realPct,adjPct,prevPct,dReal,dAdj};
+  window._S={cut,cm,cd,M,MC,D,ytd26,ytd25,yoy,corr,realPct,adjPct,prevPct,dReal,dAdj};
 }
 
 function dlPng(){ if(chM){const a=document.createElement("a");a.href=chM.toBase64Image("image/png",1);a.download="MeinSchiff_9127_Monatsumsatz.png";a.click();}
@@ -214,8 +228,8 @@ function dlPptx(){
   s.addText(`Stichtag: 01.01.–${stich}   ·   Datenstand ${deDate(today)}`,{x:0.9,y:5.9,w:11.5,h:0.5,fontFace:"Calibri",fontSize:13,color:"8FA6C4"});
   // S2 Monthly chart + YTD box
   s=p.addSlide(); s.background={color:"FFFFFF"};
-  s.addText(`Monatsumsatz — 2025 vs. 2026 (Jan–${cmN})`,{x:0.6,y:0.45,w:9,h:0.6,fontFace:"Georgia",fontSize:24,color:NAVY,bold:true});
-  s.addChart(p.ChartType.bar,[{name:"2025",labels:MONTHS.slice(0,S.cm),values:S.M.prev},{name:"2026",labels:MONTHS.slice(0,S.cm),values:S.M.cur}],
+  s.addText(`Monatsumsatz — 2025 vs. 2026 (Jan–Dez, 2026 bis ${stich})`,{x:0.6,y:0.45,w:9,h:0.6,fontFace:"Georgia",fontSize:22,color:NAVY,bold:true});
+  s.addChart(p.ChartType.bar,[{name:"2025",labels:MONTHS,values:S.MC.prev},{name:"2026",labels:MONTHS,values:S.MC.cur.map(v=>v==null?0:v)}],
     {x:0.5,y:1.5,w:8.7,h:5.3,barDir:"col",chartColors:[PREV,CUR],chartArea:{fill:{color:"FFFFFF"}},
      catAxisLabelColor:MUT,valAxisLabelColor:MUT,valGridLine:{color:LINE,size:0.5},catGridLine:{style:"none"},
      showLegend:true,legendPos:"b",legendColor:NAVY});
