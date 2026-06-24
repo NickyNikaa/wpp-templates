@@ -229,17 +229,15 @@ function dlPptx(){
     {text:"Vorjahr (2025): "+eur(S.ytd25),options:{fontSize:13,color:MUT,breakLine:true}},
     {text:"Payback (DE+AT) herausgerechnet.",options:{fontSize:10,color:MUT}},
   ],{x:9.7,y:1.75,w:2.85,h:3.9,fontFace:"Calibri",valign:"top"});
-  // S3 Daily cumulative line
+  // S3 Daily cumulative line — als Bild des gerenderten Chart.js-Charts (pptxgenjs-Line hängt im Browser)
   s=p.addSlide(); s.background={color:"FFFFFF"};
   s.addText(`Kumulierter Umsatz auf Tagesbasis — 2025 vs. 2026 (bis ${stich})`,{x:0.6,y:0.45,w:12,h:0.6,fontFace:"Georgia",fontSize:22,color:NAVY,bold:true});
-  // downsample für PPTX (max ~80 Punkte)
-  const step=Math.max(1,Math.ceil(S.D.labels.length/80));
-  const dl=[],d25=[],d26=[];
-  for(let i=0;i<S.D.labels.length;i+=step){dl.push(S.D.labels[i]);d25.push(Math.round(S.D.c25[i]));d26.push(Math.round(S.D.c26[i]));}
-  s.addChart(p.ChartType.line,[{name:"2025 kumuliert",labels:dl,values:d25},{name:"2026 kumuliert",labels:dl,values:d26}],
-    {x:0.5,y:1.4,w:12.3,h:5.4,chartColors:["9AA3AD",CUR],lineSize:2.5,lineSmooth:true,
-     chartArea:{fill:{color:"FFFFFF"}},catAxisLabelColor:MUT,catAxisLabelFontSize:8,valAxisLabelColor:MUT,
-     valGridLine:{color:LINE,size:0.5},showLegend:true,legendPos:"b",legendColor:NAVY});
+  try{
+    const dimg=chD.toBase64Image("image/png",1);
+    const cw=chD.canvas.width||1200, chh=chD.canvas.height||450;
+    const iw=12.3, ih=Math.min(5.4, iw*chh/cw);
+    s.addImage({data:dimg, x:(13.333-iw)/2, y:1.5, w:iw, h:ih});
+  }catch(e){ s.addText("Tageschart konnte nicht eingebettet werden.",{x:0.6,y:2,w:10,h:0.5,fontSize:12,color:MUT}); }
   // S4 Zielpacing
   s=p.addSlide(); s.background={color:"FFFFFF"};
   s.addText("Zielpacing (exkl. Payback)",{x:0.6,y:0.45,w:12,h:0.6,fontFace:"Georgia",fontSize:24,color:NAVY,bold:true});
