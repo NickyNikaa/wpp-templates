@@ -71,7 +71,7 @@
 
   <div class="card">
     <h2>Monatsumsatz — Vorjahr vs. aktuelles Jahr</h2>
-    <p class="csub">Januar–Dezember · 2025 komplett, 2026 bis Stichtag (laufender Monat hellblau) · exkl. Payback</p>
+    <p class="csub">Januar–Dezember · 2025 komplett · 2026: Jan–Mai 🔒 festgeschrieben (Berichtswerte), ab Juni AWIN-Live (laufender Monat hellblau) · exkl. Payback</p>
     <canvas id="chMonth" height="140"></canvas>
   </div>
 
@@ -79,6 +79,12 @@
     <h2>Kumulierter Umsatz auf Tagesbasis</h2>
     <p class="csub" id="dailySub"></p>
     <canvas id="chDaily" height="140"></canvas>
+  </div>
+
+  <div class="card">
+    <h2>Zielpacing-Verlauf — Zielerreichung über das Jahr</h2>
+    <p class="csub">Kumulierte Zielerreichung in % vom Jahresziel · 2025 (÷ 24,5 Mio €) vs. 2026 (÷ 30,7 Mio €) · „Ziel = 100 %" · 2026 festgeschrieben bis Stichtag</p>
+    <canvas id="chPace" height="140"></canvas>
   </div>
 
   <div class="card">
@@ -94,6 +100,20 @@ const MONTHS=["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov"
 const MF=["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"];
 const today=DATA.meta.today;
 const T25=DATA.targets["2025"], T26=DATA.targets["2026"];
+
+// Festgeschriebene Berichtswerte 2026 (wie berichtet, inkl. Tracking-Kompensation), Jan–Mai.
+// Ab Juni: AWIN-Live. Diese Werte sind FIX und überschreiben die AWIN-Rohdaten für Jan–Mai.
+const FIXED2026={1:{v:4100000,n:763},2:{v:2730000,n:535},3:{v:2517728.58,n:447},4:{v:2161491.80,n:427},5:{v:1609091.93,n:304}};
+const FIXED_LAST=5; // letzter festgeschriebener Monat (Mai)
+// Festgeschriebene Tageswerte 2026: Jan–Mai-Tage auf den Berichts-Monatswert skaliert (Tagesform aus AWIN), ab Juni AWIN roh.
+const F2026=(function(){
+  const awinMonth={}; for(const k in DATA.d2026){const m=+k.slice(0,2);awinMonth[m]=(awinMonth[m]||0)+DATA.d2026[k];}
+  const out={};
+  for(const k in DATA.d2026){const m=+k.slice(0,2);
+    out[k]=(FIXED2026[m]&&awinMonth[m]>0)? DATA.d2026[k]*(FIXED2026[m].v/awinMonth[m]) : DATA.d2026[k];}
+  return out;
+})();
+const isFixed=m=>m<=FIXED_LAST;
 const eur=v=>v==null?"–":new Intl.NumberFormat("de-DE",{maximumFractionDigits:0}).format(v)+" €";
 const mio=v=>v==null?"–":(v/1e6).toLocaleString("de-DE",{minimumFractionDigits:2,maximumFractionDigits:2})+" Mio €";
 const pf=x=>(x>0?"+":"−")+Math.abs(x).toLocaleString("de-DE",{minimumFractionDigits:1,maximumFractionDigits:1})+" %";
@@ -110,57 +130,70 @@ function realizedCorrection(cut){
   return c.amount*((cutD-f)/(fb-f));
 }
 
-function monthly(cm,cd){   // taggleich, Jan..cm — für Tabelle/YTD
+function monthly(cm,cd){   // taggleich, Jan..cm — für Tabelle/YTD (2026 = festgeschrieben F2026)
   const prev=[],cur=[];
   for(let m=1;m<=cm;m++){const mm=String(m).padStart(2,"0");let s25=0,s26=0;
     for(const k in DATA.d2025){if(k.slice(0,2)===mm){const day=+k.slice(3,5);if(m<cm||day<=cd)s25+=DATA.d2025[k];}}
-    for(const k in DATA.d2026){if(k.slice(0,2)===mm){const day=+k.slice(3,5);if(m<cm||day<=cd)s26+=DATA.d2026[k];}}
+    for(const k in F2026){if(k.slice(0,2)===mm){const day=+k.slice(3,5);if(m<cm||day<=cd)s26+=F2026[k];}}
     prev.push(s25);cur.push(s26);}
   return {prev,cur};
 }
 
-function monthlyChart(cm,cd){   // Jan–Dez: 2025 ganzes Jahr, 2026 bis Stichtag (Folgemonate null)
-  const prev=[],cur=[],partial=[];
+function monthlyChart(cm,cd){   // Jan–Dez: 2025 ganzes Jahr, 2026 festgeschrieben bis Stichtag
+  const prev=[],cur=[],partial=[],fixed=[];
   for(let m=1;m<=12;m++){const mm=String(m).padStart(2,"0");
     let s25=0; for(const k in DATA.d2025){if(k.slice(0,2)===mm)s25+=DATA.d2025[k];}
-    prev.push(s25);
-    if(m<cm){let s26=0;for(const k in DATA.d2026){if(k.slice(0,2)===mm)s26+=DATA.d2026[k];}cur.push(s26);partial.push(false);}
-    else if(m===cm){let s26=0;for(const k in DATA.d2026){if(k.slice(0,2)===mm){const day=+k.slice(3,5);if(day<=cd)s26+=DATA.d2026[k];}}cur.push(s26);partial.push(true);}
+    prev.push(s25); fixed.push(isFixed(m));
+    if(m<cm){let s26=0;for(const k in F2026){if(k.slice(0,2)===mm)s26+=F2026[k];}cur.push(s26);partial.push(false);}
+    else if(m===cm){let s26=0;for(const k in F2026){if(k.slice(0,2)===mm){const day=+k.slice(3,5);if(day<=cd)s26+=F2026[k];}}cur.push(s26);partial.push(true);}
     else{cur.push(null);partial.push(false);}
   }
-  return {prev,cur,partial};
+  return {prev,cur,partial,fixed};
 }
 
-function cumulativeDaily(cm,cd){   // ganzes Jahr: 2025 voll, 2026 bis Stichtag dann null
+function cumulativeDaily(cm,cd){   // ganzes Jahr: 2025 voll, 2026 festgeschrieben bis Stichtag dann null
   const labels=[],c25=[],c26=[];let a=0,b=0;
   for(let m=1;m<=12;m++){const dim=new Date(2026,m,0).getDate();
     for(let day=1;day<=dim;day++){
       const mm=String(m).padStart(2,"0"),dd=String(day).padStart(2,"0"),key=mm+"-"+dd;
       a+=DATA.d2025[key]||0; labels.push(dd+"."+mm+".");
       c25.push(a);
-      if(m<cm||(m===cm&&day<=cd)){b+=DATA.d2026[key]||0;c26.push(b);}else{c26.push(null);}
+      if(m<cm||(m===cm&&day<=cd)){b+=F2026[key]||0;c26.push(b);}else{c26.push(null);}
     }}
   return {labels,c25,c26};
 }
 
-let chM,chD;
+function paceCurve(cm,cd){   // Zielerreichung-Verlauf in %: 2025 ganzes Jahr ÷ Ziel25, 2026 festgeschrieben bis Stichtag ÷ Ziel26
+  const labels=[],p25=[],p26=[];let a=0,b=0;
+  for(let m=1;m<=12;m++){const dim=new Date(2026,m,0).getDate();
+    for(let day=1;day<=dim;day++){
+      const mm=String(m).padStart(2,"0"),dd=String(day).padStart(2,"0"),key=mm+"-"+dd;
+      a+=DATA.d2025[key]||0; labels.push(dd+"."+mm+".");
+      p25.push(a/T25*100);
+      if(m<cm||(m===cm&&day<=cd)){b+=F2026[key]||0;p26.push(b/T26*100);}else{p26.push(null);}
+    }}
+  return {labels,p25,p26};
+}
+
+let chM,chD,chP;
 function render(){
   const cut=document.getElementById("cut").value; if(!cut)return;
   const cm=+cut.slice(5,7), cd=+cut.slice(8,10);
   const M=monthly(cm,cd);
-  const ytd26=sumYTD(DATA.d2026,cm,cd), ytd25=sumYTD(DATA.d2025,cm,cd);
+  const ytd26=sumYTD(F2026,cm,cd);          // festgeschrieben (Jan–Mai Bericht, ab Juni AWIN)
+  const ytd26roh=sumYTD(DATA.d2026,cm,cd);  // AWIN ohne Tracking-Kompensation
+  const ytd25=sumYTD(DATA.d2025,cm,cd);
   const yoy=ytd25?(ytd26-ytd25)/ytd25*100:null;
-  const corr=realizedCorrection(cut);
-  const realPct=ytd26/T26*100, adjPct=(ytd26+corr)/T26*100, prevPct=ytd25/T25*100;
-  const dReal=realPct-prevPct, dAdj=adjPct-prevPct;
+  const festPct=ytd26/T26*100, rohPct=ytd26roh/T26*100, prevPct=ytd25/T25*100;
+  const dFest=festPct-prevPct, dRoh=rohPct-prevPct;
 
-  document.getElementById("meta").textContent=`Vorjahresvergleich 01.01.–${deDate(cut)} (taggleich) · exkl. Payback (426667+469409) · Datenstand ${deDate(today)}`;
+  document.getElementById("meta").textContent=`Vorjahresvergleich 01.01.–${deDate(cut)} (taggleich) · exkl. Payback · 2026 Jan–Mai 🔒 festgeschrieben (Berichtswerte), ab Juni AWIN-Live · Datenstand ${deDate(today)}`;
 
   // KPIs
   document.getElementById("kpis").innerHTML=`
-    <div class="kpi"><div class="l">YTD 2026</div><div class="v">${eur(ytd26)}</div><div class="d ${yoy>=0?'pos':'neg'}">${yoy!=null?pf(yoy)+" YoY":""}</div></div>
+    <div class="kpi"><div class="l">YTD 2026 (festgeschrieben)</div><div class="v">${eur(ytd26)}</div><div class="d ${yoy>=0?'pos':'neg'}">${yoy!=null?pf(yoy)+" YoY":""}</div></div>
     <div class="kpi"><div class="l">Vorjahr (2025)</div><div class="v">${eur(ytd25)}</div><div class="d" style="color:var(--muted)">taggleich</div></div>
-    <div class="kpi"><div class="l">Zielerreichung 2026 (bereinigt)</div><div class="v">${adjPct.toLocaleString("de-DE",{maximumFractionDigits:1})} %</div><div class="d ${dAdj>=0?'pos':'neg'}">${ppf(dAdj)} vs. VJ</div></div>`;
+    <div class="kpi"><div class="l">Zielerreichung 2026</div><div class="v">${festPct.toLocaleString("de-DE",{maximumFractionDigits:1})} %</div><div class="d ${dFest>=0?'pos':'neg'}">${ppf(dFest)} vs. VJ</div></div>`;
 
   // Pacing
   document.getElementById("paceSub").textContent=`Zielerreichung zum ${deDate(cut)} · Ziel 2026 ${mio(T26)} · Ziel 2025 ${mio(T25)} · 2026-Ziel liegt ${(((T26/T25)-1)*100).toFixed(0)} % über Vorjahr`;
@@ -168,22 +201,23 @@ function render(){
     return `<div class="pacebar"><div class="top"><span style="font-weight:600">${lbl}</span><span style="font-weight:700;color:${col}">${pct.toLocaleString("de-DE",{maximumFractionDigits:1})} %</span></div>
       <div class="track"><div class="fill" style="width:${w}%;background:${col}"></div></div><div class="cap">${cap}</div></div>`;};
   document.getElementById("pace").innerHTML=
-    bar("2026 real",realPct,`${mio(ytd26)} von ${mio(T26)}`,"#0a4d8c")+
-    bar("2026 tracking-bereinigt",adjPct,`+${mio(corr)} Korrektur (${DATA.corr.note})`,"#2563b0")+
+    bar("2026 festgeschrieben 🔒",festPct,`${mio(ytd26)} von ${mio(T26)} · Jan–Mai Berichtswerte, ab Juni AWIN`,"#0a4d8c")+
+    bar("2026 AWIN-Rohdaten (o. Kompensation)",rohPct,`${mio(ytd26roh)} von ${mio(T26)} · vor Tracking-Kompensation`,"#7ba7d4")+
     bar("2025 zum gleichen Stichtag",prevPct,`${mio(ytd25)} von ${mio(T25)}`,"#9aa3ad");
-  const vcol=dAdj>=0?"var(--pos)":"var(--neg)";
-  document.getElementById("verdict").innerHTML=`<b>Pace-Fazit:</b> 2026 liegt <b style="color:${vcol}">${ppf(dAdj)}</b> ${dAdj>=0?"vor":"hinter"} Vorjahr (tracking-bereinigt), real ${ppf(dReal)}. Tracking-Korrektur 2026: einmalig bis ${mio(DATA.corr.amount)} (linear 20.04.→31.05., ab Juni keine neuen Verluste).`;
+  const vcol=dFest>=0?"var(--pos)":"var(--neg)";
+  document.getElementById("verdict").innerHTML=`<b>Pace-Fazit:</b> 2026 liegt <b style="color:${vcol}">${ppf(dFest)}</b> ${dFest>=0?"vor":"hinter"} Vorjahr (festgeschrieben). Ohne Tracking-Kompensation wären es ${ppf(dRoh)} — die Differenz entspricht den kompensierten Tracking-Ausfällen (v.a. großer Januar-Ausfall).`;
 
-  // Monthly chart — Jan–Dez: 2025 ganzes Jahr, 2026 bis Stichtag
+  // Monthly chart — Jan–Dez: 2025 ganzes Jahr, 2026 festgeschrieben bis Stichtag
   const MC=monthlyChart(cm,cd);
-  const cur26cols=MC.partial.map(pp=>pp?"#7ba7d4":"#0a4d8c");
+  const cur26cols=MC.cur.map((v,i)=>MC.partial[i]?"#7ba7d4":"#0a4d8c");
+  const cur26bord=MC.fixed.map((f,i)=>(f&&MC.cur[i]!=null)?"#08243b":"rgba(0,0,0,0)");
   if(chM)chM.destroy();
   chM=new Chart(document.getElementById("chMonth"),{type:"bar",
     data:{labels:MONTHS,datasets:[
       {label:"2025 (Vorjahr)",data:MC.prev,backgroundColor:"#c0c6cf",borderRadius:3},
-      {label:"2026 (bis Stichtag)",data:MC.cur,backgroundColor:cur26cols,borderRadius:3}]},
+      {label:"2026 (Jan–Mai 🔒 festgeschrieben)",data:MC.cur,backgroundColor:cur26cols,borderColor:cur26bord,borderWidth:1.5,borderRadius:3}]},
     options:{responsive:true,plugins:{legend:{position:"bottom"},
-      tooltip:{callbacks:{label:c=>{let t=c.dataset.label.split(" ")[0]+": "+eur(c.parsed.y);if(c.datasetIndex===1&&MC.partial[c.dataIndex])t+=` (bis ${cd}.)`;return t;}}}},
+      tooltip:{callbacks:{label:c=>{let t=c.dataset.label.split(" ")[0]+": "+eur(c.parsed.y);if(c.datasetIndex===1){if(MC.fixed[c.dataIndex])t+=" 🔒 festgeschrieben";if(MC.partial[c.dataIndex])t+=` (AWIN, bis ${cd}.)`;}return t;}}}},
       scales:{x:{grid:{display:false}},y:{ticks:{callback:v=>new Intl.NumberFormat("de-DE",{notation:"compact"}).format(v)+" €"},grid:{color:"#eef1f5"}}}}});
 
   // Daily cumulative chart — ganzes Jahr, 2025 voll, 2026-Linie endet am Stichtag
@@ -199,16 +233,31 @@ function render(){
       scales:{x:{ticks:{maxTicksLimit:12,color:"#6b7280"},grid:{display:false}},
         y:{ticks:{callback:v=>new Intl.NumberFormat("de-DE",{notation:"compact"}).format(v)+" €"},grid:{color:"#eef1f5"}}}}});
 
+  // Zielpacing-Verlauf (Zielerreichung % über das Jahr)
+  const PC=paceCurve(cm,cd);
+  if(chP)chP.destroy();
+  chP=new Chart(document.getElementById("chPace"),{type:"line",
+    data:{labels:PC.labels,datasets:[
+      {label:`2025 (Ziel ${mio(T25)})`,data:PC.p25,borderColor:"#9aa3ad",backgroundColor:"#9aa3ad",borderWidth:2,pointRadius:0,tension:.15},
+      {label:`2026 (Ziel ${mio(T26)})`,data:PC.p26,borderColor:"#0a4d8c",backgroundColor:"#0a4d8c",borderWidth:2.5,pointRadius:0,tension:.15,spanGaps:false}]},
+    options:{responsive:true,interaction:{mode:"index",intersect:false},
+      plugins:{legend:{position:"bottom"},tooltip:{callbacks:{label:c=>c.parsed.y==null?null:c.dataset.label.split(" (")[0]+": "+c.parsed.y.toLocaleString("de-DE",{maximumFractionDigits:1})+" % vom Ziel"}}},
+      scales:{x:{ticks:{maxTicksLimit:12,color:"#6b7280"},grid:{display:false}},
+        y:{ticks:{callback:v=>v+" %",color:"#6b7280"},grid:{color:"#eef1f5"},title:{display:true,text:"Zielerreichung (% vom Jahresziel)",color:"#6b7280"}}}},
+    plugins:[{id:"goal100",afterDraw(c){const y=c.scales.y.getPixelForValue(100);if(isNaN(y))return;const{left,right}=c.chartArea,x=c.ctx;
+      x.save();x.strokeStyle="#16a34a";x.setLineDash([6,4]);x.lineWidth=1.5;x.beginPath();x.moveTo(left,y);x.lineTo(right,y);x.stroke();
+      x.setLineDash([]);x.fillStyle="#16a34a";x.font="11px sans-serif";x.fillText("Ziel = 100 %",left+6,y-5);x.restore();}}]});
+
   // Table
   document.getElementById("hPrev").textContent="2025";
   document.getElementById("hCur").textContent="2026";
   const tb=document.getElementById("tb");tb.innerHTML="";
-  for(let i=0;i<cm;i++){const a=M.prev[i],b=M.cur[i],d=a?(b-a)/a*100:null,partial=(i+1===cm);
-    tb.insertAdjacentHTML("beforeend",`<tr><td>${MF[i]}${partial?` (bis ${cd}.)`:""}</td><td>${eur(a)}</td><td>${eur(b)}</td><td class="${d==null?'':(d>=0?'pos':'neg')}">${d==null?"–":pf(d)}</td></tr>`);}
+  for(let i=0;i<cm;i++){const a=M.prev[i],b=M.cur[i],d=a?(b-a)/a*100:null,partial=(i+1===cm),fix=isFixed(i+1);
+    tb.insertAdjacentHTML("beforeend",`<tr${fix?' style="background:#fbfaf3"':''}><td>${MF[i]}${fix?' 🔒':''}${partial&&!fix?` (AWIN, bis ${cd}.)`:''}</td><td>${eur(a)}</td><td>${eur(b)}</td><td class="${d==null?'':(d>=0?'pos':'neg')}">${d==null?"–":pf(d)}</td></tr>`);}
   tb.insertAdjacentHTML("beforeend",`<tr class="ytd"><td>YTD 01.01.–${deDate(cut)}</td><td>${eur(ytd25)}</td><td>${eur(ytd26)}</td><td class="${yoy>=0?'pos':'neg'}">${yoy!=null?pf(yoy):"–"}</td></tr>`);
-  document.getElementById("foot").innerHTML="Umsatz = AWIN-Transaktionen, netto (Stornos rausgerechnet), exkl. Payback DE (426667) + AT (469409). Laufender Monat taggleich gegen Vorjahr.";
+  document.getElementById("foot").innerHTML="🔒 = festgeschriebene Berichtswerte 2026 (Jan–Mai, inkl. Tracking-Kompensation). Ab Juni AWIN-Transaktionen netto, exkl. Payback DE (426667) + AT (469409). 2025 = AWIN netto. Laufender Monat taggleich gegen Vorjahr.";
 
-  window._S={cut,cm,cd,M,MC,D,ytd26,ytd25,yoy,corr,realPct,adjPct,prevPct,dReal,dAdj};
+  window._S={cut,cm,cd,M,MC,D,PC,ytd26,ytd26roh,ytd25,yoy,festPct,rohPct,prevPct,dFest,dRoh};
 }
 
 function dlPng(){ if(chM){const a=document.createElement("a");a.href=chM.toBase64Image("image/png",1);a.download="MeinSchiff_9127_Monatsumsatz.png";a.click();}
@@ -236,7 +285,7 @@ function dlPptx(){
   s.addShape(p.ShapeType.rect,{x:9.5,y:1.5,w:3.2,h:4.4,fill:{color:"F2F5F8"},line:{color:PREV,width:1}});
   const yoyTxt=S.yoy!=null?((S.yoy>=0?"+":"−")+Math.abs(S.yoy).toFixed(1).replace(".",",")+" % YoY"):"–";
   s.addText([
-    {text:`YTD 2026 (bis ${stich})`,options:{fontSize:13,bold:true,color:MUT,breakLine:true}},
+    {text:`YTD 2026 festgeschrieben (bis ${stich})`,options:{fontSize:12,bold:true,color:MUT,breakLine:true}},
     {text:eur(S.ytd26),options:{fontSize:24,bold:true,color:CUR,breakLine:true}},
     {text:yoyTxt,options:{fontSize:17,bold:true,color:S.yoy>=0?POS:NEG,breakLine:true}},
     {text:" ",options:{fontSize:8,breakLine:true}},
@@ -263,18 +312,30 @@ function dlPptx(){
     s.addShape(p.ShapeType.rect,{x:0.6,y:y+0.45,w:12.1,h:0.32,fill:{color:"E3E8EE"}});
     s.addShape(p.ShapeType.rect,{x:0.6,y:y+0.45,w:Math.max(0.02,12.1*Math.min(100,pct)/100),h:0.32,fill:{color:col}});
     s.addText(cap,{x:0.6,y:y+0.82,w:12,h:0.35,fontFace:"Calibri",fontSize:11,color:MUT});};
-  pbar(0,"2026 real",S.realPct,`${mio(S.ytd26)} von ${mio(T26)}`,CUR);
-  pbar(1,"2026 tracking-bereinigt",S.adjPct,`+${mio(S.corr)} Tracking-Korrektur · ${DATA.corr.note}`,ADJ);
+  pbar(0,"2026 festgeschrieben 🔒",S.festPct,`${mio(S.ytd26)} von ${mio(T26)} · Jan–Mai Berichtswerte, ab Juni AWIN`,CUR);
+  pbar(1,"2026 AWIN-Rohdaten (o. Kompensation)",S.rohPct,`${mio(S.ytd26roh)} von ${mio(T26)} · vor Tracking-Kompensation`,"7BA7D4");
   pbar(2,"2025 zum gleichen Stichtag",S.prevPct,`${mio(S.ytd25)} von ${mio(T25)}`,"9AA3AD");
-  const vcol=S.dAdj>=0?POS:NEG;
+  const vcol=S.dFest>=0?POS:NEG;
   s.addText([
     {text:"Pace-Fazit: ",options:{bold:true,color:NAVY}},
-    {text:`2026 liegt ${ppf(S.dAdj)} ${S.dAdj>=0?"vor":"hinter"} Vorjahr (bereinigt), real ${ppf(S.dReal)}.`,options:{color:vcol,bold:true}},
+    {text:`2026 liegt ${ppf(S.dFest)} ${S.dFest>=0?"vor":"hinter"} Vorjahr (festgeschrieben); ohne Tracking-Kompensation ${ppf(S.dRoh)}.`,options:{color:vcol,bold:true}},
   ],{x:0.6,y:6.2,w:12,h:0.5,fontFace:"Calibri",fontSize:14});
-  s.addText("Tracking-Korrektur 2026: einmalig bis 1,13 Mio € für dokumentierte Ausfälle (Cashback/Voucher-Cluster, Standardlink-Defekt ab 20.04.). Ab Juni keine neuen Verluste eingeplant. Ziele exkl. Payback.",
+  s.addText("2026 Jan–Mai = festgeschriebene Berichtswerte inkl. Tracking-Kompensation (v.a. großer Januar-Ausfall); ab Juni AWIN-Live. Ziele exkl. Payback.",
     {x:0.6,y:6.7,w:12,h:0.5,fontFace:"Calibri",fontSize:9,color:"95A3B6"});
 
-  // S5 Kombi-Übersicht: Monatsdiagramm + Pacing als schmale Spalte
+  // S5 Zielpacing-Verlauf — Bild des Chart.js-Pace-Charts
+  s=p.addSlide(); s.background={color:"FFFFFF"};
+  s.addText(`Zielpacing-Verlauf — Zielerreichung über das Jahr (2026 bis ${stich})`,{x:0.6,y:0.45,w:12,h:0.6,fontFace:"Georgia",fontSize:22,color:NAVY,bold:true});
+  try{
+    const pimg=chP.toBase64Image("image/png",1);
+    const cw=chP.canvas.width||1200, chh=chP.canvas.height||450;
+    const iw=12.3, ih=Math.min(5.2, iw*chh/cw);
+    s.addImage({data:pimg, x:(13.333-iw)/2, y:1.55, w:iw, h:ih});
+  }catch(e){ s.addText("Pacing-Verlauf konnte nicht eingebettet werden.",{x:0.6,y:2,w:10,h:0.5,fontSize:12,color:MUT}); }
+  s.addText('2025 (÷ 24,5 Mio €) vs. 2026 festgeschrieben (÷ 30,7 Mio €) · „Ziel = 100 %". 2025 hat das Jahresziel übererfüllt → Linie über 100 %.',
+    {x:0.6,y:6.75,w:12,h:0.4,fontFace:"Calibri",fontSize:10,italic:true,color:MUT});
+
+  // S6 Kombi-Übersicht: Monatsdiagramm + Pacing als schmale Spalte
   s=p.addSlide(); s.background={color:"FFFFFF"};
   s.addText(`Übersicht — Monatsumsatz & Zielpacing (bis ${stich})`,{x:0.6,y:0.45,w:12,h:0.6,fontFace:"Georgia",fontSize:22,color:NAVY,bold:true});
   s.addChart(p.ChartType.bar,[{name:"2025",labels:MONTHS,values:S.MC.prev},{name:"2026",labels:MONTHS,values:S.MC.cur.map(v=>v==null?0:v)}],
@@ -289,11 +350,11 @@ function dlPptx(){
     s.addText(pct.toLocaleString("de-DE",{maximumFractionDigits:1})+" %",{x:9.1,y,w:3.45,h:0.3,fontFace:"Calibri",fontSize:13,bold:true,color:col,align:"right"});
     s.addShape(p.ShapeType.rect,{x:9.1,y:y+0.34,w:3.45,h:0.2,fill:{color:"E3E8EE"}});
     s.addShape(p.ShapeType.rect,{x:9.1,y:y+0.34,w:Math.max(0.02,3.45*Math.min(100,pct)/100),h:0.2,fill:{color:col}});};
-  mbar(0,"2026 real",S.realPct,CUR);
-  mbar(1,"2026 bereinigt",S.adjPct,ADJ);
+  mbar(0,"2026 festgeschr.",S.festPct,CUR);
+  mbar(1,"2026 AWIN-roh",S.rohPct,"7BA7D4");
   mbar(2,"2025 z. Stichtag",S.prevPct,"9AA3AD");
   s.addText([{text:"Fazit: ",options:{bold:true,color:NAVY}},
-    {text:`${ppf(S.dAdj)} ${S.dAdj>=0?"vor":"hinter"} VJ (bereinigt)`,options:{bold:true,color:S.dAdj>=0?POS:NEG}}],
+    {text:`${ppf(S.dFest)} ${S.dFest>=0?"vor":"hinter"} VJ (festgeschr.)`,options:{bold:true,color:S.dFest>=0?POS:NEG}}],
     {x:9.1,y:5.7,w:3.5,h:0.8,fontFace:"Calibri",fontSize:12,valign:"top"});
 
   p.writeFile({fileName:`MeinSchiff_9127_YoY_bis_${S.cut}.pptx`});
