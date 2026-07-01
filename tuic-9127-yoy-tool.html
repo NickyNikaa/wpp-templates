@@ -88,6 +88,12 @@
   </div>
 
   <div class="card">
+    <h2>Zielerreichung absolut — 2025 vs. 2026 (€)</h2>
+    <p class="csub">Erreichter Umsatz (YTD taggleich) auf der €-Achse · rote Marke = Jahresziel je Jahr (2025 = 24,5 Mio €, 2026 = 30,7 Mio €) · 2026 inkl. Fixkompensation</p>
+    <canvas id="chBul" height="120"></canvas>
+  </div>
+
+  <div class="card">
     <table><thead><tr><th>Monat</th><th id="hPrev">Vorjahr</th><th id="hCur">Aktuell</th><th>Δ YoY</th></tr></thead>
     <tbody id="tb"></tbody></table>
     <div class="foot" id="foot"></div>
@@ -110,7 +116,7 @@ const T25=DATA.targets["2025"], T26=DATA.targets["2026"];
 // Beträge hier justierbar:
 const COMP_CFG={
   1:{amount:1300000, from:"01-01", to:"01-31"},   // Januar-Ausfall (+306 Sales, informativ)
-  2:{amount:160000,  from:"02-01", to:"02-08"},   // Rest-Ausfall bis ~08.02.
+  2:{amount:145000,  from:"02-01", to:"02-08"},   // Rest-Ausfall bis ~08.02.
   4:{amount:312000,  from:"04-20", to:"04-30"},   // Standardlink-Defekt ab 20.04.
   5:{amount:832571,  from:"05-01", to:"05-31"},   // Standardlink-Defekt Mai
 };
@@ -153,16 +159,18 @@ function monthly(cm,cd){   // taggleich, Jan..cm — für Tabelle/YTD (2026 = fe
   return {prev,cur};
 }
 
-function monthlyChart(cm,cd){   // Jan–Dez: 2025 ganzes Jahr, 2026 festgeschrieben bis Stichtag
-  const prev=[],cur=[],partial=[],fixed=[];
+function monthlyChart(cm,cd){   // Jan–Dez: 2025 ganzes Jahr; 2026 in Live + Fixkomp. getrennt, bis Stichtag
+  const prev=[],cur=[],live=[],comp=[],partial=[],fixed=[];
   for(let m=1;m<=12;m++){const mm=String(m).padStart(2,"0");
     let s25=0; for(const k in DATA.d2025){if(k.slice(0,2)===mm)s25+=DATA.d2025[k];}
     prev.push(s25); fixed.push(isFixed(m));
-    if(m<cm){let s26=0;for(const k in F2026){if(k.slice(0,2)===mm)s26+=F2026[k];}cur.push(s26);partial.push(false);}
-    else if(m===cm){let s26=0;for(const k in F2026){if(k.slice(0,2)===mm){const day=+k.slice(3,5);if(day<=cd)s26+=F2026[k];}}cur.push(s26);partial.push(true);}
-    else{cur.push(null);partial.push(false);}
+    if(m<=cm){let l=0,c=0;
+      for(const k in F2026){if(k.slice(0,2)===mm){const day=+k.slice(3,5); if(m<cm||day<=cd){
+        const lv=DATA.d2026[k]||0; l+=lv; c+=(F2026[k]-lv);}}}
+      live.push(l); comp.push(c); cur.push(l+c); partial.push(m===cm);
+    } else { live.push(null); comp.push(null); cur.push(null); partial.push(false); }
   }
-  return {prev,cur,partial,fixed};
+  return {prev,cur,live,comp,partial,fixed};
 }
 
 function cumulativeDaily(cm,cd){   // ganzes Jahr: 2025 voll, 2026 festgeschrieben bis Stichtag dann null
@@ -189,7 +197,7 @@ function paceCurve(cm,cd){   // Zielerreichung-Verlauf in %: 2025 ganzes Jahr ÷
   return {labels,p25,p26};
 }
 
-let chM,chD,chP;
+let chM,chD,chP,chB;
 function render(){
   const cut=document.getElementById("cut").value; if(!cut)return;
   const cm=+cut.slice(5,7), cd=+cut.slice(8,10);
@@ -221,18 +229,19 @@ function render(){
   const vcol=dFest>=0?"var(--pos)":"var(--neg)";
   document.getElementById("verdict").innerHTML=`<b>Pace-Fazit:</b> 2026 liegt <b style="color:${vcol}">${ppf(dFest)}</b> ${dFest>=0?"vor":"hinter"} Vorjahr (inkl. Fixkompensation). Ohne Kompensation (reine Live-Werte) wären es ${ppf(dRoh)}. Fixkompensation gesamt: +${mio(COMP_TOTAL)} (Jan-Ausfall, Feb-Rest bis 08.02., Apr/Mai Standardlink-Defekt).`;
 
-  // Monthly chart — Jan–Dez: 2025 ganzes Jahr, 2026 festgeschrieben bis Stichtag
+  // Monthly chart — 2025 als eigener Balken; 2026 gestapelt (Live + Fixkomp. in anderer Farbe)
   const MC=monthlyChart(cm,cd);
-  const cur26cols=MC.cur.map((v,i)=>MC.partial[i]?"#7ba7d4":"#0a4d8c");
-  const cur26bord=MC.fixed.map((f,i)=>(f&&MC.cur[i]!=null)?"#08243b":"rgba(0,0,0,0)");
+  const liveCols=MC.live.map((v,i)=>MC.partial[i]?"#7ba7d4":"#0a4d8c");
   if(chM)chM.destroy();
   chM=new Chart(document.getElementById("chMonth"),{type:"bar",
     data:{labels:MONTHS,datasets:[
-      {label:"2025 (Vorjahr)",data:MC.prev,backgroundColor:"#c0c6cf",borderRadius:3},
-      {label:"2026 (＋Fixkomp. Jan/Feb/Apr/Mai)",data:MC.cur,backgroundColor:cur26cols,borderColor:cur26bord,borderWidth:1.5,borderRadius:3}]},
+      {label:"2025",data:MC.prev,backgroundColor:"#c0c6cf",stack:"vj",borderRadius:2},
+      {label:"2026 Live",data:MC.live,backgroundColor:liveCols,stack:"akt",borderRadius:2},
+      {label:"2026 Fixkomp.",data:MC.comp,backgroundColor:"#e8a838",stack:"akt",borderRadius:2}]},
     options:{responsive:true,plugins:{legend:{position:"bottom"},
-      tooltip:{callbacks:{label:c=>{let t=c.dataset.label.split(" ")[0]+": "+eur(c.parsed.y);if(c.datasetIndex===1){if(MC.fixed[c.dataIndex])t+=" (inkl. Fixkomp.)";if(MC.partial[c.dataIndex])t+=` (Live, bis ${cd}.)`;}return t;}}}},
-      scales:{x:{grid:{display:false}},y:{ticks:{callback:v=>new Intl.NumberFormat("de-DE",{notation:"compact"}).format(v)+" €"},grid:{color:"#eef1f5"}}}}});
+      tooltip:{callbacks:{label:c=>c.parsed.y==null?null:c.dataset.label+": "+eur(c.parsed.y),
+        footer:items=>{const i=items[0].dataIndex;const t=(MC.live[i]||0)+(MC.comp[i]||0);return MC.comp[i]>0?"Gesamt 2026: "+eur(t):"";}}}},
+      scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,ticks:{callback:v=>new Intl.NumberFormat("de-DE",{notation:"compact"}).format(v)+" €"},grid:{color:"#eef1f5"}}}}});
 
   // Daily cumulative chart — ganzes Jahr, 2025 voll, 2026-Linie endet am Stichtag
   const D=cumulativeDaily(cm,cd);
@@ -261,6 +270,20 @@ function render(){
     plugins:[{id:"goal100",afterDraw(c){const y=c.scales.y.getPixelForValue(100);if(isNaN(y))return;const{left,right}=c.chartArea,x=c.ctx;
       x.save();x.strokeStyle="#16a34a";x.setLineDash([6,4]);x.lineWidth=1.5;x.beginPath();x.moveTo(left,y);x.lineTo(right,y);x.stroke();
       x.setLineDash([]);x.fillStyle="#16a34a";x.font="11px sans-serif";x.fillText("Ziel = 100 %",left+6,y-5);x.restore();}}]});
+
+  // Zielerreichung absolut — horizontaler Balken mit Zielmarke je Jahr
+  const goals=[T25,T26], achieved=[ytd25,ytd26];
+  if(chB)chB.destroy();
+  chB=new Chart(document.getElementById("chBul"),{type:"bar",
+    data:{labels:["2025","2026"],datasets:[{label:"Erreicht (YTD)",data:achieved,backgroundColor:["#9aa3ad","#0a4d8c"],borderRadius:4,barPercentage:0.5}]},
+    options:{indexAxis:"y",responsive:true,layout:{padding:{top:16}},
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>eur(c.parsed.x)+"  ("+(c.parsed.x/goals[c.dataIndex]*100).toLocaleString("de-DE",{maximumFractionDigits:1})+" % vom Ziel)"}}},
+      scales:{x:{min:0,max:32000000,ticks:{callback:v=>(v/1e6).toLocaleString("de-DE")+" Mio"},grid:{color:"#eef1f5"},title:{display:true,text:"Umsatz (€)",color:"#6b7280"}},y:{grid:{display:false}}}},
+    plugins:[{id:"goalmark",afterDatasetsDraw(c){const xs=c.scales.x,meta=c.getDatasetMeta(0),x=c.ctx;
+      goals.forEach((g,i)=>{const bar=meta.data[i];if(!bar)return;const gx=xs.getPixelForValue(g),y0=bar.y-bar.height/2-6,y1=bar.y+bar.height/2+6;
+        x.save();x.strokeStyle="#dc2626";x.lineWidth=3;x.beginPath();x.moveTo(gx,y0);x.lineTo(gx,y1);x.stroke();
+        x.fillStyle="#dc2626";x.font="bold 11px sans-serif";x.textAlign="center";
+        x.fillText("Ziel "+(g/1e6).toLocaleString("de-DE",{minimumFractionDigits:1,maximumFractionDigits:1})+" Mio",gx,y0-3);x.restore();});}}]});
 
   // Table
   document.getElementById("hPrev").textContent="2025";
