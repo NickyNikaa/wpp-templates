@@ -315,10 +315,7 @@ function dlPptx(){
   // S2 Monthly chart + YTD box
   s=p.addSlide(); s.background={color:"FFFFFF"};
   s.addText(`Monatsumsatz — 2025 vs. 2026 (Jan–Dez, 2026 bis ${stich})`,{x:0.6,y:0.45,w:9,h:0.6,fontFace:"Georgia",fontSize:22,color:NAVY,bold:true});
-  s.addChart(p.ChartType.bar,[{name:"2025",labels:MONTHS,values:S.MC.prev},{name:"2026",labels:MONTHS,values:S.MC.cur.map(v=>v==null?0:v)}],
-    {x:0.5,y:1.5,w:8.7,h:5.3,barDir:"col",chartColors:[PREV,CUR],chartArea:{fill:{color:"FFFFFF"}},
-     catAxisLabelColor:MUT,valAxisLabelColor:MUT,valGridLine:{color:LINE,size:0.5},catGridLine:{style:"none"},
-     showLegend:true,legendPos:"b",legendColor:NAVY});
+  try{const mimg=chM.toBase64Image("image/png",1);const cw=chM.canvas.width||1200,chh=chM.canvas.height||400;const iw=8.7,ih=Math.min(4.8,iw*chh/cw);s.addImage({data:mimg,x:0.5,y:1.7,w:iw,h:ih});}catch(e){}
   s.addShape(p.ShapeType.rect,{x:9.5,y:1.5,w:3.2,h:4.4,fill:{color:"F2F5F8"},line:{color:PREV,width:1}});
   const yoyTxt=S.yoy!=null?((S.yoy>=0?"+":"−")+Math.abs(S.yoy).toFixed(1).replace(".",",")+" % YoY"):"–";
   s.addText([
@@ -372,13 +369,17 @@ function dlPptx(){
   s.addText('2025 (÷ 24,5 Mio €) vs. 2026 inkl. Fixkompensation (÷ 30,7 Mio €) · „Ziel = 100 %". 2025 hat das Jahresziel übererfüllt → Linie über 100 %.',
     {x:0.6,y:6.75,w:12,h:0.4,fontFace:"Calibri",fontSize:10,italic:true,color:MUT});
 
-  // S6 Kombi-Übersicht: Monatsdiagramm + Pacing als schmale Spalte
+  // S6 Zielerreichung absolut (€) — Bild des Bullet-Charts
+  s=p.addSlide(); s.background={color:"FFFFFF"};
+  s.addText(`Zielerreichung absolut — 2025 vs. 2026 (€, bis ${stich})`,{x:0.6,y:0.45,w:12,h:0.6,fontFace:"Georgia",fontSize:22,color:NAVY,bold:true});
+  try{const bimg=chB.toBase64Image("image/png",1);const cw=chB.canvas.width||1200,chh=chB.canvas.height||360;const iw=11.5,ih=Math.min(4.8,iw*chh/cw);s.addImage({data:bimg,x:(13.333-iw)/2,y:1.7,w:iw,h:ih});}catch(e){s.addText("Diagramm konnte nicht eingebettet werden.",{x:0.6,y:2,w:10,h:0.5,fontSize:12,color:MUT});}
+  s.addText('Rote Marke = Jahresziel (2025 = 24,5 Mio € · 2026 = 30,7 Mio €). Balken = erreichter Umsatz YTD taggleich; 2026 inkl. Fixkompensation.',
+    {x:0.6,y:6.7,w:12,h:0.4,fontFace:"Calibri",fontSize:10,italic:true,color:MUT});
+
+  // S7 Kombi-Übersicht: Monatsdiagramm + Pacing als schmale Spalte
   s=p.addSlide(); s.background={color:"FFFFFF"};
   s.addText(`Übersicht — Monatsumsatz & Zielpacing (bis ${stich})`,{x:0.6,y:0.45,w:12,h:0.6,fontFace:"Georgia",fontSize:22,color:NAVY,bold:true});
-  s.addChart(p.ChartType.bar,[{name:"2025",labels:MONTHS,values:S.MC.prev},{name:"2026",labels:MONTHS,values:S.MC.cur.map(v=>v==null?0:v)}],
-    {x:0.4,y:1.55,w:8.2,h:5.1,barDir:"col",chartColors:[PREV,CUR],chartArea:{fill:{color:"FFFFFF"}},
-     catAxisLabelColor:MUT,catAxisLabelFontSize:9,valAxisLabelColor:MUT,valGridLine:{color:LINE,size:0.5},catGridLine:{style:"none"},
-     showLegend:true,legendPos:"b",legendColor:NAVY});
+  try{const mimg=chM.toBase64Image("image/png",1);const cw=chM.canvas.width||1200,chh=chM.canvas.height||400;const iw=8.2,ih=Math.min(4.6,iw*chh/cw);s.addImage({data:mimg,x:0.4,y:1.75,w:iw,h:ih});}catch(e){}
   s.addShape(p.ShapeType.rect,{x:8.85,y:1.55,w:3.95,h:5.1,fill:{color:"F2F5F8"},line:{color:PREV,width:1}});
   s.addText("Zielpacing",{x:9.1,y:1.72,w:3.4,h:0.35,fontFace:"Trebuchet MS",fontSize:13,color:MUT,charSpacing:2,bold:true});
   s.addText(`Ziel 2026 ${mio(T26)} · 2025 ${mio(T25)}`,{x:9.1,y:2.05,w:3.5,h:0.3,fontFace:"Calibri",fontSize:9.5,color:MUT});
