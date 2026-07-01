@@ -71,7 +71,7 @@
 
   <div class="card">
     <h2>Monatsumsatz — Vorjahr vs. aktuelles Jahr</h2>
-    <p class="csub">Januar–Dezember · 2025 komplett · 2026: AWIN-Live ＋ Fixkompensation für Jan/Apr/Mai (blau umrandet), sonst reine Live-Werte (laufender Monat hellblau) · exkl. Payback</p>
+    <p class="csub">Januar–Dezember · 2025 komplett · 2026: AWIN-Live ＋ Fixkompensation für Jan/Feb/Apr/Mai (blau umrandet), sonst reine Live-Werte (laufender Monat hellblau) · exkl. Payback</p>
     <canvas id="chMonth" height="140"></canvas>
   </div>
 
@@ -105,20 +105,29 @@ const T25=DATA.targets["2025"], T26=DATA.targets["2026"];
 //  • Januar: +1,3 Mio € (großer Tracking-Ausfall), verteilt proportional zur Live-Tagesform. (+306 Sales, nur informativ)
 //  • April/Mai: alter Klumpen 1,128 Mio € linear über 20.04.–31.05. (26.857 €/Tag) → April 11 Tage, Mai 31 Tage.
 // Feb/März und ab Juni: reine Live-Werte, kein Aufschlag.
-const COMP_JAN=1300000, COMP_JAN_SALES=306, COMP_LUMP=1128000;
-const COMP_MONTHS={1:true,4:true,5:true};
-const COMP={1:COMP_JAN, 4:COMP_LUMP/42*11, 5:COMP_LUMP/42*31};
-// Kompensierte Tageswerte 2026 = Live + Aufschlag
+// Fixe Tracking-Kompensation je Monat (€), verteilt proportional zur Live-Tagesform im Ausfall-Fenster.
+// Zwischenweg-Modell: Jan großer Ausfall · Feb Rest bis ~08.02. · Apr/Mai Standardlink-Defekt (ab 20.04.).
+// Beträge hier justierbar:
+const COMP_CFG={
+  1:{amount:1300000, from:"01-01", to:"01-31"},   // Januar-Ausfall (+306 Sales, informativ)
+  2:{amount:335000,  from:"02-01", to:"02-08"},   // Rest-Ausfall bis ~08.02.
+  4:{amount:450000,  from:"04-20", to:"04-30"},   // Standardlink-Defekt ab 20.04. (aufgestockt)
+  5:{amount:832571,  from:"05-01", to:"05-31"},   // Standardlink-Defekt Mai
+};
+const COMP={}, COMP_MONTHS={}; for(const m in COMP_CFG){COMP[+m]=COMP_CFG[m].amount;COMP_MONTHS[+m]=true;}
+const COMP_TOTAL=Object.values(COMP).reduce((a,b)=>a+b,0);
+const isFixed=m=>!!COMP_MONTHS[m];
+// Kompensierte Tageswerte 2026 = Live + Aufschlag (proportional zur Live-Tagesform im Fenster)
 const F2026=(function(){
   const out={}; for(const k in DATA.d2026) out[k]=DATA.d2026[k];
-  let janTot=0; for(const k in DATA.d2026){if(k.slice(0,2)==="01")janTot+=DATA.d2026[k];}
-  if(janTot>0){for(const k in DATA.d2026){if(k.slice(0,2)==="01")out[k]+=COMP_JAN*DATA.d2026[k]/janTot;}}
-  const per=COMP_LUMP/42;
-  for(let d=20;d<=30;d++){const key="04-"+String(d).padStart(2,"0");out[key]=(out[key]||0)+per;}
-  for(let d=1;d<=31;d++){const key="05-"+String(d).padStart(2,"0");out[key]=(out[key]||0)+per;}
+  for(const m in COMP_CFG){const c=COMP_CFG[m], mm=c.from.slice(0,2), keys=[];
+    for(let d=+c.from.slice(3,5); d<=+c.to.slice(3,5); d++) keys.push(mm+"-"+String(d).padStart(2,"0"));
+    let tot=0; for(const k of keys) tot+=DATA.d2026[k]||0;
+    if(tot>0){ for(const k of keys) out[k]=(out[k]||0)+c.amount*(DATA.d2026[k]||0)/tot; }
+    else { const per=c.amount/keys.length; for(const k of keys) out[k]=(out[k]||0)+per; }
+  }
   return out;
 })();
-const isFixed=m=>!!COMP_MONTHS[m];
 const eur=v=>v==null?"–":new Intl.NumberFormat("de-DE",{maximumFractionDigits:0}).format(v)+" €";
 const mio=v=>v==null?"–":(v/1e6).toLocaleString("de-DE",{minimumFractionDigits:2,maximumFractionDigits:2})+" Mio €";
 const pf=x=>(x>0?"+":"−")+Math.abs(x).toLocaleString("de-DE",{minimumFractionDigits:1,maximumFractionDigits:1})+" %";
@@ -192,7 +201,7 @@ function render(){
   const festPct=ytd26/T26*100, rohPct=ytd26roh/T26*100, prevPct=ytd25/T25*100;
   const dFest=festPct-prevPct, dRoh=rohPct-prevPct;
 
-  document.getElementById("meta").textContent=`Vorjahresvergleich 01.01.–${deDate(cut)} (taggleich) · exkl. Payback · 2026 = AWIN-Live + Fixkompensation (Jan +1,3 Mio, Apr/Mai = Split von 1,128 Mio) · Datenstand ${deDate(today)}`;
+  document.getElementById("meta").textContent=`Vorjahresvergleich 01.01.–${deDate(cut)} (taggleich) · exkl. Payback · 2026 = AWIN-Live + Fixkompensation (Jan/Feb/Apr/Mai, gesamt ${mio(COMP_TOTAL)}) · Datenstand ${deDate(today)}`;
 
   // KPIs
   document.getElementById("kpis").innerHTML=`
@@ -206,11 +215,11 @@ function render(){
     return `<div class="pacebar"><div class="top"><span style="font-weight:600">${lbl}</span><span style="font-weight:700;color:${col}">${pct.toLocaleString("de-DE",{maximumFractionDigits:1})} %</span></div>
       <div class="track"><div class="fill" style="width:${w}%;background:${col}"></div></div><div class="cap">${cap}</div></div>`;};
   document.getElementById("pace").innerHTML=
-    bar("2026 inkl. Fixkompensation",festPct,`${mio(ytd26)} von ${mio(T26)} · Live + Fixkomp. (Jan +1,3 Mio · Apr/Mai +1,128 Mio)`,"#0a4d8c")+
+    bar("2026 inkl. Fixkompensation",festPct,`${mio(ytd26)} von ${mio(T26)} · Live + Fixkomp. (Jan ${mio(COMP[1])} · Feb ${mio(COMP[2])} · Apr ${mio(COMP[4])} · Mai ${mio(COMP[5])})`,"#0a4d8c")+
     bar("2026 AWIN-Live (roh)",rohPct,`${mio(ytd26roh)} von ${mio(T26)} · reine Live-Werte, ohne Kompensation`,"#7ba7d4")+
     bar("2025 zum gleichen Stichtag",prevPct,`${mio(ytd25)} von ${mio(T25)}`,"#9aa3ad");
   const vcol=dFest>=0?"var(--pos)":"var(--neg)";
-  document.getElementById("verdict").innerHTML=`<b>Pace-Fazit:</b> 2026 liegt <b style="color:${vcol}">${ppf(dFest)}</b> ${dFest>=0?"vor":"hinter"} Vorjahr (inkl. Fixkompensation). Ohne Kompensation (reine Live-Werte) wären es ${ppf(dRoh)}. Fixkompensation gesamt: +${mio(COMP[1]+COMP[4]+COMP[5])} (Januar-Ausfall + April/Mai-Split).`;
+  document.getElementById("verdict").innerHTML=`<b>Pace-Fazit:</b> 2026 liegt <b style="color:${vcol}">${ppf(dFest)}</b> ${dFest>=0?"vor":"hinter"} Vorjahr (inkl. Fixkompensation). Ohne Kompensation (reine Live-Werte) wären es ${ppf(dRoh)}. Fixkompensation gesamt: +${mio(COMP_TOTAL)} (Jan-Ausfall, Feb-Rest bis 08.02., Apr/Mai Standardlink-Defekt).`;
 
   // Monthly chart — Jan–Dez: 2025 ganzes Jahr, 2026 festgeschrieben bis Stichtag
   const MC=monthlyChart(cm,cd);
@@ -220,7 +229,7 @@ function render(){
   chM=new Chart(document.getElementById("chMonth"),{type:"bar",
     data:{labels:MONTHS,datasets:[
       {label:"2025 (Vorjahr)",data:MC.prev,backgroundColor:"#c0c6cf",borderRadius:3},
-      {label:"2026 (＋Fixkomp. Jan/Apr/Mai)",data:MC.cur,backgroundColor:cur26cols,borderColor:cur26bord,borderWidth:1.5,borderRadius:3}]},
+      {label:"2026 (＋Fixkomp. Jan/Feb/Apr/Mai)",data:MC.cur,backgroundColor:cur26cols,borderColor:cur26bord,borderWidth:1.5,borderRadius:3}]},
     options:{responsive:true,plugins:{legend:{position:"bottom"},
       tooltip:{callbacks:{label:c=>{let t=c.dataset.label.split(" ")[0]+": "+eur(c.parsed.y);if(c.datasetIndex===1){if(MC.fixed[c.dataIndex])t+=" (inkl. Fixkomp.)";if(MC.partial[c.dataIndex])t+=` (Live, bis ${cd}.)`;}return t;}}}},
       scales:{x:{grid:{display:false}},y:{ticks:{callback:v=>new Intl.NumberFormat("de-DE",{notation:"compact"}).format(v)+" €"},grid:{color:"#eef1f5"}}}}});
@@ -260,7 +269,7 @@ function render(){
   for(let i=0;i<cm;i++){const a=M.prev[i],b=M.cur[i],d=a?(b-a)/a*100:null,partial=(i+1===cm),fix=isFixed(i+1);
     tb.insertAdjacentHTML("beforeend",`<tr${fix?' style="background:#eef3fb"':''}><td>${MF[i]}${fix?` <span style="color:#2563b0;font-weight:600">＋Fixkomp. ${eur(COMP[i+1])}</span>`:''}${partial&&!fix?` (Live, bis ${cd}.)`:''}</td><td>${eur(a)}</td><td>${eur(b)}</td><td class="${d==null?'':(d>=0?'pos':'neg')}">${d==null?"–":pf(d)}</td></tr>`);}
   tb.insertAdjacentHTML("beforeend",`<tr class="ytd"><td>YTD 01.01.–${deDate(cut)}</td><td>${eur(ytd25)}</td><td>${eur(ytd26)}</td><td class="${yoy>=0?'pos':'neg'}">${yoy!=null?pf(yoy):"–"}</td></tr>`);
-  document.getElementById("foot").innerHTML="＋Fixkomp. = fixe Tracking-Kompensation auf den Live-Wert: Januar +1,3 Mio € (großer Ausfall, +306 Sales), April/Mai = Split des 1,128-Mio-Klumpens (linear 20.04.–31.05.). Alle übrigen Monate = reine AWIN-Live-Werte, netto, exkl. Payback (426667+469409). 2025 = AWIN netto. Laufender Monat taggleich gegen Vorjahr.";
+  document.getElementById("foot").innerHTML=`＋Fixkomp. = fixe Tracking-Kompensation auf den Live-Wert: Januar ${eur(COMP[1])} (großer Ausfall, +306 Sales), Februar ${eur(COMP[2])} (Rest bis ~08.02.), April ${eur(COMP[4])} + Mai ${eur(COMP[5])} (Standardlink-Defekt ab 20.04.). Übrige Monate = reine AWIN-Live-Werte, netto, exkl. Payback (426667+469409). 2025 = AWIN netto. Laufender Monat taggleich gegen Vorjahr.`;
 
   window._S={cut,cm,cd,M,MC,D,PC,ytd26,ytd26roh,ytd25,yoy,festPct,rohPct,prevPct,dFest,dRoh};
 }
@@ -317,7 +326,7 @@ function dlPptx(){
     s.addShape(p.ShapeType.rect,{x:0.6,y:y+0.45,w:12.1,h:0.32,fill:{color:"E3E8EE"}});
     s.addShape(p.ShapeType.rect,{x:0.6,y:y+0.45,w:Math.max(0.02,12.1*Math.min(100,pct)/100),h:0.32,fill:{color:col}});
     s.addText(cap,{x:0.6,y:y+0.82,w:12,h:0.35,fontFace:"Calibri",fontSize:11,color:MUT});};
-  pbar(0,"2026 inkl. Fixkompensation",S.festPct,`${mio(S.ytd26)} von ${mio(T26)} · Live + Fixkomp. (Jan +1,3 Mio · Apr/Mai +1,128 Mio)`,CUR);
+  pbar(0,"2026 inkl. Fixkompensation",S.festPct,`${mio(S.ytd26)} von ${mio(T26)} · Live + Fixkomp. gesamt ${mio(COMP_TOTAL)} (Jan/Feb/Apr/Mai)`,CUR);
   pbar(1,"2026 AWIN-Live (roh)",S.rohPct,`${mio(S.ytd26roh)} von ${mio(T26)} · reine Live-Werte, ohne Kompensation`,"7BA7D4");
   pbar(2,"2025 zum gleichen Stichtag",S.prevPct,`${mio(S.ytd25)} von ${mio(T25)}`,"9AA3AD");
   const vcol=S.dFest>=0?POS:NEG;
@@ -325,7 +334,7 @@ function dlPptx(){
     {text:"Pace-Fazit: ",options:{bold:true,color:NAVY}},
     {text:`2026 liegt ${ppf(S.dFest)} ${S.dFest>=0?"vor":"hinter"} Vorjahr (inkl. Fixkompensation); ohne Kompensation ${ppf(S.dRoh)}.`,options:{color:vcol,bold:true}},
   ],{x:0.6,y:6.2,w:12,h:0.5,fontFace:"Calibri",fontSize:14});
-  s.addText("2026 = AWIN-Live + fixe Tracking-Kompensation: Januar +1,3 Mio € (großer Ausfall), April/Mai = Split des 1,128-Mio-Klumpens (linear 20.04.–31.05.). Übrige Monate reine Live-Werte. Ziele exkl. Payback.",
+  s.addText(`2026 = AWIN-Live + fixe Tracking-Kompensation (gesamt ${mio(COMP_TOTAL)}): Jan ${mio(COMP[1])}, Feb ${mio(COMP[2])} (bis ~08.02.), Apr ${mio(COMP[4])}, Mai ${mio(COMP[5])}. Übrige Monate reine Live-Werte. Ziele exkl. Payback.`,
     {x:0.6,y:6.7,w:12,h:0.5,fontFace:"Calibri",fontSize:9,color:"95A3B6"});
 
   // S5 Zielpacing-Verlauf — Bild des Chart.js-Pace-Charts
