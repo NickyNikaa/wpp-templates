@@ -110,8 +110,8 @@ const T25=DATA.targets["2025"], T26=DATA.targets["2026"];
 // Beträge hier justierbar:
 const COMP_CFG={
   1:{amount:1300000, from:"01-01", to:"01-31"},   // Januar-Ausfall (+306 Sales, informativ)
-  2:{amount:335000,  from:"02-01", to:"02-08"},   // Rest-Ausfall bis ~08.02.
-  4:{amount:450000,  from:"04-20", to:"04-30"},   // Standardlink-Defekt ab 20.04. (aufgestockt)
+  2:{amount:160000,  from:"02-01", to:"02-08"},   // Rest-Ausfall bis ~08.02.
+  4:{amount:312000,  from:"04-20", to:"04-30"},   // Standardlink-Defekt ab 20.04.
   5:{amount:832571,  from:"05-01", to:"05-31"},   // Standardlink-Defekt Mai
 };
 const COMP={}, COMP_MONTHS={}; for(const m in COMP_CFG){COMP[+m]=COMP_CFG[m].amount;COMP_MONTHS[+m]=true;}
