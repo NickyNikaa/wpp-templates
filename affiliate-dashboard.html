@@ -56,6 +56,11 @@ details.method td{text-align:left;}
 .tabs button{background:transparent;border:0;padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer;color:var(--muted);font-family:inherit;}
 .tabs button.active{background:var(--accent);color:#fff;}
 .empty{font-size:13px;color:var(--muted);font-style:italic;padding:8px 0;}
+.clientbar{display:flex;flex-wrap:wrap;gap:8px;margin:2px 0 24px;}
+.clientbar button{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:9px 15px;font-size:14px;font-weight:600;cursor:pointer;color:var(--ink);font-family:inherit;box-shadow:var(--shadow);display:flex;align-items:center;gap:7px;transition:all .12s;}
+.clientbar button:hover{border-color:var(--accent);}
+.clientbar button.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+.clientname{color:var(--accent);}
 </style></head>
 <body><div class="wrap">
 <div class="brandbar"></div>
@@ -65,14 +70,17 @@ details.method td{text-align:left;}
  <div style="text-align:right"><div class="sub">Daten-Stand</div><div style="font-weight:700;font-size:14px" id="genstamp"></div></div>
 </header>
 
-<h2 class="sec">📊 Portfolio-Überblick <span class="tabs" style="margin-left:auto"><button data-w="30" class="active" onclick="setWin(30)">30 Tage</button><button data-w="7" onclick="setWin(7)">7 Tage</button></span></h2>
+<h2 class="sec">🧭 Kunde auswählen</h2>
+<div class="clientbar" id="clientbar"></div>
+
+<h2 class="sec">📊 Überblick · <span class="clientname" id="ovClient"></span> <span class="tabs" style="margin-left:auto"><button data-w="30" class="active" onclick="setWin(30)">30 Tage</button><button data-w="7" onclick="setWin(7)">7 Tage</button></span></h2>
 <div class="grid kpis" id="portfolio"></div>
 
-<h2 class="sec">⏱️ Tages-Reporting <span class="tabs" style="margin-left:auto"><button data-r="today" class="active" onclick="setRecap('today')">Heute</button><button data-r="yesterday" onclick="setRecap('yesterday')">Gestern</button><button data-r="last3" onclick="setRecap('last3')">Letzte 3 Tage</button></span></h2>
+<h2 class="sec">⏱️ Tages-Reporting · <span class="clientname" id="rcClient"></span> <span class="tabs" style="margin-left:auto"><button data-r="today" class="active" onclick="setRecap('today')">Heute</button><button data-r="yesterday" onclick="setRecap('yesterday')">Gestern</button><button data-r="last3" onclick="setRecap('last3')">Letzte 3 Tage</button></span></h2>
 <div class="sub" id="recapNote" style="margin:-8px 0 12px;font-size:12.5px;color:var(--muted)"></div>
 <div class="grid kpis" id="recapKpis"></div>
 <div id="recapMoves" style="margin-top:14px"></div>
-<details class="method" id="recapProgWrap" style="margin-top:14px"><summary>Aufschlüsselung je Kunde</summary>
+<details class="method" id="recapProgWrap" style="margin-top:14px"><summary>Alle Kunden im Vergleich (dieser Zeitraum)</summary>
 <table id="recapProgTable"></table></details>
 
 <h2 class="sec">🚨 Tracking-Alarm & Auffälligkeiten</h2>
@@ -122,14 +130,22 @@ const pctf=v=>(v>=0?'+':'')+v.toFixed(1)+'%';
 function arrow(v){if(v===null||v===undefined)return '<span class="flat">– neu</span>';const c=v>1?'up':(v<-1?'down':'flat');const g=v>1?'▲':(v<-1?'▼':'■');return '<span class="'+c+'">'+g+' '+pctf(v)+'</span>';}
 
 let WIN=30;
-function setWin(w){WIN=w;document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('active',+b.dataset.w===w));renderPortfolio();}
-
+let CLIENT=ORDER.find(k=>D.programs[k]);
+function setWin(w){WIN=w;document.querySelectorAll('[data-w]').forEach(b=>b.classList.toggle('active',+b.dataset.w===w));renderPortfolio();}
+function setClient(k){CLIENT=k;document.querySelectorAll('[data-c]').forEach(b=>b.classList.toggle('active',b.dataset.c===k));renderPortfolio();renderRecap();}
+function renderClientBar(){
+ document.getElementById('clientbar').innerHTML=ORDER.filter(k=>D.programs[k]).map(k=>
+  '<button data-c="'+k+'" class="'+(k===CLIENT?'active':'')+'" onclick="setClient(''+k+'')">'+(ICON[k]||'')+' '+D.programs[k].label+'</button>').join('');
+}
 function renderPortfolio(){
- const k = WIN===30?D.portfolio.k30:D.portfolio.k7;
- const d = WIN===30?D.portfolio.delta30:D.portfolio.delta7;
+ const p=D.programs[CLIENT];
+ document.getElementById('ovClient').textContent=p.label;
+ const k=WIN===30?p.kpi30:p.kpi7;
+ const w=WIN===30?p.w.last30:p.w.last7;
+ const d=WIN===30?p.delta30:p.delta7;
  const cards=[
-  ['Umsatz',eur(k.val),d.val],['Provision',eur(k.comm),d.comm],
-  ['Sales',intf(k.sales),d.sales],['Klicks',intf(k.clicks),d.clicks],
+  ['Umsatz',eur(w.val),d.val],['Provision',eur(w.comm),d.comm],
+  ['Sales',intf(w.sales),d.sales],['Klicks',intf(w.clicks),d.clicks],
   ['CR',k.cr.toFixed(2)+'%',null],['EPC',eur2(k.epc),null],
   ['AOV',eur(k.aov),null],['Stornoquote',k.storno.toFixed(1)+'%',null]
  ];
@@ -148,27 +164,29 @@ const RNOTE={today:'Heute bisher (läuft noch) – Vergleich zum 7-Tage-Tagessch
  last3:'Summe der letzten 3 Tage – Vergleich zu den 3 Tagen davor.'};
 function baseLblFor(per){return per==='last3'?'vorige 3 Tage':'Ø 7-Tage/Tag';}
 function renderRecap(){
- if(!RC){document.getElementById('recapKpis').innerHTML='<div class="card"><span class="empty">Keine Tagesdaten verfügbar.</span></div>';return;}
- const per=RWIN, pf=RC.portfolio[per];
- const base=per==='last3'?RC.portfolio.prev3:RC.portfolio.avg7;
+ if(!RC||!RC.programs||!RC.programs[CLIENT]){document.getElementById('recapKpis').innerHTML='<div class="card"><span class="empty">Keine Tagesdaten verfügbar.</span></div>';return;}
+ const rp=RC.programs[CLIENT];
+ document.getElementById('rcClient').textContent=rp.label;
+ const per=RWIN, cur=rp[per];
+ const base=per==='last3'?rp.prev3:rp.avg7;
  const partial=per==='today', bl=baseLblFor(per);
  document.getElementById('recapNote').textContent=RNOTE[per];
- const cards=[['Umsatz',eur(pf.val),pctd(pf.val,base.val)],['Provision',eur(pf.comm),pctd(pf.comm,base.comm)],
-  ['Sales',intf(pf.sales),pctd(pf.sales,base.sales)],['Klicks',intf(pf.clicks),pctd(pf.clicks,base.clicks)]];
+ const cards=[['Umsatz',eur(cur.val),pctd(cur.val,base.val)],['Provision',eur(cur.comm),pctd(cur.comm,base.comm)],
+  ['Sales',intf(cur.sales),pctd(cur.sales,base.sales)],['Klicks',intf(cur.clicks),pctd(cur.clicks,base.clicks)]];
  document.getElementById('recapKpis').innerHTML=cards.map(c=>
   '<div class="card kpi"><div class="lbl">'+c[0]+'</div><div class="val">'+c[1]+'</div><div class="dl">'+
   (c[2]!==null?arrow(c[2])+' <span class="flat">vs. '+bl+'</span>':'<span class="flat">'+bl+'</span>')+
   (partial?' <span class="flat">· läuft noch</span>':'')+'</div></div>').join('');
- renderRecapMoves(per);
+ renderRecapMoves(per,rp.label);
  renderRecapTable(per);
 }
-function renderRecapMoves(per){
+function renderRecapMoves(per,label){
  const box=document.getElementById('recapMoves');
  const map={yesterday:'Gestern',last3:'3 Tage',today:null};
  const key=map[per];
  if(!key){box.innerHTML='<div class="alert"><div class="dot">⏳</div><div><div class="t">Heute läuft noch</div><div class="d">Starke Schwankungen werden für „Gestern" und „Letzte 3 Tage" ausgewiesen, sobald der Tag abgeschlossen ist.</div></div></div>';return;}
- const mv=(RC.moves||[]).filter(m=>m.period===key);
- if(!mv.length){box.innerHTML='<div class="card"><span class="empty">Keine auffälligen Schwankungen in diesem Zeitraum.</span></div>';return;}
+ const mv=(RC.moves||[]).filter(m=>m.period===key && m.prog===label);
+ if(!mv.length){box.innerHTML='<div class="card"><span class="empty">Keine auffälligen Schwankungen für '+label+' in diesem Zeitraum.</span></div>';return;}
  const bl=per==='last3'?'vorige 3 Tage':'Ø 7-Tage/Tag';
  box.innerHTML='<div style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:8px">⚡ Starke Schwankungen</div>'+mv.map(m=>{
   const val=m.fmt==='eur'?eur(m.cur):intf(m.cur), bas=m.fmt==='eur'?eur(m.base):intf(m.base);
@@ -236,6 +254,6 @@ function renderMix(){
    tooltip:{callbacks:{label:c=>c.label+': €'+c.raw.toLocaleString('de-DE')}}},cutout:'58%'}});
 }
 
-renderPortfolio();renderRecap();renderAlerts();renderScaling();renderProgs();renderNews();renderMix();
+renderClientBar();renderPortfolio();renderRecap();renderAlerts();renderScaling();renderProgs();renderNews();renderMix();
 </script>
 </body></html>
