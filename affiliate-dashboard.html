@@ -134,8 +134,10 @@ let CLIENT=ORDER.find(k=>D.programs[k]);
 function setWin(w){WIN=w;document.querySelectorAll('[data-w]').forEach(b=>b.classList.toggle('active',+b.dataset.w===w));renderPortfolio();}
 function setClient(k){CLIENT=k;document.querySelectorAll('[data-c]').forEach(b=>b.classList.toggle('active',b.dataset.c===k));renderPortfolio();renderRecap();}
 function renderClientBar(){
- document.getElementById('clientbar').innerHTML=ORDER.filter(k=>D.programs[k]).map(k=>
-  '<button data-c="'+k+'" class="'+(k===CLIENT?'active':'')+'" onclick="setClient(''+k+'')">'+(ICON[k]||'')+' '+D.programs[k].label+'</button>').join('');
+ const bar=document.getElementById('clientbar');
+ bar.innerHTML=ORDER.filter(k=>D.programs[k]).map(k=>
+  '<button data-c="'+k+'" class="'+(k===CLIENT?'active':'')+'">'+(ICON[k]||'')+' '+D.programs[k].label+'</button>').join('');
+ if(!bar.dataset.bound){bar.addEventListener('click',function(e){const b=e.target.closest('[data-c]');if(b)setClient(b.dataset.c);});bar.dataset.bound='1';}
 }
 function renderPortfolio(){
  const p=D.programs[CLIENT];
