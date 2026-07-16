@@ -89,7 +89,7 @@
 
   <div class="card">
     <h2>Zielerreichung absolut — 2025 vs. 2026 (€)</h2>
-    <p class="csub">Erreichter Umsatz (YTD taggleich), Balken nach Monaten gestapelt · gestrichelte Marke unten an der €-Achse = Jahresziel (2025 = 24,5 Mio €, 2026 = 30,7 Mio €) · 2026 inkl. Fixkompensation</p>
+    <p class="csub">Erreichter Umsatz (YTD taggleich), Balken nach Monaten gestapelt · gestrichelte Zielmarken oben über den Balken = Jahresziel (2025 = 24,5 Mio €, 2026 = 30,7 Mio €) · 2026 inkl. Fixkompensation</p>
     <canvas id="chBul" height="120"></canvas>
   </div>
 
@@ -271,7 +271,7 @@ function render(){
       x.save();x.strokeStyle="#16a34a";x.setLineDash([6,4]);x.lineWidth=1.5;x.beginPath();x.moveTo(left,y);x.lineTo(right,y);x.stroke();
       x.setLineDash([]);x.fillStyle="#16a34a";x.font="11px sans-serif";x.fillText("Ziel = 100 %",left+6,y-5);x.restore();}}]});
 
-  // Zielerreichung absolut — horizontale Balken, nach Monaten gestapelt; Zielmarken unten an der x-Achse
+  // Zielerreichung absolut — horizontale Balken, nach Monaten gestapelt; Zielmarken oben über den Balken
   const goals=[T25,T26];
   const nM=cm; // Monate bis Stichtag
   const monCol=i=>{const t=nM>1?i/(nM-1):0,r=Math.round(176-(176-10)*t),g=Math.round(200-(200-77)*t),b=Math.round(228-(228-140)*t);return `rgb(${r},${g},${b})`;};
@@ -280,18 +280,21 @@ function render(){
   if(chB)chB.destroy();
   chB=new Chart(document.getElementById("chBul"),{type:"bar",
     data:{labels:["2025","2026"],datasets:monDs},
-    options:{indexAxis:"y",responsive:true,layout:{padding:{bottom:26}},
-      plugins:{legend:{position:"top",labels:{boxWidth:12,font:{size:11}}},
+    options:{indexAxis:"y",responsive:true,layout:{padding:{top:44,bottom:26}},
+      plugins:{legend:{position:"bottom",labels:{boxWidth:12,font:{size:11}}},
         tooltip:{callbacks:{label:c=>c.dataset.label+": "+eur(c.parsed.x),
           footer:items=>{const row=items[0].dataIndex,tot=row===0?ytd25:ytd26;return "Gesamt: "+eur(tot)+" ("+(tot/goals[row]*100).toFixed(1).replace(".",",")+" % vom Ziel)";}}}},
       scales:{x:{stacked:true,min:0,max:33000000,ticks:{callback:v=>(v/1e6).toLocaleString("de-DE")+" Mio"},grid:{color:"#eef1f5"},title:{display:true,text:"Umsatz kumuliert (€) · Segmente = Monate",color:"#6b7280"}},
         y:{stacked:true,grid:{display:false}}}},
     plugins:[{id:"goalx",afterDraw(c){const xs=c.scales.x,ya=c.chartArea,x=c.ctx;
-      const cols=["#64748b","#16a34a"],labs=[`Ziel 2025: ${(T25/1e6).toLocaleString("de-DE",{minimumFractionDigits:1})} Mio`,`Ziel 2026: ${(T26/1e6).toLocaleString("de-DE",{minimumFractionDigits:1})} Mio`];
+      const cols=["#64748b","#16a34a"],labs=[`Ziel 2025: ${(T25/1e6).toLocaleString("de-DE",{minimumFractionDigits:1})} Mio €`,`Ziel 2026: ${(T26/1e6).toLocaleString("de-DE",{minimumFractionDigits:1})} Mio €`];
       goals.forEach((g,i)=>{const gx=xs.getPixelForValue(g);
-        x.save();x.strokeStyle=cols[i];x.setLineDash([5,3]);x.lineWidth=2;x.beginPath();x.moveTo(gx,ya.top);x.lineTo(gx,ya.bottom);x.stroke();
-        x.setLineDash([]);x.fillStyle=cols[i];x.font="bold 10px sans-serif";x.textAlign=gx>ya.right-90?"right":"center";
-        x.fillText(labs[i],Math.min(gx,ya.right),ya.bottom+18);x.restore();});}}]});
+        x.save();x.strokeStyle=cols[i];x.setLineDash([5,3]);x.lineWidth=2;x.beginPath();x.moveTo(gx,ya.top);x.lineTo(gx,ya.bottom);x.stroke();x.setLineDash([]);
+        x.font="bold 11px sans-serif";const tw=x.measureText(labs[i]).width,pad=5,boxH=16,ly=ya.top-(i===0?20:40);
+        const cx=Math.max(ya.left+tw/2+pad,Math.min(gx,ya.right-tw/2-pad));
+        x.strokeStyle=cols[i];x.lineWidth=1;x.beginPath();x.moveTo(gx,ya.top);x.lineTo(cx,ly+boxH);x.stroke();
+        x.fillStyle="rgba(255,255,255,0.95)";x.fillRect(cx-tw/2-pad,ly,tw+pad*2,boxH);x.strokeStyle=cols[i];x.lineWidth=1;x.strokeRect(cx-tw/2-pad,ly,tw+pad*2,boxH);
+        x.fillStyle=cols[i];x.textAlign="center";x.textBaseline="middle";x.fillText(labs[i],cx,ly+boxH/2+0.5);x.restore();});}}]});
 
   // Table
   document.getElementById("hPrev").textContent="2025";
@@ -381,7 +384,7 @@ function dlPptx(){
   s=p.addSlide(); s.background={color:"FFFFFF"};
   s.addText(`Zielerreichung absolut — 2025 vs. 2026 (€, bis ${stich})`,{x:0.6,y:0.45,w:12,h:0.6,fontFace:"Georgia",fontSize:22,color:NAVY,bold:true});
   try{const bimg=chB.toBase64Image("image/png",1);const cw=chB.canvas.width||1200,chh=chB.canvas.height||360;const iw=11.5,ih=Math.min(4.8,iw*chh/cw);s.addImage({data:bimg,x:(13.333-iw)/2,y:1.7,w:iw,h:ih});}catch(e){s.addText("Diagramm konnte nicht eingebettet werden.",{x:0.6,y:2,w:10,h:0.5,fontSize:12,color:MUT});}
-  s.addText('Gestrichelte Marke (unten) = Jahresziel (2025 = 24,5 Mio € · 2026 = 30,7 Mio €). Balken nach Monaten gestapelt = erreichter Umsatz YTD taggleich; 2026 inkl. Fixkompensation.',
+  s.addText('Gestrichelte Marke (oben) = Jahresziel (2025 = 24,5 Mio € · 2026 = 30,7 Mio €). Balken nach Monaten gestapelt = erreichter Umsatz YTD taggleich; 2026 inkl. Fixkompensation.',
     {x:0.6,y:6.7,w:12,h:0.4,fontFace:"Calibri",fontSize:10,italic:true,color:MUT});
 
   // S7 Kombi-Übersicht: Monatsdiagramm + Pacing als schmale Spalte
