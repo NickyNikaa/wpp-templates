@@ -1,0 +1,7 @@
+# Niemals committen: Secrets + absolute Rohdaten (bleiben lokal in WPP Media)
+.awin-credentials
+*.awin-credentials
+*credentials*
+.tuic_9127_daily_data.json
+tuic_9127_abs_data.json
+.DS_Store
