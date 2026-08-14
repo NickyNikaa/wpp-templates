@@ -281,8 +281,8 @@ function render(){
   if(chB)chB.destroy();
   chB=new Chart(document.getElementById("chBul"),{type:"bar",
     data:{labels:["2025","2026"],datasets:monDs},
-    options:{indexAxis:"y",responsive:true,layout:{padding:{top:30}},
-      plugins:{legend:{position:"top",labels:{boxWidth:12,font:{size:11}}},
+    options:{indexAxis:"y",responsive:true,layout:{padding:{top:52}},
+      plugins:{legend:{position:"bottom",labels:{boxWidth:12,font:{size:11}}},
         tooltip:{callbacks:{label:c=>c.dataset.label+": "+eur(c.parsed.x),
           footer:items=>{const row=items[0].dataIndex,tot=row===0?ytd25:ytd26;return "Gesamt: "+eur(tot)+" ("+(tot/goals[row]*100).toFixed(1).replace(".",",")+" % vom Ziel)";}}}},
       scales:{x:{stacked:true,min:0,max:33000000,ticks:{callback:v=>(v/1e6).toLocaleString("de-DE")+" Mio"},grid:{color:"#eef1f5"},title:{display:true,text:"Umsatz kumuliert (€) · Segmente = Monate",color:"#6b7280"}},
@@ -292,7 +292,7 @@ function render(){
       goals.forEach((g,i)=>{const gx=xs.getPixelForValue(g);
         x.save();x.strokeStyle=cols[i];x.setLineDash([5,3]);x.lineWidth=2;x.beginPath();x.moveTo(gx,ya.top);x.lineTo(gx,ya.bottom);x.stroke();x.setLineDash([]);
         x.font="bold 11px sans-serif";const txt=labs[i],padX=7,bh=18,tw=x.measureText(txt).width,bw=tw+padX*2,r=4;
-        let bx=Math.max(ya.left,Math.min(gx-bw,ya.right-bw)),by=ya.top-bh-5;
+        let bx=Math.max(ya.left,Math.min(gx-bw,ya.right-bw)),by=ya.top-bh-6-i*(bh+4);
         x.beginPath();x.moveTo(bx+r,by);x.arcTo(bx+bw,by,bx+bw,by+bh,r);x.arcTo(bx+bw,by+bh,bx,by+bh,r);x.arcTo(bx,by+bh,bx,by,r);x.arcTo(bx,by,bx+bw,by,r);x.closePath();
         x.fillStyle="#ffffff";x.fill();x.lineWidth=1;x.strokeStyle=cols[i];x.stroke();
         x.fillStyle=cols[i];x.textAlign="left";x.textBaseline="middle";x.fillText(txt,bx+padX,by+bh/2+0.5);x.restore();});}}]});
