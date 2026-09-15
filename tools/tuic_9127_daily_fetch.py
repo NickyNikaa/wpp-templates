@@ -2,7 +2,7 @@
 # Tägliche Umsätze TUIC DACH 9127, exkl. Payback (426667,469409), via Transactions-API.
 # Output: .tuic_9127_daily_data.json  (enthält ABSOLUTE Tageswerte — bleibt lokal, NICHT auf GitHub)
 
-import json, os, sys, urllib.request, datetime
+import json, os, sys, time, urllib.request, datetime
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 CRED = os.path.join(BASE, ".awin-credentials")
@@ -23,9 +23,6 @@ if not token and os.path.exists(CRED):
 if not token:
     print("NO_TOKEN"); sys.exit(1)
 
-import hashlib
-print("TOKEN_MD5", hashlib.md5(token.encode()).hexdigest(), "LEN", len(token), file=sys.stderr)
-
 today = datetime.date.today()
 
 def last_day(y, m):
@@ -43,13 +40,19 @@ def fetch_chunk(y, m):
            f"?startDate={start:%Y-%m-%d}T00:00:00&endDate={end:%Y-%m-%d}T23:59:59"
            f"&dateType=transaction&timezone=Europe/Berlin")
     req = urllib.request.Request(url, headers={"Authorization": f"Bearer {token}"})
-    try:
-        with urllib.request.urlopen(req, timeout=120) as r:
-            rows = json.load(r)
-    except urllib.error.HTTPError as e:
-        body = e.read().decode("utf-8", "replace")
-        print(f"HTTPError {e.code} for {y}-{m:02d}: {body}", file=sys.stderr)
-        raise
+    # AWIN erlaubt max. 20 Requests/Minute; bei 429 einmal ~65s warten und erneut versuchen.
+    for attempt in (1, 2):
+        try:
+            with urllib.request.urlopen(req, timeout=120) as r:
+                rows = json.load(r)
+            break
+        except urllib.error.HTTPError as e:
+            body = e.read().decode("utf-8", "replace")
+            print(f"HTTPError {e.code} for {y}-{m:02d}: {body}", file=sys.stderr)
+            if e.code == 429 and attempt == 1:
+                time.sleep(65)
+                continue
+            raise
     for t in rows:
         pid = int(t.get("publisherId", 0) or 0)
         if pid in EXCLUDE: continue
@@ -63,6 +66,7 @@ for y in (2025, 2026):
     for m in range(1, 13):
         if datetime.date(y, m, 1) > today: continue
         fetch_chunk(y, m)
+        time.sleep(3.5)  # bleibt unter AWINs Limit von 20 Requests/Minute
 
 daily = {k: round(v, 2) for k, v in sorted(daily.items())}
 out = {"advertiser": ADV, "excluded": sorted(EXCLUDE),
