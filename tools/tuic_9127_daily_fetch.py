@@ -56,7 +56,10 @@ def fetch_chunk(y, m):
     for t in rows:
         pid = int(t.get("publisherId", 0) or 0)
         if pid in EXCLUDE: continue
-        if (t.get("commissionStatus") or "").lower() == "declined": continue
+        # Whitelist statt Blacklist: AWIN kennt neben approved/pending/declined
+        # auch z.B. "deleted" (gelöschte/fehlerhafte Buchungen) — die dürfen
+        # genau wie declined NICHT mitgezählt werden. Nur approved+pending zählen.
+        if (t.get("commissionStatus") or "").lower() not in ("approved", "pending"): continue
         td = t.get("transactionDate","")[:10]
         if not td: continue
         amt = (t.get("saleAmount") or {}).get("amount", 0) or 0
