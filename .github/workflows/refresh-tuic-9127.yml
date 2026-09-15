@@ -50,6 +50,8 @@ jobs:
           if ! git diff --quiet -- tuic-9127-yoy-tool.html; then
             git add tuic-9127-yoy-tool.html
             git commit -m "Auto-Refresh AWIN-Daten 9127 [skip ci]"
+            git fetch origin main
+            git rebase origin/main
             git push
           else
             echo "Keine Änderungen an den Daten."
