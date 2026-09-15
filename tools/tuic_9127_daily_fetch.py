@@ -23,6 +23,9 @@ if not token and os.path.exists(CRED):
 if not token:
     print("NO_TOKEN"); sys.exit(1)
 
+import hashlib
+print("TOKEN_MD5", hashlib.md5(token.encode()).hexdigest(), "LEN", len(token), file=sys.stderr)
+
 today = datetime.date.today()
 
 def last_day(y, m):
