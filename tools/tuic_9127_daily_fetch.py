@@ -40,8 +40,13 @@ def fetch_chunk(y, m):
            f"?startDate={start:%Y-%m-%d}T00:00:00&endDate={end:%Y-%m-%d}T23:59:59"
            f"&dateType=transaction&timezone=Europe/Berlin")
     req = urllib.request.Request(url, headers={"Authorization": f"Bearer {token}"})
-    with urllib.request.urlopen(req, timeout=120) as r:
-        rows = json.load(r)
+    try:
+        with urllib.request.urlopen(req, timeout=120) as r:
+            rows = json.load(r)
+    except urllib.error.HTTPError as e:
+        body = e.read().decode("utf-8", "replace")
+        print(f"HTTPError {e.code} for {y}-{m:02d}: {body}", file=sys.stderr)
+        raise
     for t in rows:
         pid = int(t.get("publisherId", 0) or 0)
         if pid in EXCLUDE: continue
