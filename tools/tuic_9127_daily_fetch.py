@@ -1,20 +1,25 @@
 #!/usr/bin/env python3
 # Tägliche Umsätze TUIC DACH 9127, exkl. Payback (426667,469409), via Transactions-API.
 # Output: .tuic_9127_daily_data.json  (enthält ABSOLUTE Tageswerte — bleibt lokal, NICHT auf GitHub)
+
 import json, os, sys, urllib.request, datetime
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 CRED = os.path.join(BASE, ".awin-credentials")
-OUT  = os.path.join(BASE, ".tuic_9127_daily_data.json")
+OUT  = os.environ.get("DAILY_OUT", os.path.join(BASE, ".tuic_9127_daily_data.json"))
 EXCLUDE = {426667, 469409}
 ADV = 9127
 
-token = None
-with open(CRED) as f:
-    for line in f:
-        line = line.strip()
-        if line.startswith("AWIN_API_TOKEN"):
-            token = line.split("=", 1)[1].strip().strip('"').strip("'")
+# CI (GitHub Actions) liefert den Token als Umgebungsvariable (Secret).
+# Lokal auf dem Mac wird weiterhin die .awin-credentials-Datei gelesen.
+token = os.environ.get("AWIN_API_TOKEN")
+if not token and os.path.exists(CRED):
+    with open(CRED) as f:
+        for line in f:
+            line = line.strip()
+            if line.startswith("AWIN_API_TOKEN"):
+                token = line.split("=", 1)[1].strip().strip('"').strip("'")
+
 if not token:
     print("NO_TOKEN"); sys.exit(1)
 
@@ -25,6 +30,7 @@ def last_day(y, m):
     return nxt - datetime.timedelta(days=1)
 
 daily = {}   # 'YYYY-MM-DD' -> sale sum excl payback
+
 def fetch_chunk(y, m):
     start = datetime.date(y, m, 1)
     end = last_day(y, m)
@@ -56,6 +62,7 @@ out = {"advertiser": ADV, "excluded": sorted(EXCLUDE),
        "today": today.isoformat(), "daily": daily}
 with open(OUT, "w") as f:
     json.dump(out, f, indent=0, ensure_ascii=False)
+
 # Monatssummen zur Kontrolle
 mon = {}
 for k, v in daily.items():

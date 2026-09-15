@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 import json, re, os
 
-BASE = "/Users/nicoleemrich/Documents/Claude/Projects/WPP Media"
-html_path = os.path.join(BASE, "tuic-9127-yoy-tool.html")
-data_path = os.path.join(BASE, "tuic_9127_abs_data.json")
+BASE = os.environ.get("WPP_BASE", "/Users/nicoleemrich/Documents/Claude/Projects/WPP Media")
+html_path = os.environ.get("HTML_PATH", os.path.join(BASE, "tuic-9127-yoy-tool.html"))
+data_path = os.environ.get("ABS_DATA", os.path.join(BASE, "tuic_9127_abs_data.json"))
 
 with open(data_path) as f:
     data = json.load(f)
+
 compact = json.dumps(data, ensure_ascii=False, separators=(", ", ": "))
 
 with open(html_path) as f:

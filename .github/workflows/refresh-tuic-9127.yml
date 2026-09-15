@@ -1,0 +1,56 @@
+name: Refresh TUIC 9127 YoY-Daten
+
+on:
+  schedule:
+    # 02:15 UTC ≈ nachts in Europe/Berlin (CET/CEST)
+    - cron: '15 2 * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-tuic-9127
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: AWIN-Tagesdaten ziehen (2025 + 2026, netto, exkl. Payback)
+        env:
+          AWIN_API_TOKEN: ${{ secrets.AWIN_API_TOKEN }}
+          DAILY_OUT: ${{ runner.temp }}/tuic_9127_daily_data.json
+        run: python3 tools/tuic_9127_daily_fetch.py
+
+      - name: Absolute Werte regenerieren
+        env:
+          DAILY_SRC: ${{ runner.temp }}/tuic_9127_daily_data.json
+          ABS_DST: ${{ runner.temp }}/tuic_9127_abs_data.json
+        run: python3 tools/tuic_9127_regen_abs.py > /dev/null
+
+      - name: In HTML backen (nur const DATA-Block, Kompensationsmodell bleibt unangetastet)
+        env:
+          ABS_DATA: ${{ runner.temp }}/tuic_9127_abs_data.json
+          HTML_PATH: ${{ github.workspace }}/tuic-9127-yoy-tool.html
+        run: python3 tools/tuic_9127_bake.py
+
+      - name: Commit & Push (nur wenn sich etwas geändert hat)
+        run: |
+          git config user.name "tuic-9127-refresh-bot"
+          git config user.email "actions@users.noreply.github.com"
+          if ! git diff --quiet -- tuic-9127-yoy-tool.html; then
+            git add tuic-9127-yoy-tool.html
+            git commit -m "Auto-Refresh AWIN-Daten 9127 [skip ci]"
+            git push
+          else
+            echo "Keine Änderungen an den Daten."
+          fi

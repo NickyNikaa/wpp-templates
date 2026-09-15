@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 import json, os
 
-BASE = "/Users/nicoleemrich/Documents/Claude/Projects/WPP Media"
-src = os.path.join(BASE, ".tuic_9127_daily_data.json")
-dst = os.path.join(BASE, "tuic_9127_abs_data.json")
+BASE = os.environ.get("WPP_BASE", "/Users/nicoleemrich/Documents/Claude/Projects/WPP Media")
+src = os.environ.get("DAILY_SRC", os.path.join(BASE, ".tuic_9127_daily_data.json"))
+dst = os.environ.get("ABS_DST", os.path.join(BASE, "tuic_9127_abs_data.json"))
 
 with open(src) as f:
     raw = json.load(f)
