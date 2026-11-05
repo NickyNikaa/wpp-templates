@@ -44,6 +44,17 @@
   .pacebar .cap{font-size:11px;color:var(--muted);margin-top:3px}
   .verdict{margin-top:12px;padding:10px 12px;background:#f2f5f8;border-radius:8px;font-size:13px}
   .foot{color:var(--muted);font-size:12px;margin-top:14px;line-height:1.55}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  .seg button{background:#fff;border:0;padding:8px 13px;font-size:13px;cursor:pointer;font-family:inherit;color:var(--navy)}
+  .seg button.on{background:var(--navy);color:#fff;font-weight:600}
+  .chk{display:flex;gap:12px;flex-wrap:wrap;font-size:12.5px;margin-top:6px;color:var(--ink)}
+  .chk label{text-transform:none;letter-spacing:0;font-weight:500;font-size:12.5px;color:var(--ink);display:flex;align-items:center;gap:5px;margin:0;cursor:pointer}
+  .chk.off{opacity:.45;pointer-events:none}
+  .dot{display:inline-block;width:10px;height:10px;border-radius:2px}
+  .kpi.aus{background:#e9f6f4;border-color:#bfe6e1}
+  .kpi.aus .v{color:#0e7f77}
+  .method{font-size:12px;color:var(--muted);line-height:1.55;margin-top:10px}
+  .method b{color:var(--ink)}
 </style>
 </head>
 <body>
@@ -54,6 +65,13 @@
   <div class="controls">
     <div><label>Stichtag (bis einschließlich)</label><input type="date" id="cut"></div>
     <div><label>Schnellauswahl</label><div class="quick" id="quick"></div></div>
+    <div><label>Variante</label>
+      <div class="seg"><button id="vStd" class="on" onclick="setVariant(false)">Standard</button><button id="vAus" onclick="setVariant(true)">Mit Ausgleich</button></div>
+      <div class="chk off" id="ausChk">
+        <label><input type="checkbox" id="cPub" checked onchange="render()"><span class="dot" style="background:#14a39a"></span>Strukturelle Ausfälle (14 Publisher)</label>
+        <label><input type="checkbox" id="cIran" checked onchange="render()"><span class="dot" style="background:#7c5cbf"></span>Iran-Krieg (Orient)</label>
+      </div>
+    </div>
     <div class="dl">
       <button class="ghost" onclick="dlPng()">Charts als PNG</button>
       <button onclick="dlPptx()">PowerPoint herunterladen</button>
@@ -94,14 +112,21 @@
   </div>
 
   <div class="card">
-    <table><thead><tr><th>Monat</th><th id="hPrev">Vorjahr</th><th id="hCur">Aktuell</th><th>Δ YoY</th></tr></thead>
+    <table><thead id="th"><tr><th>Monat</th><th id="hPrev">Vorjahr</th><th id="hCur">Aktuell</th><th>Δ YoY</th></tr></thead>
     <tbody id="tb"></tbody></table>
     <div class="foot" id="foot"></div>
+  </div>
+
+  <div class="card" id="methodCard" style="display:none">
+    <h2>Methode geschätzter Ausgleich</h2>
+    <div class="method" id="methodTxt"></div>
   </div>
 </div>
 
 <script>
 const DATA = {"meta": {"label": "Mein Schiff DACH 9127", "today": "2026-11-05", "generatedAt": "2026-11-05T09:16:28", "note": "Absolute €-Tageswerte, exkl. Payback (426667+469409), netto (Stornos raus)"}, "targets": {"2025": 24500000, "2026": 30700000}, "corr": {"amount": 1128000, "from": "2026-04-20", "full_by": "2026-05-31", "note": "Cashback/Voucher-Cluster (Standardlink-Defekt ab 20.04.2026)"}, "d2025": {"01-01": 156942.2, "01-02": 53293.0, "01-03": 109227.2, "01-04": 91946.6, "01-05": 130998.4, "01-06": 130880.2, "01-07": 106294.2, "01-08": 74157.2, "01-09": 73951.2, "01-10": 106429.2, "01-11": 80991.4, "01-12": 135115.0, "01-13": 173353.2, "01-14": 130291.2, "01-15": 106403.4, "01-16": 94755.0, "01-17": 58693.2, "01-18": 143488.2, "01-19": 185629.0, "01-20": 88294.0, "01-21": 58161.6, "01-22": 46129.2, "01-23": 122723.0, "01-24": 110576.2, "01-25": 68849.0, "01-26": 134172.2, "01-27": 125834.2, "01-28": 53919.0, "01-29": 159685.0, "01-30": 75697.2, "01-31": 166975.4, "02-01": 57909.0, "02-02": 89771.6, "02-03": 88202.1, "02-04": 79903.0, "02-05": 68319.4, "02-06": 42300.2, "02-07": 66375.6, "02-08": 65591.0, "02-09": 77356.0, "02-10": 68881.2, "02-11": 37041.0, "02-12": 34283.0, "02-13": 51344.4, "02-14": 66651.0, "02-15": 109904.0, "02-16": 74510.0, "02-17": 109940.4, "02-18": 97020.8, "02-19": 53188.0, "02-20": 29510.0, "02-21": 43066.2, "02-22": 50611.0, "02-23": 73563.0, "02-24": 61523.2, "02-25": 52678.0, "02-26": 29502.0, "02-27": 52014.2, "02-28": 92159.6, "03-01": 75727.4, "03-02": 87723.0, "03-03": 49192.0, "03-04": 47711.0, "03-05": 52856.0, "03-06": 103524.4, "03-07": 51727.2, "03-08": 47234.0, "03-09": 69925.0, "03-10": 63924.0, "03-11": 73238.2, "03-12": 71739.0, "03-13": 47526.2, "03-14": 77867.56, "03-15": 56926.0, "03-16": 12896.0, "03-17": 100144.0, "03-18": 66025.2, "03-19": 32486.0, "03-20": 66297.0, "03-21": 38969.4, "03-22": 82607.6, "03-23": 186791.0, "03-24": 69279.0, "03-25": 103982.4, "03-26": 150314.3, "03-27": 33639.0, "03-28": 84927.0, "03-29": 45107.2, "03-30": 100688.4, "03-31": 59677.2, "04-01": 66137.0, "04-02": 60021.6, "04-03": 47774.0, "04-04": 31231.0, "04-05": 97332.2, "04-06": 172441.0, "04-07": 67427.85, "04-08": 34421.3, "04-09": 42665.0, "04-10": 72700.4, "04-11": 75509.2, "04-12": 47856.0, "04-13": 101618.15, "04-14": 81651.7, "04-15": 54873.0, "04-16": 32324.0, "04-17": 58242.0, "04-18": 69135.0, "04-19": 32351.0, "04-20": 88617.0, "04-21": 78970.0, "04-22": 122092.2, "04-23": 77094.8, "04-24": 68920.2, "04-25": 39137.3, "04-26": 41757.0, "04-27": 77634.65, "04-28": 51318.0, "04-29": 57106.8, "04-30": 60607.0, "05-01": 19548.2, "05-02": 91207.6, "05-03": 63381.2, "05-04": 83770.0, "05-05": 71687.3, "05-06": 64009.4, "05-07": 51189.0, "05-08": 71025.9, "05-09": 67346.2, "05-10": 52063.3, "05-11": 84454.0, "05-12": 120756.6, "05-13": 57667.8, "05-14": 54572.65, "05-15": 38899.2, "05-16": 75545.2, "05-17": 58212.4, "05-18": 72212.0, "05-19": 62306.4, "05-20": 57530.2, "05-21": 36602.0, "05-22": 54567.3, "05-23": 50616.0, "05-24": 43143.0, "05-25": 79991.1, "05-26": 45513.0, "05-27": 38154.2, "05-28": 29635.2, "05-29": 63005.4, "05-30": 103584.0, "05-31": 150730.0, "06-01": 63716.9, "06-02": 67604.5, "06-03": 66064.85, "06-04": 58576.0, "06-05": 32702.6, "06-06": 76132.99, "06-07": 61805.2, "06-08": 22994.4, "06-09": 96515.2, "06-10": 64399.4, "06-11": 42481.0, "06-12": 43152.2, "06-13": 43451.0, "06-14": 37948.0, "06-15": 33414.0, "06-16": 92757.7, "06-17": 27138.2, "06-18": 49041.0, "06-19": 35389.3, "06-20": 39040.85, "06-21": 63355.45, "06-22": 42861.2, "06-23": 69572.2, "06-24": 50041.2, "06-25": 22643.4, "06-27": 28413.0, "06-28": 3538.0, "06-29": 63314.0, "06-30": 25182.0, "07-01": 9296.0, "07-02": 21164.0, "07-03": 28796.3, "07-04": 41582.0, "07-05": 55062.0, "07-06": 114382.0, "07-07": 72853.0, "07-08": 28603.9, "07-09": 54100.2, "07-10": 67124.2, "07-11": 43007.2, "07-12": 27271.2, "07-13": 133251.0, "07-14": 61321.3, "07-15": 66695.29, "07-16": 70848.2, "07-17": 48257.2, "07-18": 44602.2, "07-19": 25319.2, "07-20": 100467.2, "07-21": 70301.4, "07-22": 55210.5, "07-23": 35873.0, "07-24": 52568.0, "07-25": 33611.0, "07-26": 41660.0, "07-27": 59412.4, "07-28": 32902.2, "07-29": 55346.0, "07-30": 45337.2, "07-31": 73100.2, "08-01": 54953.4, "08-02": 83631.2, "08-03": 101929.2, "08-04": 88154.0, "08-05": 87101.0, "08-06": 49547.0, "08-07": 61909.2, "08-08": 15897.0, "08-09": 28762.0, "08-10": 94740.2, "08-11": 60468.0, "08-12": 88846.0, "08-13": 64002.2, "08-14": 65711.2, "08-15": 73428.0, "08-16": 30311.0, "08-17": 131739.2, "08-18": 89404.0, "08-19": 88402.6, "08-20": 34472.0, "08-21": 90098.6, "08-22": 29311.0, "08-23": 80935.0, "08-24": 156133.6, "08-25": 72253.5, "08-26": 74636.6, "08-27": 53924.0, "08-28": 55328.8, "08-29": 78718.4, "08-30": 48899.0, "08-31": 90184.2, "09-01": 64424.2, "09-02": 102028.2, "09-03": 24470.0, "09-04": 86695.4, "09-05": 69165.36, "09-06": 62420.0, "09-07": 122749.2, "09-08": 129821.0, "09-09": 52608.2, "09-10": 94315.2, "09-11": 42614.2, "09-12": 81880.2, "09-13": 109290.0, "09-14": 110923.4, "09-15": 63641.0, "09-16": 84880.8, "09-17": 87338.4, "09-18": 50629.0, "09-19": 44120.4, "09-20": 61033.0, "09-21": 102675.2, "09-22": 75145.4, "09-23": 103029.4, "09-24": 89784.0, "09-25": 59380.0, "09-26": 80155.4, "09-27": 102761.0, "09-28": 208043.4, "09-29": 177728.6, "09-30": 258598.4, "10-01": 14686.2, "10-02": 35961.0, "10-03": 56010.0, "10-04": 88309.2, "10-05": 104102.4, "10-06": 83355.4, "10-07": 227348.4, "10-08": 78437.0, "10-09": 50339.6, "10-10": 91783.55, "10-11": 74051.2, "10-12": 91122.2, "10-13": 46484.4, "10-14": 88386.2, "10-15": 61555.4, "10-16": 95228.2, "10-17": 129961.4, "10-18": 63132.2, "10-19": 145070.2, "10-20": 95058.0, "10-21": 73682.4, "10-22": 70660.4, "10-23": 100631.0, "10-24": 55795.4, "10-25": 85649.0, "10-26": 145279.2, "10-27": 66244.0, "10-28": 96648.0, "10-29": 66830.6, "10-30": 62833.0, "10-31": 56352.0, "11-01": 58626.0, "11-02": 159110.2, "11-03": 61137.0, "11-04": 92437.4, "11-05": 47356.0, "11-06": 46940.0, "11-07": 43097.0, "11-08": 81037.0, "11-09": 170561.2, "11-10": 83347.4, "11-11": 82387.4, "11-12": 57217.8, "11-13": 48857.2, "11-14": 64917.0, "11-15": 46016.2, "11-16": 118428.2, "11-17": 74343.2, "11-18": 86971.2, "11-19": 169111.2, "11-20": 100442.0, "11-21": 101114.6, "11-22": 43197.0, "11-23": 145882.4, "11-24": 108263.0, "11-25": 133498.6, "11-26": 120046.8, "11-27": 96524.2, "11-28": 117462.0, "11-29": 87653.0, "11-30": 221182.4, "12-01": 61258.3, "12-02": 32554.0, "12-03": 54866.4, "12-04": 40679.0, "12-05": 28280.2, "12-06": 43016.4, "12-07": 96572.0, "12-08": 41723.4, "12-09": 6795.0, "12-10": 11238.0, "12-11": 55452.6, "12-12": 31774.0, "12-13": 11881.0, "12-14": 31709.0, "12-15": 49123.0, "12-16": 19332.0, "12-17": 30526.0, "12-18": 25269.0, "12-19": 39205.0, "12-20": 30327.0, "12-21": 58056.0, "12-22": 42796.0, "12-23": 26002.0, "12-24": 12760.0, "12-25": 33032.2, "12-26": 37391.0, "12-27": 47768.0, "12-28": 46386.0, "12-29": 77134.0, "12-30": 42988.4, "12-31": 31582.0}, "d2026": {"01-01": 22272.0, "01-02": 65923.0, "01-03": 60281.4, "01-04": 84661.2, "01-05": 57261.0, "01-06": 65149.0, "01-07": 49414.0, "01-08": 46113.0, "01-09": 67815.0, "01-10": 43875.0, "01-11": 129228.4, "01-12": 45604.0, "01-13": 49518.3, "01-14": 56446.2, "01-15": 17951.0, "01-16": 26972.0, "01-17": 57190.4, "01-18": 95990.0, "01-19": 58433.2, "01-20": 31434.2, "01-21": 51492.0, "01-22": 16919.6, "01-23": 35362.2, "01-24": 33870.0, "01-25": 100668.4, "01-26": 76447.0, "01-27": 52712.6, "01-28": 73453.0, "01-29": 42073.2, "01-30": 120379.0, "01-31": 176605.8, "02-01": 59968.2, "02-02": 46048.4, "02-03": 38276.0, "02-04": 70334.4, "02-05": 29648.0, "02-06": 30171.2, "02-07": 67230.2, "02-08": 118142.8, "02-09": 67637.2, "02-10": 31035.2, "02-11": 52406.4, "02-12": 52942.4, "02-13": 34813.0, "02-14": 57731.0, "02-15": 132402.0, "02-16": 63583.2, "02-17": 77449.2, "02-18": 57199.2, "02-19": 68941.2, "02-20": 87920.4, "02-21": 67218.6, "02-22": 128459.8, "02-23": 88169.2, "02-24": 27134.0, "02-25": 54546.2, "02-26": 102130.2, "02-27": 58516.0, "02-28": 78470.0, "03-01": 86737.0, "03-02": 33022.0, "03-03": 38275.0, "03-04": 37737.0, "03-05": 71820.4, "03-06": 43725.4, "03-07": 41448.4, "03-08": 96865.0, "03-09": 65399.0, "03-10": 41026.2, "03-11": 11788.0, "03-12": 45486.2, "03-13": 174452.65, "03-14": 217325.58, "03-15": 138747.0, "03-16": 54085.0, "03-17": 43449.0, "03-18": 50966.2, "03-19": 50977.0, "03-20": 22427.0, "03-21": 54817.2, "03-22": 29804.0, "03-23": 31259.2, "03-24": 73209.2, "03-25": 58627.0, "03-26": 31384.0, "03-27": 77748.6, "03-28": 138321.75, "03-29": 109391.0, "03-30": 26677.0, "03-31": 65146.0, "04-01": 102904.2, "04-02": 55942.2, "04-03": 63800.0, "04-04": 62407.2, "04-05": 49987.0, "04-06": 104909.6, "04-07": 119048.58, "04-08": 38348.0, "04-09": 60886.0, "04-10": 45229.0, "04-11": 24917.2, "04-12": 126083.2, "04-13": 52968.0, "04-14": 80604.4, "04-15": 81012.1, "04-16": 45710.2, "04-17": 67271.4, "04-18": 51568.0, "04-19": 51587.0, "04-20": 112331.0, "04-21": 114771.75, "04-22": 43210.2, "04-23": 156881.25, "04-24": 46185.0, "04-25": 42693.0, "04-26": 48226.4, "04-27": 34769.4, "04-28": 24280.0, "04-29": 24259.0, "04-30": 17707.0, "05-01": 19974.0, "05-02": 31929.2, "05-03": 36365.4, "05-04": 106630.73, "05-05": 96834.65, "05-06": 17024.0, "05-07": 59393.2, "05-08": 54139.0, "05-09": 15629.0, "05-10": 103766.8, "05-11": 52676.0, "05-12": 34242.2, "05-13": 3698.0, "05-14": 61435.2, "05-15": 51316.4, "05-16": 41269.0, "05-17": 62710.2, "05-18": 31660.0, "05-19": 37910.4, "05-20": 26270.0, "05-21": 11148.2, "05-22": 7134.0, "05-23": 7185.0, "05-24": 49075.0, "05-25": 36559.0, "05-26": 31409.0, "05-27": 50605.2, "05-28": 49082.2, "05-29": 66940.0, "05-30": 57213.2, "05-31": 155503.38, "06-01": 45145.0, "06-02": 48523.0, "06-03": 74031.2, "06-04": 43566.6, "06-05": 30360.0, "06-06": 38126.0, "06-07": 59026.0, "06-08": 53426.4, "06-09": 43235.2, "06-10": 43952.0, "06-11": 56479.78, "06-12": 55106.6, "06-13": 13265.0, "06-14": 48223.2, "06-15": 41659.6, "06-16": 29113.66, "06-17": 19567.0, "06-18": 29181.0, "06-19": 22636.0, "06-20": 25967.0, "06-21": 57511.0, "06-22": 53921.0, "06-23": 45167.2, "06-24": 45923.4, "06-25": 27439.7, "06-26": 30813.0, "06-27": 39480.0, "06-28": 54061.2, "06-29": 43606.0, "06-30": 18629.0, "07-01": 48291.75, "07-02": 49691.4, "07-03": 22399.2, "07-04": 19347.0, "07-05": 77635.2, "07-06": 44039.2, "07-07": 62002.2, "07-08": 37800.0, "07-09": 54482.2, "07-10": 39534.6, "07-11": 71662.0, "07-12": 92666.2, "07-13": 94198.2, "07-14": 57685.2, "07-15": 1558.0, "07-16": 25776.0, "07-17": 34783.0, "07-18": 55837.2, "07-19": 77750.6, "07-20": 61676.0, "07-21": 70645.6, "07-22": 36843.0, "07-23": 18786.0, "07-24": 30234.0, "07-25": 39361.0, "07-26": 94900.0, "07-27": 35791.0, "07-28": 69706.0, "07-29": 48851.2, "07-30": 24304.0, "07-31": 86446.0, "08-01": 49077.8, "08-02": 52611.6, "08-03": 29076.6, "08-04": 55666.0, "08-05": 35097.0, "08-06": 35330.2, "08-07": 38325.2, "08-08": 26446.99, "08-09": 43250.0, "08-10": 99341.2, "08-11": 45260.2, "08-12": 30507.2, "08-13": 45011.0, "08-14": 114556.0, "08-15": 31398.2, "08-16": 98824.0, "08-17": 81574.6, "08-18": 164491.2, "08-19": 51437.6, "08-20": 33550.0, "08-21": 63603.0, "08-22": 35168.0, "08-23": 72463.2, "08-24": 48167.0, "08-25": 42561.4, "08-26": 129913.2, "08-27": 15340.2, "08-28": 70388.2, "08-29": 62955.4, "08-30": 108421.4, "08-31": 107119.4, "09-01": 64900.0, "09-02": 36936.0, "09-03": 75180.6, "09-04": 76793.6, "09-05": 75479.0, "09-06": 81777.4, "09-07": 55563.0, "09-08": 76755.0, "09-09": 64370.2, "09-10": 35906.2, "09-11": 22818.2, "09-12": 47170.0, "09-13": 128064.4, "09-14": 68483.2, "09-15": 49873.4, "09-16": 68175.2, "09-17": 76531.0, "09-18": 70777.2, "09-19": 66606.8, "09-20": 107810.6, "09-21": 57827.0, "09-22": 59590.2, "09-23": 52826.2, "09-24": 47583.0, "09-25": 51663.0, "09-26": 60835.2, "09-27": 83843.4, "09-28": 72733.0, "09-29": 130557.8, "09-30": 153857.2, "10-01": 43344.0, "10-02": 64847.2, "10-03": 43291.2, "10-04": 82284.4, "10-05": 47582.4, "10-06": 73688.0, "10-07": 54687.2, "10-08": 82076.0, "10-09": 72575.0, "10-10": 106704.2, "10-11": 168216.4, "10-12": 121796.0, "10-13": 178293.4, "10-14": 48706.2, "10-15": 67411.2, "10-16": 75754.4, "10-17": 104381.0, "10-18": 115886.8, "10-19": 97497.4, "10-20": 149304.6, "10-21": 64908.0, "10-22": 120730.6, "10-23": 70916.2, "10-24": 53634.0, "10-25": 158877.0, "10-26": 190424.2, "10-27": 160115.8, "10-28": 103378.8, "10-29": 68001.94, "10-30": 103327.0, "10-31": 63224.2, "11-01": 77944.0, "11-02": 96032.0, "11-03": 138759.2, "11-04": 16210.2, "11-05": 4805.0}};
+Chart.defaults.animation=false;
+let FSC=1; // Schrift-Skalierung für Plugins (Export = größer)
 const MONTHS=["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"];
 const MF=["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"];
 const today=DATA.meta.today;
@@ -135,6 +160,40 @@ const F2026=(function(){
   }
   return out;
 })();
+// ───────── Geschätzter Ausgleich (Variante „Mit Ausgleich") ─────────
+// Wird NICHT auf die Standardwerte gebucht, sondern nur in der Variante „Mit Ausgleich" on top gezeigt.
+// Beträge je Monat in €, gleichmäßig auf die Tage des Fensters verteilt. Hier justierbar.
+// pub  = 14 Publisher mit Umsatz bis April, ab Mai um mind. 75 % eingebrochen (Monthly Sep 2026, Folie 10/11):
+//        Erwartung = Ø Monatsumsatz Jan–Apr 2026 x Saisonfaktor 2025; Ausgleich = Erwartung − Ist. Mai = Fixkomp., daher 0.
+//        Jun–Sep = 1.091.181 € (Folie 11), Okt bis 20.10. = 101 Tsd. € (Folie 10). Danach nicht fortgeschrieben (Rückkehr einiger Publisher).
+// iran = Iran-Krieg (ab ~01.03.2026), AWIN 9127 Custom-Parameter Reise-Region „Orient", netto, exkl. Payback:
+//        Jan/Feb: Orient-Buchungen 2026 nachträglich storniert → Umsatz bei normaler Netto-Quote (70,3 %, Orient Jan–Jun 2025) minus Ist.
+//        Ab März: Orient-Umsatz kommt auf 0 € → Ausgleich = Orient-Netto-Umsatz im Vorjahresmonat (ohne Wachstum).
+//        Umbuchungen auf andere Regionen sind im Ist bereits enthalten und nicht herausgerechnet. Datenstand 05.11.2026.
+const AUSG_CFG={
+  pub:{label:"Strukturelle Ausfälle (14 Publisher)",color:"#14a39a",months:{
+    6:{amount:209000},7:{amount:243000},8:{amount:312000},9:{amount:327181},
+    10:{amount:101000,from:"10-01",to:"10-20"}}},
+  iran:{label:"Iran-Krieg (Orient)",color:"#7c5cbf",months:{
+    1:{amount:114924},2:{amount:130760},3:{amount:92666},4:{amount:112651},5:{amount:191459},6:{amount:77730},
+    7:{amount:29286},8:{amount:170156},9:{amount:183821},10:{amount:290458},11:{amount:185254},12:{amount:46785}}}
+};
+const AUSG_DAY={}; // {pub:{"MM-DD":€}, iran:{...}}
+for(const key in AUSG_CFG){const out={};
+  for(const m in AUSG_CFG[key].months){const c=AUSG_CFG[key].months[m],mm=String(m).padStart(2,"0"),dim=new Date(2026,+m,0).getDate();
+    const f=c.from?+c.from.slice(3,5):1,t=c.to?+c.to.slice(3,5):dim,n=t-f+1;
+    for(let d=f;d<=t;d++){out[mm+"-"+String(d).padStart(2,"0")]=c.amount/n;}}
+  AUSG_DAY[key]=out;}
+let VARIANT=false;
+const METHOD_HTML=`<b>Strukturelle Ausfälle (14 Publisher):</b> Publisher mit mind. 15 Tsd. € Umsatz Jan–Apr 2026 und mind. 75 % Rückgang ab Mai (u. a. Smart Advertising, Oceanshiny, Coupert, MCANISM, Retail Escaper, BonusArrive). Erwartung je Publisher und Monat = Ø Monatsumsatz Jan–Apr 2026 × Saisonfaktor aus dem Programmverlauf 2025; Ausgleich = Erwartung minus Ist. Mai nicht angesetzt (Fixkompensation). Juni–Sep 1.091.181 €, Okt bis 20.10. rund 101 Tsd. €, danach nicht fortgeschrieben. Konservativ, ohne Wachstum.<br><br>
+<b>Iran-Krieg (Orient):</b> AWIN-Transaktionen 9127, Reise-Region „Orient", netto, exkl. Payback. Seit Kriegsbeginn (Anfang März 2026) liegt der Orient-Umsatz bei 0 €; die im Jan/Feb 2026 gebuchten Orient-Reisen (379 Tsd. € brutto) wurden fast vollständig storniert. Ausgleich Jan/Feb = Bruttobuchungen × normale Netto-Quote 70,3 % (Orient Jan–Jun 2025) minus Ist; ab März = Orient-Netto-Umsatz im Vorjahresmonat, ohne Wachstum. Umbuchungen auf andere Regionen sind im Ist bereits enthalten und nicht herausgerechnet; Stornos von 2025 gebuchten Orient-Reisen (rund 1 Mio. €, validiert Mai/Juni 2026) mindern den Vorjahreswert und sind hier nicht angesetzt.<br><br>
+<b>Soll-Pacing</b> = Jahresziel 30,7 Mio. € × Anteil des Vorjahresumsatzes am Stichtag. Alle Werte exkl. Payback. Beträge im Code unter AUSG_CFG justierbar.`;
+function ausgKeys(){ if(!VARIANT)return[]; const k=[];
+  if(document.getElementById("cPub").checked)k.push("pub"); if(document.getElementById("cIran").checked)k.push("iran"); return k;}
+function ausgDay(key,keys){let s=0;for(const k of keys)s+=AUSG_DAY[k][key]||0;return s;}
+function setVariant(on){VARIANT=on;document.getElementById("vStd").classList.toggle("on",!on);document.getElementById("vAus").classList.toggle("on",on);
+  document.getElementById("ausChk").classList.toggle("off",!on);render();}
+
 const eur=v=>v==null?"–":new Intl.NumberFormat("de-DE",{maximumFractionDigits:0}).format(v)+" €";
 const mio=v=>v==null?"–":(v/1e6).toLocaleString("de-DE",{minimumFractionDigits:2,maximumFractionDigits:2})+" Mio €";
 const pf=x=>(x>0?"+":"−")+Math.abs(x).toLocaleString("de-DE",{minimumFractionDigits:1,maximumFractionDigits:1})+" %";
@@ -151,17 +210,18 @@ function realizedCorrection(cut){
   return c.amount*((cutD-f)/(fb-f));
 }
 
-function monthly(cm,cd){   // taggleich, Jan..cm — für Tabelle/YTD (2026 = festgeschrieben F2026)
-  const prev=[],cur=[];
+function monthly(cm,cd,keys){   // taggleich, Jan..cm — für Tabelle/YTD (2026 = festgeschrieben F2026)
+  keys=keys||[]; const prev=[],cur=[],aus=[];
   for(let m=1;m<=cm;m++){const mm=String(m).padStart(2,"0");let s25=0,s26=0;
     for(const k in DATA.d2025){if(k.slice(0,2)===mm){const day=+k.slice(3,5);if(m<cm||day<=cd)s25+=DATA.d2025[k];}}
     for(const k in F2026){if(k.slice(0,2)===mm){const day=+k.slice(3,5);if(m<cm||day<=cd)s26+=F2026[k];}}
-    prev.push(s25);cur.push(s26);}
-  return {prev,cur};
+    let sa=0; const dim=new Date(2026,m,0).getDate(); for(let day=1;day<=(m<cm?dim:cd);day++)sa+=ausgDay(mm+"-"+String(day).padStart(2,"0"),keys);
+    prev.push(s25);cur.push(s26);aus.push(sa);}
+  return {prev,cur,aus};
 }
 
-function monthlyChart(cm,cd){   // Jan–Dez: 2025 ganzes Jahr; 2026 in Live + Fixkomp. getrennt, bis Stichtag
-  const prev=[],cur=[],live=[],comp=[],partial=[],fixed=[];
+function monthlyChart(cm,cd,keys){   // Jan–Dez: 2025 ganzes Jahr; 2026 in Live + Fixkomp. getrennt, bis Stichtag
+  keys=keys||[]; const prev=[],cur=[],live=[],comp=[],partial=[],fixed=[],ausg={pub:[],iran:[]};
   for(let m=1;m<=12;m++){const mm=String(m).padStart(2,"0");
     let s25=0; for(const k in DATA.d2025){if(k.slice(0,2)===mm)s25+=DATA.d2025[k];}
     prev.push(s25); fixed.push(isFixed(m));
@@ -169,54 +229,63 @@ function monthlyChart(cm,cd){   // Jan–Dez: 2025 ganzes Jahr; 2026 in Live + F
       for(const k in F2026){if(k.slice(0,2)===mm){const day=+k.slice(3,5); if(m<cm||day<=cd){
         const lv=DATA.d2026[k]||0; l+=lv; c+=(F2026[k]-lv);}}}
       live.push(l); comp.push(c); cur.push(l+c); partial.push(m===cm && cd<new Date(2026,cm,0).getDate());
-    } else { live.push(null); comp.push(null); cur.push(null); partial.push(false); }
+      const dim=new Date(2026,m,0).getDate();
+      for(const k of ["pub","iran"]){let a=0; if(keys.includes(k)){for(let day=1;day<=(m<cm?dim:cd);day++)a+=AUSG_DAY[k][mm+"-"+String(day).padStart(2,"0")]||0;} ausg[k].push(a||null);}
+    } else { live.push(null); comp.push(null); cur.push(null); partial.push(false); ausg.pub.push(null); ausg.iran.push(null); }
   }
-  return {prev,cur,live,comp,partial,fixed};
+  return {prev,cur,live,comp,partial,fixed,ausg};
 }
 
-function cumulativeDaily(cm,cd){   // ganzes Jahr: 2025 voll, 2026 festgeschrieben bis Stichtag dann null
-  const labels=[],c25=[],c26=[];let a=0,b=0;
+function cumulativeDaily(cm,cd,keys){   // ganzes Jahr: 2025 voll, 2026 festgeschrieben bis Stichtag dann null
+  keys=keys||[]; const labels=[],c25=[],c26=[],c26a=[];let a=0,b=0,ba=0;
   for(let m=1;m<=12;m++){const dim=new Date(2026,m,0).getDate();
     for(let day=1;day<=dim;day++){
       const mm=String(m).padStart(2,"0"),dd=String(day).padStart(2,"0"),key=mm+"-"+dd;
       a+=DATA.d2025[key]||0; labels.push(dd+"."+mm+".");
       c25.push(a);
-      if(m<cm||(m===cm&&day<=cd)){b+=F2026[key]||0;c26.push(b);}else{c26.push(null);}
+      if(m<cm||(m===cm&&day<=cd)){b+=F2026[key]||0;ba+=(F2026[key]||0)+ausgDay(key,keys);c26.push(b);c26a.push(ba);}else{c26.push(null);c26a.push(null);}
     }}
-  return {labels,c25,c26};
+  return {labels,c25,c26,c26a};
 }
 
-function paceCurve(cm,cd){   // Zielerreichung-Verlauf in %: 2025 ganzes Jahr ÷ Ziel25, 2026 festgeschrieben bis Stichtag ÷ Ziel26
-  const labels=[],p25=[],p26=[];let a=0,b=0;
+function paceCurve(cm,cd,keys){   // Zielerreichung-Verlauf in %: 2025 ganzes Jahr ÷ Ziel25, 2026 festgeschrieben bis Stichtag ÷ Ziel26
+  keys=keys||[]; const labels=[],p25=[],p26=[],p26a=[];let a=0,b=0,ba=0;
   for(let m=1;m<=12;m++){const dim=new Date(2026,m,0).getDate();
     for(let day=1;day<=dim;day++){
       const mm=String(m).padStart(2,"0"),dd=String(day).padStart(2,"0"),key=mm+"-"+dd;
       a+=DATA.d2025[key]||0; labels.push(dd+"."+mm+".");
       p25.push(a/T25*100);
-      if(m<cm||(m===cm&&day<=cd)){b+=F2026[key]||0;p26.push(b/T26*100);}else{p26.push(null);}
+      if(m<cm||(m===cm&&day<=cd)){b+=F2026[key]||0;ba+=(F2026[key]||0)+ausgDay(key,keys);p26.push(b/T26*100);p26a.push(ba/T26*100);}else{p26.push(null);p26a.push(null);}
     }}
-  return {labels,p25,p26};
+  return {labels,p25,p26,p26a};
 }
 
 let chM,chD,chP,chB;
 function render(){
   const cut=document.getElementById("cut").value; if(!cut)return;
   const cm=+cut.slice(5,7), cd=+cut.slice(8,10);
-  const M=monthly(cm,cd);
+  const keys=ausgKeys(), AV=keys.length>0;
+  const M=monthly(cm,cd,keys);
+  const sumA=a=>a.reduce((x,y)=>x+(y||0),0);
+  const ausYtd=sumA(M.aus), ausPubYtd=keys.includes("pub")?sumA(monthly(cm,cd,["pub"]).aus):0, ausIranYtd=keys.includes("iran")?sumA(monthly(cm,cd,["iran"]).aus):0;
   const ytd26=sumYTD(F2026,cm,cd);          // festgeschrieben (Jan–Mai Bericht, ab Juni AWIN)
   const ytd26roh=sumYTD(DATA.d2026,cm,cd);  // AWIN ohne Tracking-Kompensation
   const ytd25=sumYTD(DATA.d2025,cm,cd);
   const yoy=ytd25?(ytd26-ytd25)/ytd25*100:null;
   const festPct=ytd26/T26*100, rohPct=ytd26roh/T26*100, prevPct=ytd25/T25*100;
   const dFest=festPct-prevPct, dRoh=rohPct-prevPct;
+  const ytd26a=ytd26+ausYtd, yoyA=ytd25?(ytd26a-ytd25)/ytd25*100:null, ausPct=ytd26a/T26*100, dAus=ausPct-prevPct;
+  const full25=Object.values(DATA.d2025).reduce((a,b)=>a+b,0), sollPace=T26*ytd25/full25;
+  const ausLbl=keys.map(k=>AUSG_CFG[k].label).join(" + ");
 
-  document.getElementById("meta").textContent=`Vorjahresvergleich 01.01.–${deDate(cut)} (taggleich) · exkl. Payback · 2026 = AWIN-Live + Kompensation gesamt ${mio(COMP_TOTAL)} (Fixkomp. Link-Defekte Jan/Feb/Apr/Mai + Attributionskorrektur Website-Down 15.–16.07.) · Datenstand ${deDate(today)}`;
+  document.getElementById("meta").textContent=`Vorjahresvergleich 01.01.–${deDate(cut)} (taggleich) · exkl. Payback · 2026 = AWIN-Live + Kompensation gesamt ${mio(COMP_TOTAL)} (Fixkomp. Link-Defekte Jan/Feb/Apr/Mai + Attributionskorrektur Website-Down 15.–16.07.) · Datenstand ${deDate(today)}${AV?` · Variante MIT geschätztem Ausgleich (${ausLbl})`:""}`;
 
   // KPIs
   document.getElementById("kpis").innerHTML=`
     <div class="kpi"><div class="l">YTD 2026 (inkl. Fixkomp.)</div><div class="v">${eur(ytd26)}</div><div class="d ${yoy>=0?'pos':'neg'}">${yoy!=null?pf(yoy)+" YoY":""}</div></div>
     <div class="kpi"><div class="l">Vorjahr (2025)</div><div class="v">${eur(ytd25)}</div><div class="d" style="color:var(--muted)">taggleich</div></div>
-    <div class="kpi"><div class="l">Zielerreichung 2026</div><div class="v">${festPct.toLocaleString("de-DE",{maximumFractionDigits:1})} %</div><div class="d ${dFest>=0?'pos':'neg'}">${ppf(dFest)} vs. VJ</div></div>`;
+    <div class="kpi"><div class="l">Zielerreichung 2026</div><div class="v">${festPct.toLocaleString("de-DE",{maximumFractionDigits:1})} %</div><div class="d ${dFest>=0?'pos':'neg'}">${ppf(dFest)} vs. VJ</div></div>`+
+    (AV?`<div class="kpi aus"><div class="l">YTD 2026 inkl. gesch. Ausgleich</div><div class="v">${eur(ytd26a)}</div><div class="d ${yoyA>=0?'pos':'neg'}">${pf(yoyA)} YoY (statt ${pf(yoy)}) · Ausgleich +${eur(ausYtd)}</div></div>`:"");
 
   // Pacing
   document.getElementById("paceSub").textContent=`Zielerreichung zum ${deDate(cut)} · Ziel 2026 ${mio(T26)} · Ziel 2025 ${mio(T25)} · 2026-Ziel liegt ${(((T26/T25)-1)*100).toFixed(0)} % über Vorjahr`;
@@ -225,52 +294,66 @@ function render(){
       <div class="track"><div class="fill" style="width:${w}%;background:${col}"></div></div><div class="cap">${cap}</div></div>`;};
   document.getElementById("pace").innerHTML=
     bar("2026 inkl. Fixkompensation",festPct,`${mio(ytd26)} von ${mio(T26)} · Live + Fixkomp. (Jan ${mio(COMP[1])} · Feb ${mio(COMP[2])} · Apr ${mio(COMP[4])} · Mai ${mio(COMP[5])}) + Attrib.-Korr. Juli ${eur(COMP_ATTR)}`,"#0a4d8c")+
+    (AV?bar("2026 inkl. geschätztem Ausgleich",ausPct,`${mio(ytd26a)} von ${mio(T26)} · inkl. Fixkomp. + ${ausLbl}: +${mio(ausYtd)}${ausPubYtd&&ausIranYtd?` (Ausfälle ${mio(ausPubYtd)} · Iran ${mio(ausIranYtd)})`:""} · Soll-Pacing zum Stichtag ${mio(sollPace)}`,"#14a39a"):"")+
     bar("2026 AWIN-Live (roh)",rohPct,`${mio(ytd26roh)} von ${mio(T26)} · reine Live-Werte, ohne Kompensation`,"#7ba7d4")+
     bar("2025 zum gleichen Stichtag",prevPct,`${mio(ytd25)} von ${mio(T25)}`,"#9aa3ad");
   const vcol=dFest>=0?"var(--pos)":"var(--neg)";
-  document.getElementById("verdict").innerHTML=`<b>Pace-Fazit:</b> 2026 liegt <b style="color:${vcol}">${ppf(dFest)}</b> ${dFest>=0?"vor":"hinter"} Vorjahr (inkl. Fixkompensation). Ohne Kompensation (reine Live-Werte) wären es ${ppf(dRoh)}. Kompensation gesamt: +${mio(COMP_TOTAL)} — Fixkomp. Link-Defekte +${mio(COMP_FIX)} (Jan-Ausfall, Feb-Rest bis 08.02., Apr/Mai Standardlink-Defekt) · Attributionskorrektur +${eur(COMP_ATTR)} (TUIC-Website-Down 15.–16.07.: Brutto-Lücke minus Affiliate-Rebound, 30-Tage-Cookie).`;
+  document.getElementById("verdict").innerHTML=`<b>Pace-Fazit:</b> 2026 liegt <b style="color:${vcol}">${ppf(dFest)}</b> ${dFest>=0?"vor":"hinter"} Vorjahr (inkl. Fixkompensation). Ohne Kompensation (reine Live-Werte) wären es ${ppf(dRoh)}. Kompensation gesamt: +${mio(COMP_TOTAL)} — Fixkomp. Link-Defekte +${mio(COMP_FIX)} (Jan-Ausfall, Feb-Rest bis 08.02., Apr/Mai Standardlink-Defekt) · Attributionskorrektur +${eur(COMP_ATTR)} (TUIC-Website-Down 15.–16.07.: Brutto-Lücke minus Affiliate-Rebound, 30-Tage-Cookie).`+
+    (AV?`<br><b>Mit geschätztem Ausgleich:</b> <b style="color:${dAus>=0?'var(--pos)':'var(--neg)'}">${ppf(dAus)}</b> ${dAus>=0?"vor":"hinter"} Vorjahr, YoY ${pf(yoyA)} statt ${pf(yoy)}. Lücke zum Soll-Pacing (${mio(sollPace)}): ${mio(Math.max(0,sollPace-ytd26))} ohne bzw. ${mio(Math.max(0,sollPace-ytd26a))} mit Ausgleich → ${sollPace>ytd26?Math.round(Math.min(ausYtd,sollPace-ytd26)/(sollPace-ytd26)*100):0} % der Lücke gehen auf die geschätzten Effekte zurück.`:"");
 
   // Monthly chart — 2025 als eigener Balken; 2026 gestapelt (Live + Fixkomp. in anderer Farbe)
-  const MC=monthlyChart(cm,cd);
+  const MC=monthlyChart(cm,cd,keys);
   const liveCols=MC.live.map((v,i)=>MC.partial[i]?"#7ba7d4":"#0a4d8c");
   if(chM)chM.destroy();
   chM=new Chart(document.getElementById("chMonth"),{type:"bar",
     data:{labels:MONTHS,datasets:[
       {label:"2025",data:MC.prev,backgroundColor:"#c0c6cf",stack:"vj",borderRadius:2},
       {label:"2026 Live",data:MC.live,backgroundColor:liveCols,stack:"akt",borderRadius:2},
-      {label:"2026 Fixkomp.",data:MC.comp,backgroundColor:"#e8a838",stack:"akt",borderRadius:2}]},
+      {label:"2026 Fixkomp.",data:MC.comp,backgroundColor:"#e8a838",stack:"akt",borderRadius:2},
+      ...keys.map(k=>({label:"gesch. Ausgleich: "+AUSG_CFG[k].label,data:MC.ausg[k],backgroundColor:AUSG_CFG[k].color,stack:"akt",borderRadius:2,_aus:true}))]},
     options:{responsive:true,plugins:{legend:{position:"bottom"},
       tooltip:{callbacks:{label:c=>c.parsed.y==null?null:c.dataset.label+": "+eur(c.parsed.y),
-        footer:items=>{const i=items[0].dataIndex;const t=(MC.live[i]||0)+(MC.comp[i]||0);return MC.comp[i]>0?"Gesamt 2026: "+eur(t):"";}}}},
-      scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,ticks:{callback:v=>new Intl.NumberFormat("de-DE",{notation:"compact"}).format(v)+" €"},grid:{color:"#eef1f5"}}}}});
+        footer:items=>{const i=items[0].dataIndex;const a=(MC.ausg.pub[i]||0)+(MC.ausg.iran[i]||0);const t=(MC.live[i]||0)+(MC.comp[i]||0);return (MC.comp[i]>0||a>0)?"Gesamt 2026: "+eur(t)+(a>0?" · inkl. Ausgleich: "+eur(t+a):""):"";}}}},
+      scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,ticks:{callback:v=>new Intl.NumberFormat("de-DE",{notation:"compact"}).format(v)+" €"},grid:{color:"#eef1f5"}}}},
+    plugins:[{id:"ausLbl",afterDatasetsDraw(c){if(!AV)return;const x=c.ctx;x.save();x.textAlign="center";
+      c.data.datasets.forEach((ds,di)=>{if(!ds._aus)return;const meta=c.getDatasetMeta(di);meta.data.forEach((el,i)=>{const v=ds.data[i];if(!v||v<15000)return;
+        const h=Math.abs(el.base-el.y);x.font="bold "+Math.round(10*Math.min(FSC,1.1))+"px sans-serif";x.fillStyle="#fff";x.textBaseline="middle";if(h>=12)x.fillText("+"+Math.round(v/1000),el.x,(el.y+el.base)/2);});});
+      const last=c.getDatasetMeta(c.data.datasets.length-1);
+      for(let i=0;i<12;i++){const a=(MC.ausg.pub[i]||0)+(MC.ausg.iran[i]||0);if(!a)continue;let top=Infinity;
+        c.data.datasets.forEach((ds,di)=>{if(ds.stack!=="akt")return;const el=c.getDatasetMeta(di).data[i];if(el&&ds.data[i])top=Math.min(top,el.y);});
+        const tot=(MC.cur[i]||0)+a;x.font=""+Math.round(11*FSC)+"px sans-serif";x.fillStyle="#334155";x.textBaseline="bottom";
+        x.fillText((tot/1e6).toLocaleString("de-DE",{minimumFractionDigits:2,maximumFractionDigits:2}),last.data[i].x,top-3);}
+      x.restore();}}]});
 
   // Daily cumulative chart — ganzes Jahr, 2025 voll, 2026-Linie endet am Stichtag
-  const D=cumulativeDaily(cm,cd);
+  const D=cumulativeDaily(cm,cd,keys);
   document.getElementById("dailySub").textContent=`Kumuliert über das ganze Jahr · 2025 komplett, 2026-Linie endet am Stichtag (${deDate(cut)}) · exkl. Payback`;
   if(chD)chD.destroy();
   chD=new Chart(document.getElementById("chDaily"),{type:"line",
     data:{labels:D.labels,datasets:[
       {label:"2025 kumuliert",data:D.c25,borderColor:"#9aa3ad",backgroundColor:"#9aa3ad",borderWidth:2,pointRadius:0,tension:.15},
-      {label:"2026 kumuliert",data:D.c26,borderColor:"#0a4d8c",backgroundColor:"#0a4d8c",borderWidth:2,pointRadius:0,tension:.15,spanGaps:false}]},
+      {label:"2026 kumuliert",data:D.c26,borderColor:"#0a4d8c",backgroundColor:"#0a4d8c",borderWidth:2,pointRadius:0,tension:.15,spanGaps:false},
+      ...(AV?[{label:"2026 inkl. gesch. Ausgleich",data:D.c26a,borderColor:"#14a39a",backgroundColor:"#14a39a",borderWidth:2,borderDash:[6,4],pointRadius:0,tension:.15,spanGaps:false}]:[])]},
     options:{responsive:true,interaction:{mode:"index",intersect:false},
       plugins:{legend:{position:"bottom"},tooltip:{callbacks:{label:c=>c.parsed.y==null?null:c.dataset.label+": "+eur(c.parsed.y)}}},
       scales:{x:{ticks:{maxTicksLimit:12,color:"#6b7280"},grid:{display:false}},
         y:{ticks:{callback:v=>new Intl.NumberFormat("de-DE",{notation:"compact"}).format(v)+" €"},grid:{color:"#eef1f5"}}}}});
 
   // Zielpacing-Verlauf (Zielerreichung % über das Jahr)
-  const PC=paceCurve(cm,cd);
+  const PC=paceCurve(cm,cd,keys);
   if(chP)chP.destroy();
   chP=new Chart(document.getElementById("chPace"),{type:"line",
     data:{labels:PC.labels,datasets:[
       {label:`2025 (Ziel ${mio(T25)})`,data:PC.p25,borderColor:"#9aa3ad",backgroundColor:"#9aa3ad",borderWidth:2,pointRadius:0,tension:.15},
-      {label:`2026 (Ziel ${mio(T26)})`,data:PC.p26,borderColor:"#0a4d8c",backgroundColor:"#0a4d8c",borderWidth:2.5,pointRadius:0,tension:.15,spanGaps:false}]},
+      {label:`2026 (Ziel ${mio(T26)})`,data:PC.p26,borderColor:"#0a4d8c",backgroundColor:"#0a4d8c",borderWidth:2.5,pointRadius:0,tension:.15,spanGaps:false},
+      ...(AV?[{label:`2026 inkl. gesch. Ausgleich (Ziel ${mio(T26)})`,data:PC.p26a,borderColor:"#14a39a",backgroundColor:"#14a39a",borderWidth:2,borderDash:[6,4],pointRadius:0,tension:.15,spanGaps:false}]:[])]},
     options:{responsive:true,interaction:{mode:"index",intersect:false},
       plugins:{legend:{position:"bottom"},tooltip:{callbacks:{label:c=>c.parsed.y==null?null:c.dataset.label.split(" (")[0]+": "+c.parsed.y.toLocaleString("de-DE",{maximumFractionDigits:1})+" % vom Ziel"}}},
       scales:{x:{ticks:{maxTicksLimit:12,color:"#6b7280"},grid:{display:false}},
         y:{ticks:{callback:v=>v+" %",color:"#6b7280"},grid:{color:"#eef1f5"},title:{display:true,text:"Zielerreichung (% vom Jahresziel)",color:"#6b7280"}}}},
     plugins:[{id:"goal100",afterDraw(c){const y=c.scales.y.getPixelForValue(100);if(isNaN(y))return;const{left,right}=c.chartArea,x=c.ctx;
       x.save();x.strokeStyle="#16a34a";x.setLineDash([6,4]);x.lineWidth=1.5;x.beginPath();x.moveTo(left,y);x.lineTo(right,y);x.stroke();
-      x.setLineDash([]);x.fillStyle="#16a34a";x.font="11px sans-serif";x.fillText("Ziel = 100 %",left+6,y-5);x.restore();}}]});
+      x.setLineDash([]);x.fillStyle="#16a34a";x.font=""+Math.round(11*FSC)+"px sans-serif";x.fillText("Ziel = 100 %",left+6,y-5);x.restore();}}]});
 
   // Zielerreichung absolut — horizontale Balken, nach Monaten gestapelt; Zielmarken unten an der x-Achse
   const goals=[T25,T26];
@@ -278,42 +361,65 @@ function render(){
   const monCol=i=>{const t=nM>1?i/(nM-1):0,r=Math.round(176-(176-10)*t),g=Math.round(200-(200-77)*t),b=Math.round(228-(228-140)*t);return `rgb(${r},${g},${b})`;};
   const monDs=[];
   for(let i=0;i<nM;i++) monDs.push({label:MF[i].slice(0,3),data:[M.prev[i],M.cur[i]],backgroundColor:monCol(i),stack:"s",borderWidth:1,borderColor:"#ffffff"});
+  if(AV) monDs.push({label:"Geschätzter Ausgleich",data:[null,ausYtd],backgroundColor:"#14a39a",stack:"s",borderWidth:1,borderColor:"#ffffff"});
   if(chB)chB.destroy();
   chB=new Chart(document.getElementById("chBul"),{type:"bar",
     data:{labels:["2025","2026"],datasets:monDs},
-    options:{indexAxis:"y",responsive:true,layout:{padding:{top:52}},
-      plugins:{legend:{position:"bottom",labels:{boxWidth:12,font:{size:11}}},
+    options:{indexAxis:"y",responsive:true,layout:{padding:{top:Math.round(52*FSC)}},
+      plugins:{legend:{position:"bottom",labels:{boxWidth:Math.round(12*FSC),font:{size:Math.round(11*FSC)}}},
         tooltip:{callbacks:{label:c=>c.dataset.label+": "+eur(c.parsed.x),
-          footer:items=>{const row=items[0].dataIndex,tot=row===0?ytd25:ytd26;return "Gesamt: "+eur(tot)+" ("+(tot/goals[row]*100).toFixed(1).replace(".",",")+" % vom Ziel)";}}}},
+          footer:items=>{const row=items[0].dataIndex,tot=row===0?ytd25:ytd26a;return "Gesamt: "+eur(tot)+" ("+(tot/goals[row]*100).toFixed(1).replace(".",",")+" % vom Ziel)";}}}},
       scales:{x:{stacked:true,min:0,max:33000000,ticks:{callback:v=>(v/1e6).toLocaleString("de-DE")+" Mio"},grid:{color:"#eef1f5"},title:{display:true,text:"Umsatz kumuliert (€) · Segmente = Monate",color:"#6b7280"}},
         y:{stacked:true,grid:{display:false}}}},
     plugins:[{id:"goalx",afterDraw(c){const xs=c.scales.x,ya=c.chartArea,x=c.ctx;
       const cols=["#64748b","#16a34a"],labs=[`Ziel 2025: ${(T25/1e6).toLocaleString("de-DE",{minimumFractionDigits:1})} Mio €`,`Ziel 2026: ${(T26/1e6).toLocaleString("de-DE",{minimumFractionDigits:1})} Mio €`];
       goals.forEach((g,i)=>{const gx=xs.getPixelForValue(g);
         x.save();x.strokeStyle=cols[i];x.setLineDash([5,3]);x.lineWidth=2;x.beginPath();x.moveTo(gx,ya.top);x.lineTo(gx,ya.bottom);x.stroke();x.setLineDash([]);
-        x.font="bold 11px sans-serif";const txt=labs[i],padX=7,bh=18,tw=x.measureText(txt).width,bw=tw+padX*2,r=4;
+        x.font="bold "+Math.round(11*FSC)+"px sans-serif";const txt=labs[i],padX=7*FSC,bh=18*FSC,tw=x.measureText(txt).width,bw=tw+padX*2,r=4;
         let bx=Math.max(ya.left,Math.min(gx-bw,ya.right-bw)),by=ya.top-bh-6-i*(bh+4);
         x.beginPath();x.moveTo(bx+r,by);x.arcTo(bx+bw,by,bx+bw,by+bh,r);x.arcTo(bx+bw,by+bh,bx,by+bh,r);x.arcTo(bx,by+bh,bx,by,r);x.arcTo(bx,by,bx+bw,by,r);x.closePath();
         x.fillStyle="#ffffff";x.fill();x.lineWidth=1;x.strokeStyle=cols[i];x.stroke();
-        x.fillStyle=cols[i];x.textAlign="left";x.textBaseline="middle";x.fillText(txt,bx+padX,by+bh/2+0.5);x.restore();});}}]});
+        x.fillStyle=cols[i];x.textAlign="left";x.textBaseline="middle";x.fillText(txt,bx+padX,by+bh/2+0.5);x.restore();});
+      if(AV){const ys=c.scales.y,yb=ys.getPixelForValue(1),hh=(ys.getPixelForValue(1)-ys.getPixelForValue(0))*0.42;
+        const sx=xs.getPixelForValue(sollPace),ex=xs.getPixelForValue(ytd26a);
+        x.save();x.strokeStyle="#e8a838";x.lineWidth=3;x.beginPath();x.moveTo(sx,yb-hh);x.lineTo(sx,yb+hh);x.stroke();
+        x.font="bold "+Math.round(11*FSC)+"px sans-serif";x.fillStyle="#b7791f";x.textAlign="left";x.textBaseline="top";
+        x.fillText(`Soll-Pacing ${deDate(cut).slice(0,6)}: ${(sollPace/1e6).toLocaleString("de-DE",{maximumFractionDigits:1})} Mio €`,sx+6,yb+hh-14);
+        x.fillStyle="#0e7f77";x.textBaseline="middle";x.fillText(`${(ytd26a/1e6).toLocaleString("de-DE",{minimumFractionDigits:2,maximumFractionDigits:2})} Mio €`,ex+5,yb);
+        x.restore();}}}]});
 
   // Table
-  document.getElementById("hPrev").textContent="2025";
-  document.getElementById("hCur").textContent="2026";
+  document.getElementById("th").innerHTML=`<tr><th>Monat</th><th>2025</th><th>2026</th><th>Δ YoY</th>${AV?'<th>Gesch. Ausgleich</th><th>2026 inkl. Ausgl.</th><th>Δ YoY inkl.</th>':''}</tr>`;
   const tb=document.getElementById("tb");tb.innerHTML="";
   for(let i=0;i<cm;i++){const a=M.prev[i],b=M.cur[i],d=a?(b-a)/a*100:null,partial=(i+1===cm && cd<new Date(2026,cm,0).getDate()),fix=isFixed(i+1);
-    tb.insertAdjacentHTML("beforeend",`<tr${fix?' style="background:#eef3fb"':''}><td>${MF[i]}${fix?` <span style="color:#2563b0;font-weight:600">＋Fixkomp. ${eur(COMP[i+1])}</span>`:''}${partial&&!fix?` (Live, bis ${cd}.)`:''}</td><td>${eur(a)}</td><td>${eur(b)}</td><td class="${d==null?'':(d>=0?'pos':'neg')}">${d==null?"–":pf(d)}</td></tr>`);}
-  tb.insertAdjacentHTML("beforeend",`<tr class="ytd"><td>YTD 01.01.–${deDate(cut)}</td><td>${eur(ytd25)}</td><td>${eur(ytd26)}</td><td class="${yoy>=0?'pos':'neg'}">${yoy!=null?pf(yoy):"–"}</td></tr>`);
+    tb.insertAdjacentHTML("beforeend",`<tr${fix?' style="background:#eef3fb"':''}><td>${MF[i]}${fix?` <span style="color:#2563b0;font-weight:600">＋Fixkomp. ${eur(COMP[i+1])}</span>`:''}${partial&&!fix?` (Live, bis ${cd}.)`:''}</td><td>${eur(a)}</td><td>${eur(b)}</td><td class="${d==null?'':(d>=0?'pos':'neg')}">${d==null?"–":pf(d)}</td>${AV?(()=>{const au=M.aus[i],ba=b+au,da=a?(ba-a)/a*100:null;return `<td style="color:#0e7f77">${au?"+"+eur(au):"–"}</td><td>${eur(ba)}</td><td class="${da==null?'':(da>=0?'pos':'neg')}">${da==null?"–":pf(da)}</td>`;})():''}</tr>`);}
+  tb.insertAdjacentHTML("beforeend",`<tr class="ytd"><td>YTD 01.01.–${deDate(cut)}</td><td>${eur(ytd25)}</td><td>${eur(ytd26)}</td><td class="${yoy>=0?'pos':'neg'}">${yoy!=null?pf(yoy):"–"}</td>${AV?`<td style="color:#0e7f77">+${eur(ausYtd)}</td><td>${eur(ytd26a)}</td><td class="${yoyA>=0?'pos':'neg'}">${pf(yoyA)}</td>`:''}</tr>`);
   document.getElementById("foot").innerHTML=`＋Fixkomp. = fixe Tracking-Kompensation auf den Live-Wert: Januar ${eur(COMP[1])} (großer Ausfall, +306 Sales), Februar ${eur(COMP[2])} (Rest bis ~08.02.), April ${eur(COMP[4])} + Mai ${eur(COMP[5])} (Standardlink-Defekt ab 20.04.). Übrige Monate = reine AWIN-Live-Werte, netto, exkl. Payback (426667+469409). 2025 = AWIN netto. Laufender Monat taggleich gegen Vorjahr.`;
 
-  window._S={cut,cm,cd,M,MC,D,PC,ytd26,ytd26roh,ytd25,yoy,festPct,rohPct,prevPct,dFest,dRoh};
+  document.getElementById("methodCard").style.display=AV?"":"none";
+  document.getElementById("methodTxt").innerHTML=METHOD_HTML;
+  window._S={cut,cm,cd,M,MC,D,PC,ytd26,ytd26roh,ytd25,yoy,festPct,rohPct,prevPct,dFest,dRoh,AV,keys,ausYtd,ausPubYtd,ausIranYtd,ytd26a,yoyA,ausPct,dAus,sollPace,ausLbl};
 }
 
-function dlPng(){ if(chM){const a=document.createElement("a");a.href=chM.toBase64Image("image/png",1);a.download="MeinSchiff_9127_Monatsumsatz.png";a.click();}
-  if(chD){const b=document.createElement("a");b.href=chD.toBase64Image("image/png",1);b.download="MeinSchiff_9127_Tagesbasis.png";setTimeout(()=>b.click(),300);} }
+// Export-Größen in Zoll (passend zu den Folienflächen); unabhängig von Fenstergröße/Bildschirm
+const EXP={M:[8.9,5.2],D:[12.3,5.3],P:[12.3,5.2],B:[11.6,4.7]};
+function shot(c,wIn,hIn){const W=Math.round(wIn*96),H=Math.round(hIn*96);
+  c.options.devicePixelRatio=2.5; c.options.maintainAspectRatio=false; c.resize(W,H); c.update("none");
+  return {data:c.toBase64Image("image/png",1),w:W,h:H};}
+function snap(){const fs=Chart.defaults.font.size; Chart.defaults.font.size=15; FSC=1.35; render();
+  const r={M:shot(chM,...EXP.M),D:shot(chD,...EXP.D),P:shot(chP,...EXP.P),B:shot(chB,...EXP.B),S:Object.assign({},window._S)};
+  Chart.defaults.font.size=fs; FSC=1; return r;}
+function captureBoth(){ // rendert beide Varianten nacheinander und stellt den Ausgangszustand wieder her
+  const was=VARIANT, cp=document.getElementById("cPub"), ci=document.getElementById("cIran"), wp=cp.checked, wi=ci.checked;
+  VARIANT=false; const std=snap();
+  VARIANT=true; if(!cp.checked&&!ci.checked){cp.checked=true;ci.checked=true;} const aus=snap();
+  VARIANT=was; cp.checked=wp; ci.checked=wi; render();
+  return {std,aus};}
+function dlPng(){ const I=captureBoth(); const files=[["Monatsumsatz",I.std.M],["Monatsumsatz_mit_Ausgleich",I.aus.M],["Tagesbasis",I.std.D],["Tagesbasis_mit_Ausgleich",I.aus.D],["Zielerreichung",I.std.B],["Zielerreichung_mit_Ausgleich",I.aus.B]];
+  files.forEach(([n,im],k)=>setTimeout(()=>{const a=document.createElement("a");a.href=im.data;a.download=`MeinSchiff_9127_${n}.png`;a.click();},k*300)); }
 
 function dlPptx(){
-  const S=window._S; if(!S)return;
+  const IMG=captureBoth(); const S=IMG.std.S, SA=IMG.aus.S;
   const NAVY="0F3A5F",CUR="0A4D8C",PREV="C0C6CF",MUT="5A6B80",POS="16A34A",NEG="DC2626",ADJ="2563B0",LINE="E3E9F0";
   const p=new PptxGenJS(); p.layout="LAYOUT_WIDE"; p.author="WPP Media";
   const stich=deDate(S.cut), cmN=MF[S.cm-1];
@@ -327,7 +433,7 @@ function dlPptx(){
   // S2 Monthly chart + YTD box
   s=p.addSlide(); s.background={color:"FFFFFF"};
   s.addText(`Monatsumsatz — 2025 vs. 2026 (Jan–Dez, 2026 bis ${stich})`,{x:0.6,y:0.45,w:9,h:0.6,fontFace:"Georgia",fontSize:22,color:NAVY,bold:true});
-  try{const mimg=chM.toBase64Image("image/png",1);const cw=chM.canvas.width||1200,chh=chM.canvas.height||400;const iw=8.7,ih=Math.min(4.8,iw*chh/cw);s.addImage({data:mimg,x:0.5,y:1.7,w:iw,h:ih});}catch(e){}
+  try{const mimg=IMG.std.M.data;const cw=IMG.std.M.w||1200,chh=IMG.std.M.h||400;const iw=8.9,ih=Math.min(5.2,iw*chh/cw);s.addImage({data:mimg,x:0.4,y:1.45,w:iw,h:ih});}catch(e){}
   s.addShape(p.ShapeType.rect,{x:9.5,y:1.5,w:3.2,h:4.4,fill:{color:"F2F5F8"},line:{color:PREV,width:1}});
   const yoyTxt=S.yoy!=null?((S.yoy>=0?"+":"−")+Math.abs(S.yoy).toFixed(1).replace(".",",")+" % YoY"):"–";
   s.addText([
@@ -342,8 +448,8 @@ function dlPptx(){
   s=p.addSlide(); s.background={color:"FFFFFF"};
   s.addText(`Kumulierter Umsatz auf Tagesbasis — 2025 vs. 2026 (bis ${stich})`,{x:0.6,y:0.45,w:12,h:0.6,fontFace:"Georgia",fontSize:22,color:NAVY,bold:true});
   try{
-    const dimg=chD.toBase64Image("image/png",1);
-    const cw=chD.canvas.width||1200, chh=chD.canvas.height||450;
+    const dimg=IMG.std.D.data;
+    const cw=IMG.std.D.w||1200, chh=IMG.std.D.h||450;
     const iw=12.3, ih=Math.min(5.4, iw*chh/cw);
     s.addImage({data:dimg, x:(13.333-iw)/2, y:1.5, w:iw, h:ih});
   }catch(e){ s.addText("Tageschart konnte nicht eingebettet werden.",{x:0.6,y:2,w:10,h:0.5,fontSize:12,color:MUT}); }
@@ -373,8 +479,8 @@ function dlPptx(){
   s=p.addSlide(); s.background={color:"FFFFFF"};
   s.addText(`Zielpacing-Verlauf — Zielerreichung über das Jahr (2026 bis ${stich})`,{x:0.6,y:0.45,w:12,h:0.6,fontFace:"Georgia",fontSize:22,color:NAVY,bold:true});
   try{
-    const pimg=chP.toBase64Image("image/png",1);
-    const cw=chP.canvas.width||1200, chh=chP.canvas.height||450;
+    const pimg=IMG.std.P.data;
+    const cw=IMG.std.P.w||1200, chh=IMG.std.P.h||450;
     const iw=12.3, ih=Math.min(5.2, iw*chh/cw);
     s.addImage({data:pimg, x:(13.333-iw)/2, y:1.55, w:iw, h:ih});
   }catch(e){ s.addText("Pacing-Verlauf konnte nicht eingebettet werden.",{x:0.6,y:2,w:10,h:0.5,fontSize:12,color:MUT}); }
@@ -384,14 +490,14 @@ function dlPptx(){
   // S6 Zielerreichung absolut (€) — Bild des Bullet-Charts
   s=p.addSlide(); s.background={color:"FFFFFF"};
   s.addText(`Zielerreichung absolut — 2025 vs. 2026 (€, bis ${stich})`,{x:0.6,y:0.45,w:12,h:0.6,fontFace:"Georgia",fontSize:22,color:NAVY,bold:true});
-  try{const bimg=chB.toBase64Image("image/png",1);const cw=chB.canvas.width||1200,chh=chB.canvas.height||360;const iw=11.5,ih=Math.min(4.8,iw*chh/cw);s.addImage({data:bimg,x:(13.333-iw)/2,y:1.7,w:iw,h:ih});}catch(e){s.addText("Diagramm konnte nicht eingebettet werden.",{x:0.6,y:2,w:10,h:0.5,fontSize:12,color:MUT});}
+  try{const bimg=IMG.std.B.data;const cw=IMG.std.B.w||1200,chh=IMG.std.B.h||360;const iw=11.5,ih=Math.min(4.8,iw*chh/cw);s.addImage({data:bimg,x:(13.333-iw)/2,y:1.7,w:iw,h:ih});}catch(e){s.addText("Diagramm konnte nicht eingebettet werden.",{x:0.6,y:2,w:10,h:0.5,fontSize:12,color:MUT});}
   s.addText('Gestrichelte Marke = Jahresziel (oben beschriftet) (2025 = 24,5 Mio € · 2026 = 30,7 Mio €). Balken nach Monaten gestapelt = erreichter Umsatz YTD taggleich; 2026 inkl. Fixkompensation.',
     {x:0.6,y:6.7,w:12,h:0.4,fontFace:"Calibri",fontSize:10,italic:true,color:MUT});
 
   // S7 Kombi-Übersicht: Monatsdiagramm + Pacing als schmale Spalte
   s=p.addSlide(); s.background={color:"FFFFFF"};
   s.addText(`Übersicht — Monatsumsatz & Zielpacing (bis ${stich})`,{x:0.6,y:0.45,w:12,h:0.6,fontFace:"Georgia",fontSize:22,color:NAVY,bold:true});
-  try{const mimg=chM.toBase64Image("image/png",1);const cw=chM.canvas.width||1200,chh=chM.canvas.height||400;const iw=8.2,ih=Math.min(4.6,iw*chh/cw);s.addImage({data:mimg,x:0.4,y:1.75,w:iw,h:ih});}catch(e){}
+  try{const mimg=IMG.std.M.data;const cw=IMG.std.M.w||1200,chh=IMG.std.M.h||400;const iw=8.3,ih=Math.min(5.0,iw*chh/cw);let w2=iw;if(iw*chh/cw>5.0)w2=5.0*cw/chh;s.addImage({data:mimg,x:0.4,y:1.55,w:w2,h:ih});}catch(e){}
   s.addShape(p.ShapeType.rect,{x:8.85,y:1.55,w:3.95,h:5.1,fill:{color:"F2F5F8"},line:{color:PREV,width:1}});
   s.addText("Zielpacing",{x:9.1,y:1.72,w:3.4,h:0.35,fontFace:"Trebuchet MS",fontSize:13,color:MUT,charSpacing:2,bold:true});
   s.addText(`Ziel 2026 ${mio(T26)} · 2025 ${mio(T25)}`,{x:9.1,y:2.05,w:3.5,h:0.3,fontFace:"Calibri",fontSize:9.5,color:MUT});
@@ -407,6 +513,43 @@ function dlPptx(){
     {text:`${ppf(S.dFest)} ${S.dFest>=0?"vor":"hinter"} VJ (inkl. Fixkomp.)`,options:{bold:true,color:S.dFest>=0?POS:NEG}}],
     {x:9.1,y:5.7,w:3.5,h:0.8,fontFace:"Calibri",fontSize:12,valign:"top"});
 
+  // ── Variante MIT geschätztem Ausgleich ──
+  const TEAL="14A39A";
+  const addImg=(sl,im,x,y,wmax,hmax)=>{try{let w=wmax,h=w*im.h/im.w;if(h>hmax){h=hmax;w=h*im.w/im.h;}sl.addImage({data:im.data,x,y,w,h});}catch(e){}};
+  const pfS=v=>(v>=0?"+":"−")+Math.abs(v).toFixed(1).replace(".",",")+" %";
+  // A1 Monatsumsatz mit Ausgleich
+  s=p.addSlide(); s.background={color:"FFFFFF"};
+  s.addText(`Monatsumsatz YoY mit Ausgleich (bis ${stich})`,{x:0.6,y:0.45,w:12,h:0.6,fontFace:"Georgia",fontSize:22,color:NAVY,bold:true});
+  addImg(s,IMG.aus.M,0.4,1.45,8.9,5.2);
+  s.addShape(p.ShapeType.rect,{x:9.5,y:1.5,w:3.2,h:2.5,fill:{color:"F2F5F8"},line:{color:PREV,width:1}});
+  s.addText([
+    {text:`YTD 2026 inkl. Fixkomp. (bis ${stich})`,options:{fontSize:12,bold:true,color:MUT,breakLine:true}},
+    {text:eur(SA.ytd26),options:{fontSize:22,bold:true,color:CUR,breakLine:true}},
+    {text:pfS(SA.yoy)+" YoY",options:{fontSize:15,bold:true,color:SA.yoy>=0?POS:NEG,breakLine:true}},
+    {text:"Vorjahr (2025): "+eur(SA.ytd25),options:{fontSize:11,color:MUT}}],{x:9.65,y:1.6,w:2.95,h:2.3,fontFace:"Calibri",valign:"top"});
+  s.addShape(p.ShapeType.rect,{x:9.5,y:4.15,w:3.2,h:2.3,fill:{color:"E9F6F4"},line:{color:"BFE6E1",width:1}});
+  s.addText([
+    {text:"zzgl. geschätztem Ausgleich",options:{fontSize:12,bold:true,color:MUT,breakLine:true}},
+    {text:eur(SA.ytd26a),options:{fontSize:22,bold:true,color:"0E7F77",breakLine:true}},
+    {text:`${pfS(SA.yoyA)} YoY (statt ${pfS(SA.yoy)})`,options:{fontSize:13,bold:true,color:SA.yoyA>=0?POS:NEG,breakLine:true}},
+    {text:`Ausgleich: +${eur(SA.ausYtd)}`+(SA.ausPubYtd&&SA.ausIranYtd?`\nAusfälle ${eur(SA.ausPubYtd)} · Iran ${eur(SA.ausIranYtd)}`:""),options:{fontSize:10.5,color:MUT}}],{x:9.65,y:4.25,w:2.95,h:2.1,fontFace:"Calibri",valign:"top"});
+  s.addText(`Geschätzter Ausgleich (${SA.ausLbl}) on top auf AWIN-Live + Fixkompensation, exkl. Payback. Methode siehe Folie „Methode geschätzter Ausgleich".`,{x:0.6,y:6.65,w:12,h:0.45,fontFace:"Calibri",fontSize:10,italic:true,color:MUT});
+  // A2 Zielerreichung mit Ausgleich
+  s=p.addSlide(); s.background={color:"FFFFFF"};
+  s.addText(`Zielerreichung: Wo wir ohne Ausfälle stünden (bis ${stich})`,{x:0.6,y:0.45,w:12,h:0.6,fontFace:"Georgia",fontSize:22,color:NAVY,bold:true});
+  addImg(s,IMG.aus.B,0.85,1.2,11.6,4.6);
+  const gap0=Math.max(0,SA.sollPace-SA.ytd26), shareGap=gap0?Math.round(Math.min(SA.ausYtd,gap0)/gap0*100):0;
+  s.addShape(p.ShapeType.rect,{x:0.6,y:5.85,w:12.1,h:0.85,fill:{color:NAVY}});
+  s.addText([
+    {text:`Zielerreichung: ${SA.festPct.toFixed(1).replace(".",",")} % Ist, rund ${Math.round(SA.ausPct)} % mit geschätztem Ausgleich (${pfS(SA.yoyA)} zum Vorjahr statt ${pfS(SA.yoy)}).`,options:{breakLine:true}},
+    {text:`Von der Lücke zum Soll-Pacing (${mio(gap0)}) gehen rund ${mio(Math.min(SA.ausYtd,gap0))} (${shareGap} %) auf die geschätzten Effekte zurück.`}],
+    {x:0.75,y:5.88,w:11.8,h:0.8,fontFace:"Calibri",fontSize:13,color:"FFFFFF",valign:"middle"});
+  s.addText(`Soll-Pacing = Jahresziel ${mio(T26)} × Anteil des Vorjahresumsatzes am Stichtag (${Math.round(SA.sollPace/T26*100)} %). 2026 inkl. Fixkompensation, ohne Payback.`,{x:0.6,y:6.8,w:12,h:0.35,fontFace:"Calibri",fontSize:10,italic:true,color:MUT});
+  // A3 Methode
+  s=p.addSlide(); s.background={color:"FFFFFF"};
+  s.addText("Methode geschätzter Ausgleich",{x:0.6,y:0.45,w:12,h:0.6,fontFace:"Georgia",fontSize:22,color:NAVY,bold:true});
+  const mt=METHOD_HTML.replace(/<br><br>/g,"\n\n").replace(/<[^>]+>/g,"").replace(" Beträge im Code unter AUSG_CFG justierbar.","");
+  s.addText(mt,{x:0.6,y:1.3,w:12.1,h:5.6,fontFace:"Calibri",fontSize:12.5,color:"334155",valign:"top",paraSpaceAfter:4});
   p.writeFile({fileName:`MeinSchiff_9127_YoY_bis_${S.cut}.pptx`});
 }
 
